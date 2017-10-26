@@ -9,6 +9,11 @@ DEFAULT_CONFIG = os.path.join(
     "releasewarrior/configs/config.yaml"
 )
 
+DEFAULT_TEMPLATES_DIR = os.path.join(
+    os.path.abspath(os.path.join(os.path.realpath(__file__), '..', '..')),
+    "releasewarrior/templates"
+)
+
 def get_logger(verbose=False):
     log_level = logging.INFO
     if verbose:
@@ -26,4 +31,5 @@ def get_logger(verbose=False):
 def get_config(path=DEFAULT_CONFIG):
     with open(path) as fh:
         config = yaml.load(fh)
+    config['templates_dir'] = config.get('templates_dir', DEFAULT_TEMPLATES_DIR)
     return config

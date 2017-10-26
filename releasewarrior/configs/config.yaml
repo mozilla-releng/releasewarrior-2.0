@@ -4,73 +4,62 @@ release_pipeline_repo: /Users/jlund/devel/mozilla/repos/release-pipelines
 
 ###
 # release-pipeline paths
-paths:
-  templates:
-    # input
-    data:
-      firefox:
-        beta: templates/firefox/beta.json.tmpl
-        rc: templates/firefox/release-rc.json.tmpl
-        release: templates/firefox/release.json.tmpl
-        esr: templates/firefox/esr.json.tmpl
-      devedition:
-        devedition: templates/firefox/devedition.json.tmpl
-      fennec:
-        beta: templates/fennec/beta.json.tmpl
-        release: templates/fennec/release.json.tmpl
-      thunderbird:
-        beta: templates/thunderbird/beta.json.tmpl
-        release: templates/thunderbird/release.json.tmpl
-    # output
-    wiki:
-      firefox:
-        beta: templates/firefox/beta.md.tmpl
-        rc: templates/firefox/release-rc.md.tmpl
-        release: templates/firefox/release.md.tmpl
-        esr: templates/firefox/esr.md.tmpl
-      devedition:
-        devedition: templates/firefox/devedition.md.tmpl
-      fennec:
-        beta: templates/fennec/beta.md.tmpl
-        release: templates/fennec/release.md.tmpl
-      thunderbird:
-        beta: templates/thunderbird/beta.md.tmpl
-        release: templates/thunderbird/release.md.tmpl
+releases:
+  upcoming:
+    firefox: upcoming/firefox
+    devedition: upcoming/devedition
+    fennec: upcoming/fennec
+    thunderbird: upcoming/thunderbird
+  inflight:
+    firefox: inflight/firefox
+    devedition: inflight/devedition
+    fennec: inflight/fennec
+    thunderbird: inflight/thunderbird
+  archive:
+    firefox: archive/firefox
+    devedition: archive/devedition
+    fennec: archive/fennec
+    thunderbird: archive/thunderbird
 
-  releases:
-    upcoming:
-      firefox: upcoming/firefox
-      devedition: upcoming/devedition
-      fennec: upcoming/fennec
-      thunderbird: upcoming/thunderbird
-    live:
-      firefox: live/firefox
-      devedition: live/devedition
-      fennec: live/fennec
-      thunderbird: live/thunderbird
-    archive:
-      firefox: archive/firefox
-      devedition: archive/devedition
-      fennec: archive/fennec
-      thunderbird: archive/thunderbird
-
-  postmortems: postmortems
+postmortems: postmortems
 ###
+
+###
+# template paths
+templates:
+  # input
+  data:
+    firefox:
+      beta: firefox/beta.json.tmpl
+      rc: firefox/release-rc.json.tmpl
+      release: firefox/release.json.tmpl
+      esr: firefox/esr.json.tmpl
+    devedition:
+      devedition: firefox/devedition.json.tmpl
+    fennec:
+      beta: fennec/beta.json.tmpl
+      release: fennec/release.json.tmpl
+    thunderbird:
+      beta: thunderbird/beta.json.tmpl
+      release: thunderbird/release.json.tmpl
+  # output
+  wiki:
+    firefox:
+      beta: firefox/beta.md.tmpl
+      rc: firefox/release-rc.md.tmpl
+      release: firefox/release.md.tmpl
+      esr: firefox/esr.md.tmpl
+    devedition:
+      devedition: firefox/devedition.md.tmpl
+    fennec:
+      beta: fennec/beta.md.tmpl
+      release: fennec/release.md.tmpl
+    thunderbird:
+      beta: thunderbird/beta.md.tmpl
+      release: thunderbird/release.md.tmpl
+
 
 ### location of release cmd output artifacts
 releasewarrior_artifacts:
   logs: logs
 ###
-
-# The official json nick, followed by human-friendly alias(es)
-# These should be specified in order.
-ordered_human_tasks:
-  - shipit
-  - candidates
-  - beta
-  - betasignoff
-  - wnp
-  - mirrors
-  - pushapk
-  - publish
-  - signoff

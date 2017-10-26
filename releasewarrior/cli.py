@@ -42,8 +42,8 @@ def generate_data(release, logger, config):
     # TODO add support for ad-hoc human tasks within regular human tasks
 
     data_template = os.path.join(
-        config['release_pipeline_repo'],
-        config['paths']['templates']["data"][release.product][release.branch]
+        config['templates_dir'],
+        config['templates']["data"][release.product][release.branch]
     )
 
     data = {}
@@ -62,9 +62,9 @@ def generate_wiki(data, release, logger, config):
 
     # TODO convert issues to bugs
 
-    wiki_template = config['paths']['templates']["wiki"][release.product][release.branch]
+    wiki_template = config['templates']["wiki"][release.product][release.branch]
 
-    env = Environment(loader=FileSystemLoader(config['release_pipeline_repo']),
+    env = Environment(loader=FileSystemLoader(config['templates_dir']),
                       undefined=StrictUndefined, trim_blocks=True)
 
     template = env.get_template(wiki_template)
@@ -141,7 +141,7 @@ def create(product, version, date, logger=LOGGER, config=CONFIG):
     release = Release(product=product, version=version, branch=branch, date=date)
 
     upcoming_path = os.path.join(config['release_pipeline_repo'],
-                                 config['paths']['releases']["upcoming"][release.product])
+                                 config['releases']["upcoming"][release.product])
     commit_msg = "started tracking of {} {} release. Created wiki and data file".format(product,
                                                                                         version)
 
@@ -153,5 +153,6 @@ def create(product, version, date, logger=LOGGER, config=CONFIG):
     wiki = generate_wiki(data, release, logger, config)
     data_file = write_data(upcoming_path, data, release, logger, config)
     wiki_file = write_wiki(upcoming_path, wiki, release, logger, config)
-    commit([data_file, wiki_file], commit_msg, logger, config)
-
+    logger.info(data_file)
+    logger.info(wiki_file)
+    # commit([data_file, wiki_file], commit_msg, logger, config)
