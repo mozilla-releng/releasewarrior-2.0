@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+import json
 
 import yaml
 
@@ -13,6 +14,7 @@ DEFAULT_TEMPLATES_DIR = os.path.join(
     os.path.abspath(os.path.join(os.path.realpath(__file__), '..', '..')),
     "releasewarrior/templates"
 )
+
 
 def get_logger(verbose=False):
     log_level = logging.INFO
@@ -33,3 +35,11 @@ def get_config(path=DEFAULT_CONFIG):
         config = yaml.load(fh)
     config['templates_dir'] = config.get('templates_dir', DEFAULT_TEMPLATES_DIR)
     return config
+
+
+def load_json(path):
+    data = {}
+    with open(path) as f:
+        data.update(json.load(f))
+    return data
+

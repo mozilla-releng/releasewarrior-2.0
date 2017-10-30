@@ -2,17 +2,16 @@
 
 ### Date of go-to-build: {{ date }}
 
-## Pre go-to-build tasks
-{% for task in pre_gtb["human_tasks"] %}
+## Preflight tasks (pre go-to-build)
+{% for task in preflight["human_tasks"] %}
 - [{% if task["resolved"] %}x{% else %} {% endif %}] {{ loop.index }}. due:{{ task["deadline"] }} - [bug {{ task["bug"] }}](http://bugzilla/{{ task["bug"] }}): {{ task["description"] }}
 {% endfor %}
-{% if not pre_gtb["human_tasks"] %}
+{% if not preflight["human_tasks"] %}
 - none
 {% endif %}
 
-{% for build in builds %}
+{% for build in inflight %}
 ## Build {{ build['buildnum'] }} {% if build['aborted'] %} :bomb: _aborted release. starting new build num_ :bomb:{% endif %} 
-
 
 ### Beta Graph
 {% if build['graphid'] %}
