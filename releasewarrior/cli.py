@@ -50,22 +50,6 @@ def generate_tracking_data(release, logger, config):
 
     return data
 
-def load_release_data(release, logger, config, build_started=True):
-    logger.info("loading current release data")
-    release_file = "{}-{}-{}.json".format(release.product, release.branch, release.version)
-    release_path = config['releases']["upcoming"][release.product]
-
-    if build_started:
-        release_path = config['releases']["inflight"][release.product]
-
-    abs_release_path = os.path.join(
-        config['release_pipeline_repo'],
-        release_path, release_file
-    )
-    data = load_json(abs_release_path)
-
-    return data
-
 
 def generate_wiki(data, release, logger, config):
     logger.info("generating wiki from template and config")
@@ -81,11 +65,7 @@ def generate_wiki(data, release, logger, config):
     return template.render(**data)
 
 
-def write_data(path, content, release, logger, config):
-    data_path = os.path.join(
-        path, "{}-{}-{}.json".format(release.product, release.branch, release.version)
-    )
-
+def write_data(data_path, content, release, logger, config):
     logger.info("writing to data file: %s", data_path)
     with open(data_path, 'w') as data_file:
         json.dump(content, data_file, indent=4, sort_keys=True)
@@ -93,11 +73,7 @@ def write_data(path, content, release, logger, config):
     return data_path
 
 
-def write_wiki(path, content, release, logger, config):
-    wiki_path = os.path.join(
-        path, "{}-{}-{}.md".format(release.product, release.branch, release.version)
-    )
-
+def write_wiki(wiki_path, content, release, logger, config):
     logger.info("writing to wiki file: %s", wiki_path)
     with open(wiki_path, 'w') as wp:
         wp.write(content)
@@ -130,9 +106,9 @@ def generate_prereq_from_input():
 def update_prereq_tasks(data, resolve):
     data = deepcopy(data)
     if resolve:
-        for id in resolve:
+        for _id in resolve:
             # 0 based index so -1
-            id = int(id) - 1
+            _id = int(_id) - 1
             data["preflight"]["human_tasks"][int(id)]["resolved"] = True
     else:
         # create a new prerequisite task through interactive inputs
@@ -174,10 +150,9 @@ def track(product, version, date, logger=LOGGER, config=CONFIG):
 
     release = Release(product=product, version=version, branch=branch, date=date)
 
-    upcoming_path = os.path.join(config['release_pipeline_repo'],
-                                 config['releases']["upcoming"][release.product])
-    commit_msg = "Started tracking of {} {} release. Created wiki and data file".format(product,
-                                                                                        version)
+    data_path, wiki_path = get_release_files(release, logger, config)
+
+    commit_msg = "{} {} started tracking upcoming release.".format(product, version)
 
     # validate we can exec the command call
     validate_track(release, logger, config)
@@ -187,11 +162,11 @@ def track(product, version, date, logger=LOGGER, config=CONFIG):
 
     # track the release
     wiki = generate_wiki(data, release, logger, config)
-    data_file = write_data(upcoming_path, data, release, logger, config)
-    wiki_file = write_wiki(upcoming_path, wiki, release, logger, config)
-    logger.info(data_file)
-    logger.info(wiki_file)
-    # commit([data_file, wiki_file], commit_msg, logger, config)
+    data_path = write_data(data_path, data, release, logger, config)
+    wiki_path = write_wiki(wiki_path, wiki, release, logger, config)
+    logger.info(data_path)
+    logger.info(wiki_path)
+    commit([data_path, wiki_path], commit_msg, logger, config)
 
 
 @cli.command()
@@ -205,22 +180,99 @@ def prereq(product, version, resolve, logger=LOGGER, config=CONFIG):
 
     release = Release(product=product, version=version, branch=branch, date=None)
 
-    upcoming_path = os.path.join(config['release_pipeline_repo'],
-                                 config['releases']["upcoming"][release.product])
+    data_path, wiki_path = get_release_files(release, logger, config)
+
     resolve_msg = "Resolved {}".format(resolve) if resolve else ""
-    commit_msg = "Updated {} {} prerequisites. {}".format(product, version, resolve_msg)
+    commit_msg = "{} {} - updated prerequisites. {}".format(product, version, resolve_msg)
 
     # validate we can exec the command call
     validate_track(release, logger, config)
 
     # determine release data
-    data = load_release_data(release, logger, config, build_started=False)
+    data = load_json(data_path)
     data = update_prereq_tasks(data, resolve)
 
     # update the release
     wiki = generate_wiki(data, release, logger, config)
-    data_file = write_data(upcoming_path, data, release, logger, config)
-    wiki_file = write_wiki(upcoming_path, wiki, release, logger, config)
-    logger.info(data_file)
-    logger.info(wiki_file)
-    # commit([data_file, wiki_file], commit_msg, logger, config)
+    data_path = write_data(data_path, data, release, logger, config)
+    wiki_path = write_wiki(wiki_path, wiki, release, logger, config)
+    logger.info(data_path)
+    logger.info(wiki_path)
+    commit([data_path, wiki_path], commit_msg, logger, config)
+
+
+def get_release_files(release, logging, config):
+    upcoming_path = os.path.join(config['release_pipeline_repo'],
+                                 config['releases']['upcoming'][release.product])
+    inflight_path = os.path.join(config['release_pipeline_repo'],
+                                 config['releases']['inflight'][release.product])
+    data_file = "{}-{}-{}.json".format(release.product, release.branch, release.version)
+    wiki_file = "{}-{}-{}.md".format(release.product, release.branch, release.version)
+    release_path = upcoming_path
+    if os.path.exists(os.path.join(inflight_path, data_file)):
+        release_path = inflight_path
+    return [
+        os.path.join(release_path, data_file),
+        os.path.join(release_path, wiki_file)
+    ]
+
+
+
+@cli.command()
+@click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
+@click.argument('version')
+@click.option('--graphid', multiple=True)
+def newbuild(product, version, graphid, logger=LOGGER, config=CONFIG):
+    """add or update a pre requisite (pre gtb) human task
+    """
+    branch = get_branch(version)
+
+    release = Release(product=product, version=version, branch=branch, date=None)
+
+    data_path, wiki_path = get_release_files(release, logger, config)
+
+    graphid_msg = "Graphids: {}".format(graphid) if graphid else ""
+    commit_msg = "{} {} - new buildnum started. ".format(product, version, graphid_msg)
+
+    # validate we can exec the command call
+    validate_track(release, logger, config)
+
+
+    # determine release data
+    data = load_json(data_path)
+
+    is_first_gtb = "upcoming" in data_path
+    if is_first_gtb:
+        #   delete json and md files from upcoming dir, and set new dest paths to be inflight
+        repo = Repo(config['release_pipeline_repo'])
+        inflight_dir = os.path.join(config['release_pipeline_repo'],
+                                    config['releases']['inflight'][release.product])
+        moved_files = repo.index.move([data_path, wiki_path, inflight_dir])
+        # set data and wiki paths to new dest (inflight) dir
+        # moved_files is a list of tuples representing [files_moved][destination_location]
+        data_path = os.path.join(config['release_pipeline_repo'], moved_files[0][1])
+        wiki_path = os.path.join(config['release_pipeline_repo'], moved_files[1][1])
+    else:
+        #  kill latest buildnum add new buildnum based most recent buildnum
+        logger.info("most recent buildnum has been aborted, starting a new buildnum")
+        newbuild = deepcopy(data["inflight"][-1])
+        # abort the now previous buildnum
+        data["inflight"][-1]["aborted"] = True
+        for task in newbuild["human_tasks"]:
+            # reset all tasks to unresolved
+            task["resolved"] = False
+        # reset issues
+        newbuild["issues"] = []
+        # increment buildnum
+        newbuild["buildnum"] = newbuild["buildnum"] + 1
+        # add new buildnum based on previous to current release
+        data["inflight"].append(newbuild)
+    data["inflight"][-1]["graphids"] = [_id for _id in graphid]
+
+    # update the release
+    wiki = generate_wiki(data, release, logger, config)
+    data_path = write_data(data_path, data, release, logger, config)
+    wiki_path = write_wiki(wiki_path, wiki, release, logger, config)
+    logger.info(data_path)
+    logger.info(wiki_path)
+    commit([data_path, wiki_path], commit_msg, logger, config)
