@@ -2,6 +2,7 @@ import os
 import collections
 import json
 from copy import deepcopy
+import getpass
 
 import click
 import arrow
@@ -16,9 +17,10 @@ from releasewarrior.helpers import get_logger
 LOGGER = get_logger()
 CONFIG = get_config()
 
-Release = collections.namedtuple('Release', 'product, version, branch, date')
+Release = collections.namedtuple('Release', 'product, version, branch')
 PrerequisiteTask = collections.namedtuple('PrerequisiteTask', 'bug, deadline, description, resolved')
 InflightTask = collections.namedtuple('InflightTask', 'position, description, docs, resolved')
+Issue = collections.namedtuple('Issue', 'who, bug, description, resolved, future_threat')
 
 
 def get_branch(version):
@@ -32,12 +34,8 @@ def validate(release, logger, config):
     # TODO sanity check if local release-pipeline repo is behind upstream
     pass
 
-def validate_track(release, logger, config):
-    validate(release, logger, config)
-    # TODO ensure release doesn't already exist
-    pass
 
-def generate_tracking_data(release, logger, config):
+def generate_tracking_data(release, gtb_date, logger, config):
     logger.info("generating data from template and config")
 
     data_template = os.path.join(
@@ -48,7 +46,7 @@ def generate_tracking_data(release, logger, config):
     data = load_json(data_template)
 
     data["version"] = release.version
-    data["date"] = release.date
+    data["date"] = gtb_date
 
     return data
 
@@ -113,6 +111,13 @@ def generate_prereq_task_from_input():
     return PrerequisiteTask(bug, deadline, description, resolved=False)
 
 
+def generate_inflight_issue_from_input():
+    who = getpass.getuser()
+    bug = click.prompt('Bug number if exists', type=str, default="no bug")
+    description = click.prompt('Description of issue', type=str)
+    return Issue(who, bug, description, resolved=False, future_threat=False)
+
+
 def update_inflight_human_tasks(data, resolve, logger):
     data = deepcopy(data)
     if resolve:
@@ -161,6 +166,25 @@ def update_prereq_human_tasks(data, resolve):
     return data
 
 
+def update_inflight_issue(data, resolve):
+    data = deepcopy(data)
+    if resolve:
+        for issue_id in resolve:
+            # 0 based index so -1
+            issue_id = int(issue_id) - 1
+            data["inflight"][-1]["issues"][issue_id]["resolved"] = True
+    else:
+        # create a new issueuisite task through interactive inputs
+        new_issue = generate_inflight_issue_from_input()
+        data["inflight"][-1]["issues"].append(
+            {
+                "who": new_issue.who, "bug": new_issue.bug, "description": new_issue.description,
+                "resolved": False, "future_threat": True
+            }
+        )
+    return data
+
+
 def get_release_files(release, logging, config):
     upcoming_path = os.path.join(config['release_pipeline_repo'],
                                  config['releases']['upcoming'][release.product])
@@ -177,6 +201,22 @@ def get_release_files(release, logging, config):
     ]
 
 
+def get_release_info(product, version, logger, config):
+    branch = get_branch(version)
+    release = Release(product=product, version=version, branch=branch)
+    data_path, wiki_path = get_release_files(release, logger, config)
+    return release, data_path, wiki_path
+
+
+def write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config):
+    wiki = generate_wiki(data, release, logger, config)
+    data_path = write_data(data_path, data, release, logger, config)
+    wiki_path = write_wiki(wiki_path, wiki, release, logger, config)
+    logger.info(data_path)
+    logger.info(wiki_path)
+    commit([data_path, wiki_path], commit_msg, logger, config)
+
+
 @click.group()
 def cli():
     """Releasewarrior: helping you keep track of releases in flight
@@ -189,29 +229,22 @@ def cli():
     \tESRs: must have an 'esr' within string\n
     """
     pass
-
-
 @cli.command()
 @click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
 @click.argument('version')
-@click.option('--date', help="date of planned GTB. format: YYYY-MM-DD")
-def track(product, version, date=arrow.now('US/Pacific').format("YYYY-MM-DD"), logger=LOGGER, config=CONFIG):
+@click.option('--gtb-date', help="date of planned GTB. format: YYYY-MM-DD")
+def track(product, version, gtb_date=arrow.now('US/Pacific').format("YYYY-MM-DD"), logger=LOGGER, config=CONFIG):
     """start tracking an upcoming release.
     """
-    branch = get_branch(version)
-    release = Release(product=product, version=version, branch=branch, date=date)
-    data_path, wiki_path = get_release_files(release, logger, config)
-    validate_track(release, logger, config)
+    release, data_path, wiki_path = get_release_info(product, version, logger, config)
+    data = {}
+    # TODO ensure release doesn't already exist
+    validate(release, logger, config)
 
     commit_msg = "{} {} started tracking upcoming release.".format(product, version)
-    data = generate_tracking_data(release, logger, config)
+    data = generate_tracking_data(release, gtb_date, logger, config)
 
-    wiki = generate_wiki(data, release, logger, config)
-    data_path = write_data(data_path, data, release, logger, config)
-    wiki_path = write_wiki(wiki_path, wiki, release, logger, config)
-    logger.info(data_path)
-    logger.info(wiki_path)
-    commit([data_path, wiki_path], commit_msg, logger, config)
+    write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config)
 
 
 @cli.command()
@@ -222,22 +255,16 @@ def prereq(product, version, resolve, logger=LOGGER, config=CONFIG):
     """Add or resolve a prerequisite (pre gtb)
     Without any arguments or options, you will be prompted to add a prerequisite human task
     """
-    branch = get_branch(version)
-    release = Release(product=product, version=version, branch=branch, date=None)
-    data_path, wiki_path = get_release_files(release, logger, config)
-    validate_track(release, logger, config)
+    release, data_path, wiki_path = get_release_info(product, version, logger, config)
+    data = load_json(data_path)
+    # TODO ensure release exists in upcoming dir
+    validate(release, logger, config)
 
     resolve_msg = "Resolved {}".format(resolve) if resolve else ""
     commit_msg = "{} {} - updated prerequisites. {}".format(product, version, resolve_msg)
-    data = load_json(data_path)
     data = update_prereq_human_tasks(data, resolve)
 
-    wiki = generate_wiki(data, release, logger, config)
-    data_path = write_data(data_path, data, release, logger, config)
-    wiki_path = write_wiki(wiki_path, wiki, release, logger, config)
-    logger.info(data_path)
-    logger.info(wiki_path)
-    commit([data_path, wiki_path], commit_msg, logger, config)
+    write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config)
 
 
 @cli.command()
@@ -249,15 +276,13 @@ def newbuild(product, version, graphid, logger=LOGGER, config=CONFIG):
     If this is the first buildnum, move the release from upcoming dir to inflight
     Otherwise, increment the buildnum of the already current inflight release
     """
-    branch = get_branch(version)
-    release = Release(product=product, version=version, branch=branch, date=None)
-    data_path, wiki_path = get_release_files(release, logger, config)
-    validate_track(release, logger, config)
+    release, data_path, wiki_path = get_release_info(product, version, logger, config)
+    data = load_json(data_path)
+    validate(release, logger, config)
 
     graphid_msg = "Graphids: {}".format(graphid) if graphid else ""
     commit_msg = "{} {} - new buildnum started. ".format(product, version, graphid_msg)
 
-    data = load_json(data_path)
 
     is_first_gtb = "upcoming" in data_path
     if is_first_gtb:
@@ -289,12 +314,7 @@ def newbuild(product, version, graphid, logger=LOGGER, config=CONFIG):
         data["inflight"].append(newbuild)
     data["inflight"][-1]["graphids"] = [_id for _id in graphid]
 
-    wiki = generate_wiki(data, release, logger, config)
-    data_path = write_data(data_path, data, release, logger, config)
-    wiki_path = write_wiki(wiki_path, wiki, release, logger, config)
-    logger.info(data_path)
-    logger.info(wiki_path)
-    commit([data_path, wiki_path], commit_msg, logger, config)
+    write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config)
 
 
 # TODO include valid aliases
@@ -304,23 +324,40 @@ def newbuild(product, version, graphid, logger=LOGGER, config=CONFIG):
 @click.argument('version')
 @click.option('--resolve', multiple=True, help="inflight human task id or alias to resolve.")
 def task(product, version, resolve, logger=LOGGER, config=CONFIG):
-    """Add or resolve a human task in the lasted buildnum
+    """Add or resolve a human task within current buildnum
     Without any arguments or options, you will be prompted to add a task
     """
-    branch = get_branch(version)
-    release = Release(product=product, version=version, branch=branch, date=None)
-    data_path, wiki_path = get_release_files(release, logger, config)
-    validate_track(release, logger, config)
+    release, data_path, wiki_path = get_release_info(product, version, logger, config)
+    data = load_json(data_path)
+    validate(release, logger, config)
 
     resolve_msg = "Resolved {}".format(resolve) if resolve else ""
     commit_msg = "{} {} - updated inflight tasks. {}".format(product, version, resolve_msg)
-    data = load_json(data_path)
     data = update_inflight_human_tasks(data, resolve, logger)
 
-    # update the release
-    wiki = generate_wiki(data, release, logger, config)
-    data_path = write_data(data_path, data, release, logger, config)
-    wiki_path = write_wiki(wiki_path, wiki, release, logger, config)
-    logger.info(data_path)
-    logger.info(wiki_path)
-    commit([data_path, wiki_path], commit_msg, logger, config)
+    write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config)
+
+
+
+@cli.command()
+@click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
+@click.argument('version')
+@click.option('--resolve', help="inflight issue to resolve")
+def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
+    """Add or resolve a issue against current buildnum
+    Without any arguments or options, you will be prompted to add an issue
+    """
+    release, data_path, wiki_path = get_release_info(product, version, logger, config)
+    data = load_json(data_path)
+    validate(release, logger, config)
+
+    resolve_msg = "Resolved {}".format(resolve) if resolve else ""
+    commit_msg = "{} {} - updated inflight issue. {}".format(product, version, resolve_msg)
+    data = update_inflight_issue(data, resolve)
+
+    write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config)
+
+# TODO status
+# TODO upcoming
+# TODO postmortem
+# TODO cancel

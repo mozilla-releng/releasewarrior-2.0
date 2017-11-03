@@ -31,7 +31,7 @@ task graph url: unknown
 | Who                 | ID               | Bug                                                                 | Descripiton                | Blocking Release        | Future Threat                |
 | ------------------- | ---------------- | ------------------------------------------------------------------- | -------------------------- | ----------------------- | ---------------------------- |
 {% for issue in build['issues'] %}
-| {{ issue["who"] }}  | {{ loop.index }} | [bug {{ issue["bug"] }}](http://bugzilla/{{ issue["bug"] }})        | {{ issue["description"] }} | {{ issue["blocking"] }} | {{ issue["future_threat"] }} |
+| {{ issue["who"] }}  | {{ loop.index }} | [bug {{ issue["bug"] }}](http://bugzilla/{{ issue["bug"] }})        | {{ issue["description"] }} | {{ issue["resolved"] }} | {{ issue["future_threat"] }} |
 {% endfor %}
 {% if not build["issues"] %}
 | none | | | | | |
