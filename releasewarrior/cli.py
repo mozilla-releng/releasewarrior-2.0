@@ -135,7 +135,7 @@ def update_inflight_human_tasks(data, resolve, logger):
     else:
         logger.info("Current existing inflight tasks:")
         for index, task in enumerate(data["inflight"][-1]["human_tasks"]):
-            logger.info("ID: {} - {}".format(index + 1, task["description"]))
+            logger.info("ID: %s - %s", index + 1, task["description"])
         # create a new inflight human task through interactive inputs
         new_human_task = generate_inflight_task_from_input()
         data["inflight"][-1]["human_tasks"].insert(new_human_task.position,
@@ -212,8 +212,8 @@ def write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, co
     wiki = generate_wiki(data, release, logger, config)
     data_path = write_data(data_path, data, release, logger, config)
     wiki_path = write_wiki(wiki_path, wiki, release, logger, config)
-    logger.info(data_path)
-    logger.info(wiki_path)
+    logger.debug(data_path)
+    logger.debug(wiki_path)
     commit([data_path, wiki_path], commit_msg, logger, config)
 
 
@@ -357,7 +357,73 @@ def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
 
     write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config)
 
-# TODO status
-# TODO upcoming
+
+def get_incomplete_releases(config, logger, inflight=True):
+    logger.info("getting incomplete releases")
+    for inflight_path in config['releases']['inflight' if inflight else 'upcoming'].values():
+        search_dir = os.path.join(config['release_pipeline_repo'], inflight_path)
+        for root, dirs, files in os.walk(search_dir):
+            for f in [data_file for data_file in files if data_file.endswith(".json")]:
+                abs_f = os.path.join(search_dir, f)
+                with open(abs_f) as data_f:
+                    data = json.load(data_f)
+                    if inflight:
+                        tasks = data["inflight"][-1]["human_tasks"]
+                    else:
+                        tasks = data["preflight"]["human_tasks"]
+                    if not all(task["resolved"] for task in tasks):
+                        # this release is complete!
+                        yield data
+
+
+def get_remaining_items(items):
+    for item in items:
+        if not item["resolved"]:
+            yield item
+
+
+@cli.command()
+def status(logger=LOGGER, config=CONFIG):
+    """Add or resolve a issue against current buildnum
+    Without any arguments or options, you will be prompted to add an issue
+    """
+    incomplete_releases = get_incomplete_releases(config, logger)
+    for release in incomplete_releases:
+        current_build = release["inflight"][-1]
+        remaining_tasks = get_remaining_items(current_build["human_tasks"])
+        remaining_issues = get_remaining_items(current_build["issues"])
+
+        logger.info("=" * 79)
+        logger.info("RELEASE IN FLIGHT: %s %s build%s %s",
+                    release["product"], release["version"], current_build["buildnum"],
+                    release["date"])
+        for index, graphid in enumerate(current_build["graphids"]):
+            logger.info("Graph %s: https://tools.taskcluster.net/task-group-inspector/#/%s",
+                        index + 1, graphid)
+        logger.info("\tIncomplete human tasks:")
+        for task in remaining_tasks:
+            logger.info("\t\t* %s", task["description"])
+        logger.info("\tUnresolved issues:")
+        for issue in remaining_issues:
+            logger.info("\t\t* %s: %s", issue["bug"], issue["description"])
+
+
+@cli.command()
+def upcoming(logger=LOGGER, config=CONFIG):
+    """Add or resolve a issue against current buildnum
+    Without any arguments or options, you will be prompted to add an issue
+    """
+    upcoming_releases = get_incomplete_releases(config, logger, inflight=False)
+    upcoming_releases = sorted(upcoming_releases, key=lambda x: x["date"], reverse=True)
+    for release in upcoming_releases:
+        remaining_prereqs = get_remaining_items(release["preflight"]["human_tasks"])
+
+        logger.info("=" * 79)
+        logger.info("Upcoming Release: %s %s", release["product"], release["version"])
+        logger.info("Expected GTB: %s", release["date"])
+        logger.info("\tIncomplete prerequisites:")
+        for prereq in remaining_prereqs:
+            logger.info("\t\t* %s: %s", prereq["bug"], prereq["description"])
+
 # TODO postmortem
 # TODO cancel
