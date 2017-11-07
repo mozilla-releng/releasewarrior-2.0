@@ -1,5 +1,7 @@
 ### abs path of pipeline data repo
-release_pipeline_repo: /Users/jlund/devel/mozilla/repos/release-pipelines
+release_pipeline_repo: /Users/jlund/devel/mozilla/repos/releasewarrior-data
+upstream_repo_url_pattern: ((?:https|ssh)://|git@)github\.com[:/]mozilla-releng/releasewarrior-data(\.git)?
+simplified_repo_url: github.com/mozilla-releng/releasewarrior-data # Used only to simplify what's logged out###
 ###
 
 ###
@@ -62,4 +64,3 @@ templates:
 ### location of release cmd output artifacts
 releasewarrior_artifacts:
   logs: logs
-###

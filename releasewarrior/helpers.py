@@ -2,8 +2,11 @@ import logging
 import os
 import sys
 import json
-
+import re
 import yaml
+from git import Repo
+
+from releasewarrior.git import find_upstream_repo
 
 DEFAULT_CONFIG = os.path.join(
     os.path.abspath(os.path.join(os.path.realpath(__file__), '..', '..')),
@@ -25,7 +28,6 @@ def get_logger(verbose=False):
                         stream=sys.stdout,
                         level=log_level)
     logger = logging.getLogger("releasewarrior")
-    logger.setLevel(logging.DEBUG)
 
     return logger
 
@@ -43,3 +45,106 @@ def load_json(path):
         data.update(json.load(f))
     return data
 
+
+def get_remaining_items(items):
+    for index, item in enumerate(items):
+        item["id"] = index + 1
+        if not item["resolved"]:
+            yield item
+
+
+def get_branch(version, logger):
+    if bool(re.match("^\d+\.0rc$", version)):
+        return "release-rc"
+    elif bool(re.match("^(\d+\.\d(\.\d+)?)$", version)):
+        return "release"
+    elif bool(re.match("^\d+\.0b\d+$", version)):
+        return "beta"
+    elif bool(re.match("^(\d+\.\d(\.\d+)?esr)$", version)):
+        return "esr"
+    else:
+        logger.fatal("Couldn't determine branch based on version. See examples in version help")
+        sys.exit(1)
+
+
+def validate(release, logger, config, must_exist=False, must_exist_in=None):
+
+    passed = True
+
+    ### branch validation against product
+    # not critical so simply prevent basic mistakes
+    branch_validations = {
+        "devedition": release.branch in ['beta'],
+        "fennec": release.branch in ['beta', 'release'],
+        "firefox": release.branch in ['beta', 'release', 'release-rc', 'esr'],
+    }
+    if not branch_validations[release.product]:
+        logger.fatal("Conflict. Product: %s, can't be used with Branch: %s, determined by Version: %s",
+                     release.product, release.branch, release.version)
+        passed = False
+    ###
+
+    ### ensure release data file exists where expected
+    upcoming_path = os.path.join(config['release_pipeline_repo'],
+                                 config['releases']['upcoming'][release.product],
+                                 "{}-{}-{}.json".format(release.product, release.branch, release.version))
+    inflight_path = os.path.join(config['release_pipeline_repo'],
+                                 config['releases']['inflight'][release.product],
+                                 "{}-{}-{}.json".format(release.product, release.branch, release.version))
+    exists_in_upcoming = os.path.exists(upcoming_path)
+    exists_in_inflight = os.path.exists(inflight_path)
+    # TODO simplify these conditions
+    if must_exist:
+        if must_exist_in == "upcoming":
+            if not exists_in_upcoming:
+                logger.fatal("expected data file to exist in upcoming path: %s", upcoming_path)
+                passed = False
+            if exists_in_inflight:
+                logger.fatal("data file exists in inflight path and wasn't expected: %s", inflight_path)
+                passed = False
+        if must_exist_in == "inflight":
+            if not exists_in_inflight:
+                logger.fatal("expected data file to exist in inflight path: %s", inflight_path)
+                passed = False
+            if exists_in_upcoming:
+                logger.fatal("data file exists in upcoming path and wasn't expected: %s", upcoming_path)
+                passed = False
+        if not exists_in_upcoming and not exists_in_inflight:
+            logger.fatal("data file was expected to exist in either upcoming or inflight path: %s, %s",
+                         upcoming_path, inflight_path)
+            passed = False
+    else:
+        if exists_in_upcoming or exists_in_inflight:
+            logger.fatal("data file already exists in one of the following paths: %s, %s",
+                         upcoming_path, inflight_path)
+            passed = False
+    ###
+
+
+    ### data repo check
+    repo = Repo(config['release_pipeline_repo'])
+    if repo.is_dirty():
+        logger.warning("release data repo dirty")
+    upstream = find_upstream_repo(repo, logger, config)
+    # TODO - we should allow csets to exist locally that are not on remote.
+    logger.debug("ensuring releasewarrior repo is up to date and in sync with {}".format(upstream))
+    logger.debug('fetching new csets from {}/master'.format(upstream))
+    upstream.fetch()
+    commits_behind = list(repo.iter_commits('master..{}/master'.format(upstream)))
+    if commits_behind:
+        logger.fatal('local master is behind {}/master. aborting run to be safe.'.format(upstream))
+        passed = False
+    ###
+
+
+    ### ensure release directories exist
+    for state_dir in config['releases']:
+        for product in config['releases'][state_dir]:
+            os.makedirs(
+                os.path.join(config['release_pipeline_repo'], config['releases'][state_dir][product]),
+                exist_ok=True
+            )
+    os.makedirs(os.path.join(config['release_pipeline_repo'], config['postmortems']), exist_ok=True)
+    ###
+    if not passed:
+        sys.exit(1)
