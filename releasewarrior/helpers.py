@@ -13,6 +13,10 @@ DEFAULT_CONFIG = os.path.join(
     "releasewarrior/configs/config.yaml"
 )
 
+DEFAULT_LOGS_DIR = os.path.join(
+    os.path.abspath(os.path.join(os.path.realpath(__file__), '..', '..')), "logs"
+)
+
 DEFAULT_TEMPLATES_DIR = os.path.join(
     os.path.abspath(os.path.join(os.path.realpath(__file__), '..', '..')),
     "releasewarrior/templates"
@@ -24,10 +28,18 @@ def get_logger(verbose=False):
     if verbose:
         log_level = logging.DEBUG
 
+    os.makedirs(DEFAULT_LOGS_DIR, exist_ok=True)
+
     logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s",
-                        stream=sys.stdout,
+                        datefmt='%Y-%m-%d %H:%M',
+                        filename=os.path.join(DEFAULT_LOGS_DIR, 'releasewarrior.log'),
+                        filemode='a',
                         level=log_level)
     logger = logging.getLogger("releasewarrior")
+
+    console = logging.StreamHandler()
+    console.setFormatter(logging.Formatter('%(message)s'))
+    logging.getLogger('').addHandler(console)
 
     return logger
 
