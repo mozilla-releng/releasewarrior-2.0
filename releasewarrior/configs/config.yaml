@@ -46,19 +46,7 @@ templates:
       release: thunderbird/release.json.tmpl
   # output
   wiki:
-    firefox:
-      beta: firefox/beta.md.tmpl
-      rc: firefox/release-rc.md.tmpl
-      release: firefox/release.md.tmpl
-      esr: firefox/esr.md.tmpl
-    devedition:
-      devedition: firefox/devedition.md.tmpl
-    fennec:
-      beta: fennec/beta.md.tmpl
-      release: fennec/release.md.tmpl
-    thunderbird:
-      beta: thunderbird/beta.md.tmpl
-      release: thunderbird/release.md.tmpl
+    generic: markdown/generic.md.tmpl
 
 
 ### location of release cmd output artifacts

@@ -29,7 +29,7 @@ def generate_wiki(data, release, logger, config):
 
     # TODO convert issues to bugs
 
-    wiki_template = config['templates']["wiki"][release.product][release.branch]
+    wiki_template = config['templates']["wiki"]["generic"]
 
     env = Environment(loader=FileSystemLoader(config['templates_dir']),
                       undefined=StrictUndefined, trim_blocks=True)

@@ -1,4 +1,4 @@
-# Beta: Firefox {{ version }}
+# {{ product }} {{ version }}
 
 ### Date of go-to-build: {{ date }}
 
@@ -13,7 +13,7 @@
 {% for build in inflight %}
 ## Build {{ build['buildnum'] }} {% if build['aborted'] %} :bomb: _aborted release. starting new build num_ :bomb:{% endif %} 
 
-### Beta Graph
+### Graphs
 {% for graphid in build['graphids'] %}
 [task group](https://tools.taskcluster.net/push-inspector/#/{{ graphid }})
 {% endfor %}
