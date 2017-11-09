@@ -55,9 +55,9 @@ def write_wiki(wiki_path, content, release, logger, config):
 
 
 def get_release_files(release, logging, config):
-    upcoming_path = os.path.join(config['release_pipeline_repo'],
+    upcoming_path = os.path.join(config['releasewarrior_data_repo'],
                                  config['releases']['upcoming'][release.product])
-    inflight_path = os.path.join(config['release_pipeline_repo'],
+    inflight_path = os.path.join(config['releasewarrior_data_repo'],
                                  config['releases']['inflight'][release.product])
     data_file = "{}-{}-{}.json".format(release.product, release.branch, release.version)
     wiki_file = "{}-{}-{}.md".format(release.product, release.branch, release.version)
@@ -72,7 +72,7 @@ def get_release_files(release, logging, config):
 
 def get_incomplete_releases(config, inflight=True):
     for release_path in config['releases']['inflight' if inflight else 'upcoming'].values():
-        search_dir = os.path.join(config['release_pipeline_repo'], release_path)
+        search_dir = os.path.join(config['releasewarrior_data_repo'], release_path)
         for root, dirs, files in os.walk(search_dir):
             for f in [data_file for data_file in files if data_file.endswith(".json")]:
                 abs_f = os.path.join(search_dir, f)
@@ -114,15 +114,15 @@ def generate_newbuild_data(data, graphid, release, data_path, wiki_path, logger,
     is_first_gtb = "upcoming" in data_path
     if is_first_gtb:
         #   delete json and md files from upcoming dir, and set new dest paths to be inflight
-        repo = Repo(config['release_pipeline_repo'])
-        inflight_dir = os.path.join(config['release_pipeline_repo'],
+        repo = Repo(config['releasewarrior_data_repo'])
+        inflight_dir = os.path.join(config['releasewarrior_data_repo'],
                                     config['releases']['inflight'][release.product])
         moved_files = repo.index.move([data_path, wiki_path, inflight_dir])
         # set data and wiki paths to new dest (inflight) dir
         # moved_files is a list of tuples representing [files_moved][destination_location]
         # TODO
-        data_path = os.path.join(config['release_pipeline_repo'], moved_files[0][1])
-        wiki_path = os.path.join(config['release_pipeline_repo'], moved_files[1][1])
+        data_path = os.path.join(config['releasewarrior_data_repo'], moved_files[0][1])
+        wiki_path = os.path.join(config['releasewarrior_data_repo'], moved_files[1][1])
     else:
         #  kill latest buildnum add new buildnum based most recent buildnum
         logger.info("most recent buildnum has been aborted, starting a new buildnum")

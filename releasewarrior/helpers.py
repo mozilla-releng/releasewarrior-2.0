@@ -97,10 +97,10 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
     ###
 
     ### ensure release data file exists where expected
-    upcoming_path = os.path.join(config['release_pipeline_repo'],
+    upcoming_path = os.path.join(config['releasewarrior_data_repo'],
                                  config['releases']['upcoming'][release.product],
                                  "{}-{}-{}.json".format(release.product, release.branch, release.version))
-    inflight_path = os.path.join(config['release_pipeline_repo'],
+    inflight_path = os.path.join(config['releasewarrior_data_repo'],
                                  config['releases']['inflight'][release.product],
                                  "{}-{}-{}.json".format(release.product, release.branch, release.version))
     exists_in_upcoming = os.path.exists(upcoming_path)
@@ -134,7 +134,7 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
 
 
     ### data repo check
-    repo = Repo(config['release_pipeline_repo'])
+    repo = Repo(config['releasewarrior_data_repo'])
     if repo.is_dirty():
         logger.warning("release data repo dirty")
     upstream = find_upstream_repo(repo, logger, config)
@@ -153,10 +153,10 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
     for state_dir in config['releases']:
         for product in config['releases'][state_dir]:
             os.makedirs(
-                os.path.join(config['release_pipeline_repo'], config['releases'][state_dir][product]),
+                os.path.join(config['releasewarrior_data_repo'], config['releases'][state_dir][product]),
                 exist_ok=True
             )
-    os.makedirs(os.path.join(config['release_pipeline_repo'], config['postmortems']), exist_ok=True)
+    os.makedirs(os.path.join(config['releasewarrior_data_repo'], config['postmortems']), exist_ok=True)
     ###
     if not passed:
         sys.exit(1)

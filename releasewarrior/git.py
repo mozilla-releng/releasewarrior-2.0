@@ -22,7 +22,7 @@ def find_upstream_repo(repo, logger, config):
 def commit(files, msg, logger, config):
     logger.info("committing changes with message: %s", msg)
 
-    repo = Repo(config['release_pipeline_repo'])
+    repo = Repo(config['releasewarrior_data_repo'])
     repo.index.add(files)
 
     if not repo.index.diff("HEAD"):
