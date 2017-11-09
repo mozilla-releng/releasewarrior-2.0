@@ -33,7 +33,7 @@ templates:
   data:
     firefox:
       beta: firefox/beta.json.tmpl
-      rc: firefox/release-rc.json.tmpl
+      release-rc: firefox/release-rc.json.tmpl
       release: firefox/release.json.tmpl
       esr: firefox/esr.json.tmpl
     devedition:

@@ -38,7 +38,7 @@ def get_logger(verbose=False):
     logger = logging.getLogger("releasewarrior")
 
     console = logging.StreamHandler()
-    console.setFormatter(logging.Formatter('%(message)s'))
+    console.setFormatter(logging.Formatter('%(levelname)s: %(message)s'))
     logging.getLogger('').addHandler(console)
 
     return logger
@@ -139,7 +139,7 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
         logger.warning("release data repo dirty")
     upstream = find_upstream_repo(repo, logger, config)
     # TODO - we should allow csets to exist locally that are not on remote.
-    logger.debug("ensuring releasewarrior repo is up to date and in sync with {}".format(upstream))
+    logger.info("ensuring releasewarrior repo is up to date and in sync with {}".format(upstream))
     logger.debug('fetching new csets from {}/master'.format(upstream))
     upstream.fetch()
     commits_behind = list(repo.iter_commits('master..{}/master'.format(upstream)))

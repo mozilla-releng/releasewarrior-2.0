@@ -9,7 +9,7 @@ def generate_inflight_task_from_input():
     position = click.prompt('After which existing task should this new task be run? Use ID',
                             type=int, default=1)
     description = click.prompt('Description of the inflight task', type=str)
-    docs = click.prompt('Are there docs for this? Use a URL if possible.', type=str)
+    docs = click.prompt('Docs for this? Use a URL if possible', default="", type=str)
     return InflightTask(position, description, docs, resolved=False)
 
 

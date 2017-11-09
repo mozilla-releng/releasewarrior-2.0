@@ -3,13 +3,12 @@ import arrow
 
 from releasewarrior.helpers import get_config, load_json, validate, get_remaining_items
 from releasewarrior.helpers import get_logger
-from releasewarrior.wiki_data import get_tracking_release_data, write_and_commit, \
-    generate_newbuild_data, order_data
+from releasewarrior.wiki_data import get_tracking_release_data, write_and_commit, generate_newbuild_data
 from releasewarrior.wiki_data import update_prereq_human_tasks, get_release_info
 from releasewarrior.wiki_data import update_inflight_human_tasks, update_inflight_issue
 from releasewarrior.wiki_data import get_incomplete_releases
 
-LOGGER = get_logger(verbose=True)
+LOGGER = get_logger(verbose=False)
 CONFIG = get_config()
 
 
@@ -130,13 +129,57 @@ def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
 
 
 @cli.command()
+@click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
+@click.argument('version')
+def sync(product, version, logger=LOGGER, config=CONFIG):
+    release, data_path, wiki_path = get_release_info(product, version, logger, config)
+    validate(release, logger, config, must_exist=True, must_exist_in="inflight")
+    data = load_json(data_path)
+
+    commit_msg = "{} {} - syncing wiki with current data".format(product, version)
+
+    write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config)
+
+
+@cli.command()
 def status(logger=LOGGER, config=CONFIG):
     """Add or resolve a issue against current buildnum
     Without any options, you will be prompted to add an issue
     """
-    incomplete_releases = get_incomplete_releases(config, logger)
+    ###
+    # upcoming prerequisites
+    upcoming_releases = get_incomplete_releases(config, inflight=False)
+    upcoming_releases = sorted(upcoming_releases, key=lambda x: x["date"], reverse=True)
+    logger.info("UPCOMING RELEASES...")
+    if not upcoming_releases:
+        logger.info("=" * 79)
+        logger.info("[no upcoming releases with prerequisite tasks to do]")
+    for release in upcoming_releases:
+        remaining_prereqs = get_remaining_items(release["preflight"]["human_tasks"])
+
+        logger.info("=" * 79)
+        logger.info("Upcoming Release: %s %s", release["product"], release["version"])
+        logger.info("Expected GTB: %s", release["date"])
+        logger.info("\tIncomplete prerequisites:")
+        for prereq in remaining_prereqs:
+            logger.info("\t\t* ID: %s, deadline: %s, bug %s - %s", prereq['id'], prereq['deadline'],
+                        prereq["bug"], prereq["description"])
+
+    ###
+
+    ###
+    # releases in flight
+    incomplete_releases = get_incomplete_releases(config)
+    logger.info("")
+    logger.info("INFLIGHT RELEASES...")
+    if not incomplete_releases:
+        logger.info("=" * 79)
+        logger.info("no inflight releases with human tasks to do")
     for release in incomplete_releases:
-        current_build = release["inflight"][-1]
+        for build in release['inflight']:
+            if not build["aborted"]:
+                current_build = build
+                break
         remaining_tasks = get_remaining_items(current_build["human_tasks"])
         remaining_issues = get_remaining_items(current_build["issues"])
 
@@ -151,30 +194,12 @@ def status(logger=LOGGER, config=CONFIG):
         for task in remaining_tasks:
             alias = ""
             if task.get("alias"):
-                alias = " alias: {},".format(task["alias"])
-            logger.info("\t\t* ID: %s,%s Description: %s", task["id"], alias, task["description"])
+                alias = "(alias: {})".format(task["alias"])
+            logger.info("\t\t* ID %s %s - %s", task["id"], alias, task["description"])
         logger.info("\tUnresolved issues:")
         for issue in remaining_issues:
             logger.info("\t\t* ID: %s bug: %s - %s", issue["id"], issue["bug"], issue["description"])
-
-
-@cli.command()
-def upcoming(logger=LOGGER, config=CONFIG):
-    """Add or resolve a issue against current buildnum
-    Without any options, you will be prompted to add an issue
-    """
-    upcoming_releases = get_incomplete_releases(config, logger, inflight=False)
-    upcoming_releases = sorted(upcoming_releases, key=lambda x: x["date"], reverse=True)
-    for release in upcoming_releases:
-        remaining_prereqs = get_remaining_items(release["preflight"]["human_tasks"])
-
-        logger.info("=" * 79)
-        logger.info("Upcoming Release: %s %s", release["product"], release["version"])
-        logger.info("Expected GTB: %s", release["date"])
-        logger.info("\tIncomplete prerequisites:")
-        for prereq in remaining_prereqs:
-            logger.info("\t\t* ID: %s, deadline: %s, bug: %s - %s", prereq['id'], prereq['deadline'],
-                        prereq["bug"], prereq["description"])
+    ###
 
 # TODO postmortem
 # TODO cancel

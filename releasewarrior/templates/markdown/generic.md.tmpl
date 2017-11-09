@@ -24,7 +24,7 @@ task graph url: unknown
 
 #### Status
 {% for task in build["human_tasks"] %}
-- [{% if task['resolved'] %}x{% else %} {% endif %}] {{ loop.index }}. [ {{ task["description"] }}]({{ task["docs"] }}])
+- [{% if task['resolved'] %}x{% else %} {% endif %}] {{ loop.index }}. {% if task["docs"] %} [docs]({{ task["docs"] }}) {% endif %} - {{ task["description"] }}
 {% endfor %}
 
 ### Issues

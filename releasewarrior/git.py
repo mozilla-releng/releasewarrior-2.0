@@ -30,4 +30,4 @@ def commit(files, msg, logger, config):
 
     commit = repo.index.commit(msg)
     for patch in repo.commit("HEAD~1").diff(commit, create_patch=True):
-        logger.info(patch)
+        logger.debug(patch)

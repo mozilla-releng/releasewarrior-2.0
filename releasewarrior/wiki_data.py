@@ -70,8 +70,7 @@ def get_release_files(release, logging, config):
     ]
 
 
-def get_incomplete_releases(config, logger, inflight=True):
-    logger.info("getting incomplete releases")
+def get_incomplete_releases(config, inflight=True):
     for release_path in config['releases']['inflight' if inflight else 'upcoming'].values():
         search_dir = os.path.join(config['release_pipeline_repo'], release_path)
         for root, dirs, files in os.walk(search_dir):
@@ -80,11 +79,14 @@ def get_incomplete_releases(config, logger, inflight=True):
                 with open(abs_f) as data_f:
                     data = json.load(data_f)
                     if inflight:
-                        tasks = data["inflight"][-1]["human_tasks"]
+                        for build in data['inflight']:
+                            if not build["aborted"]:
+                                tasks = build["human_tasks"]
+                                break
                     else:
                         tasks = data["preflight"]["human_tasks"]
                     if not all(task["resolved"] for task in tasks):
-                        # this release is complete!
+                        # this release is incomplete!
                         yield data
 
 
@@ -133,7 +135,7 @@ def generate_newbuild_data(data, graphid, release, data_path, wiki_path, logger,
             # reset all tasks to unresolved
             task["resolved"] = False
         # carry forward only unresolved issues
-        newbuild["issues"] = get_remaining_items(newbuild["issues"])
+        newbuild["issues"] = [issue for issue in get_remaining_items(newbuild["issues"])]
         # increment buildnum
         newbuild["buildnum"] = newbuild["buildnum"] + 1
         # add new buildnum based on previous to current release
