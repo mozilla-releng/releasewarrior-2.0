@@ -92,7 +92,7 @@ def newbuild(product, version, graphid, logger=LOGGER, config=CONFIG):
 @cli.command()
 @click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
 @click.argument('version')
-@click.option('--resolve', multiple=True,help="inflight human task id or alias to resolve.")
+@click.option('--resolve', multiple=True, help="inflight human task id or alias to resolve.")
 def task(product, version, resolve, logger=LOGGER, config=CONFIG):
     """Add or resolve a human task within current buildnum
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
@@ -112,7 +112,7 @@ def task(product, version, resolve, logger=LOGGER, config=CONFIG):
 @cli.command()
 @click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
 @click.argument('version')
-@click.option('--resolve', help="inflight issue to resolve")
+@click.option('--resolve', multiple=True, help="inflight issue to resolve")
 def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
     """Add or resolve a issue against current buildnum
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr

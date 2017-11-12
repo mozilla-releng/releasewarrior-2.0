@@ -34,8 +34,6 @@ def get_current_build_index(release):
 def generate_wiki(data, release, logger, config):
     logger.info("generating wiki from template and config")
 
-    # TODO convert issues to bugs
-
     wiki_template = config['templates']["wiki"]["generic"]
 
     env = Environment(loader=FileSystemLoader(config['templates_dir']),
@@ -116,7 +114,13 @@ def write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, co
 
 def generate_newbuild_data(data, graphid, release, data_path, wiki_path, logger, config):
     is_first_gtb = "upcoming" in data_path
+    current_build_index = get_current_build_index(data)
     if is_first_gtb:
+        # resolve shipit task
+        for index, task in enumerate(data["inflight"][current_build_index]["human_tasks"]):
+            if task["alias"] == "shipit":
+                data["inflight"][current_build_index]["human_tasks"][index]["resolved"] = True
+
         #   delete json and md files from upcoming dir, and set new dest paths to be inflight
         repo = Repo(config['releasewarrior_data_repo'])
         inflight_dir = os.path.join(config['releasewarrior_data_repo'],
@@ -130,7 +134,6 @@ def generate_newbuild_data(data, graphid, release, data_path, wiki_path, logger,
     else:
         #  kill latest buildnum add new buildnum based most recent buildnum
         logger.info("most recent buildnum has been aborted, starting a new buildnum")
-        current_build_index = get_current_build_index(data)
         newbuild = deepcopy(data["inflight"][current_build_index])
         # abort the now previous buildnum
         data["inflight"][current_build_index]["aborted"] = True
@@ -220,9 +223,11 @@ def update_inflight_issue(data, resolve, logger):
     if resolve:
         for issue_id in resolve:
             # 0 based index so -1
-            issue_id = int(issue_id) - 1
-            data["inflight"][current_build_index]["issues"][issue_id]["resolved"] = True
-            data["inflight"][current_build_index]["issues"][issue_id]["future_threat"] = is_future_threat_input()
+            issue_index = int(issue_id) - 1
+            logger.info("resolving issue %s - %s", issue_id,
+                        data["inflight"][current_build_index]["issues"][issue_index]["description"])
+            data["inflight"][current_build_index]["issues"][issue_index]["resolved"] = True
+            data["inflight"][current_build_index]["issues"][issue_index]["future_threat"] = is_future_threat_input()
 
     else:
         # create a new issueuisite task through interactive inputs
