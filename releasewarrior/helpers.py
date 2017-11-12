@@ -65,18 +65,30 @@ def get_remaining_items(items):
             yield item
 
 
-def get_branch(version, logger):
+def get_branch(version, product, logger):
+    passed = True
+    branch = ""
+
     if bool(re.match("^\d+\.0rc$", version)):
-        return "release-rc"
+        branch = "release-rc"
     elif bool(re.match("^(\d+\.\d(\.\d+)?)$", version)):
-        return "release"
+        if product == "firefox" and bool(re.match("^(\d+\.\d+)$", version)):
+            passed = False
+            logger.fatal("This release doesn't look like a dot release. Was it meant to be a release-candidate?")
+            logger.fatal("Include rc at the end of the `%s` for release-candidates", version)
+        else:
+            branch = "release"
     elif bool(re.match("^\d+\.0b\d+$", version)):
-        return "beta"
+        branch = "beta"
     elif bool(re.match("^(\d+\.\d(\.\d+)?esr)$", version)):
-        return "esr"
+        branch = "esr"
     else:
+        passed = False
         logger.fatal("Couldn't determine branch based on version. See examples in version help")
+
+    if not passed:
         sys.exit(1)
+    return branch
 
 
 def validate(release, logger, config, must_exist=False, must_exist_in=None):
@@ -105,7 +117,7 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
                                  "{}-{}-{}.json".format(release.product, release.branch, release.version))
     exists_in_upcoming = os.path.exists(upcoming_path)
     exists_in_inflight = os.path.exists(inflight_path)
-    # TODO simplify these conditions
+    # TODO simplify and clean up these conditions
     if must_exist:
         if must_exist_in == "upcoming":
             if not exists_in_upcoming:
@@ -114,17 +126,18 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
             if exists_in_inflight:
                 logger.fatal("data file exists in inflight path and wasn't expected: %s", inflight_path)
                 passed = False
-        if must_exist_in == "inflight":
+        elif must_exist_in == "inflight":
             if not exists_in_inflight:
                 logger.fatal("expected data file to exist in inflight path: %s", inflight_path)
                 passed = False
             if exists_in_upcoming:
                 logger.fatal("data file exists in upcoming path and wasn't expected: %s", upcoming_path)
                 passed = False
-        if not exists_in_upcoming and not exists_in_inflight:
-            logger.fatal("data file was expected to exist in either upcoming or inflight path: %s, %s",
-                         upcoming_path, inflight_path)
-            passed = False
+        else:
+            if not exists_in_upcoming and not exists_in_inflight:
+                logger.fatal("data file was expected to exist in either upcoming or inflight path: %s, %s",
+                             upcoming_path, inflight_path)
+                passed = False
     else:
         if exists_in_upcoming or exists_in_inflight:
             logger.fatal("data file already exists in one of the following paths: %s, %s",

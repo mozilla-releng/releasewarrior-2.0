@@ -6,7 +6,7 @@ from copy import deepcopy
 from git import Repo
 from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
-from releasewarrior.click_input import generate_inflight_task_from_input
+from releasewarrior.click_input import generate_inflight_task_from_input, is_future_threat_input
 from releasewarrior.click_input import generate_prereq_task_from_input
 from releasewarrior.click_input import generate_inflight_issue_from_input
 from releasewarrior.collections import Release
@@ -22,6 +22,13 @@ def order_data(data):
     builds = data["inflight"]
     data["inflight"] = sorted(builds, key=lambda x: x["buildnum"], reverse=True)
     return data
+
+
+def get_current_build_index(release):
+    for index, build in enumerate(release['inflight']):
+        if not build["aborted"]:
+            return index
+    return None
 
 
 def generate_wiki(data, release, logger, config):
@@ -70,7 +77,7 @@ def get_release_files(release, logging, config):
     ]
 
 
-def get_incomplete_releases(config, inflight=True):
+def get_incomplete_releases(config, logger, inflight=True):
     for release_path in config['releases']['inflight' if inflight else 'upcoming'].values():
         search_dir = os.path.join(config['releasewarrior_data_repo'], release_path)
         for root, dirs, files in os.walk(search_dir):
@@ -79,10 +86,7 @@ def get_incomplete_releases(config, inflight=True):
                 with open(abs_f) as data_f:
                     data = json.load(data_f)
                     if inflight:
-                        for build in data['inflight']:
-                            if not build["aborted"]:
-                                tasks = build["human_tasks"]
-                                break
+                         tasks = data["inflight"][get_current_build_index(data)]["human_tasks"]
                     else:
                         tasks = data["preflight"]["human_tasks"]
                     if not all(task["resolved"] for task in tasks):
@@ -91,7 +95,7 @@ def get_incomplete_releases(config, inflight=True):
 
 
 def get_release_info(product, version, logger, config):
-    branch = get_branch(version, logger)
+    branch = get_branch(version, product, logger)
     release = Release(product=product, version=version, branch=branch)
     data_path, wiki_path = get_release_files(release, logger, config)
     logger.debug("release info: %s", release)
@@ -126,9 +130,10 @@ def generate_newbuild_data(data, graphid, release, data_path, wiki_path, logger,
     else:
         #  kill latest buildnum add new buildnum based most recent buildnum
         logger.info("most recent buildnum has been aborted, starting a new buildnum")
-        newbuild = deepcopy(data["inflight"][-1])
+        current_build_index = get_current_build_index(data)
+        newbuild = deepcopy(data["inflight"][current_build_index])
         # abort the now previous buildnum
-        data["inflight"][-1]["aborted"] = True
+        data["inflight"][current_build_index]["aborted"] = True
         for task in newbuild["human_tasks"]:
             if task["alias"] == "shipit":
                 continue  # leave submitted to shipit as resolved
@@ -140,7 +145,8 @@ def generate_newbuild_data(data, graphid, release, data_path, wiki_path, logger,
         newbuild["buildnum"] = newbuild["buildnum"] + 1
         # add new buildnum based on previous to current release
         data["inflight"].append(newbuild)
-    data["inflight"][-1]["graphids"] = [_id for _id in graphid]
+    current_build_index = get_current_build_index(data)
+    data["inflight"][current_build_index]["graphids"] = [_id for _id in graphid]
 
     return data, data_path, wiki_path
 
@@ -159,30 +165,33 @@ def get_tracking_release_data(release, gtb_date, logger, config):
 
 def update_inflight_human_tasks(data, resolve, logger):
     data = deepcopy(data)
+    current_build_index = get_current_build_index(data)
     if resolve:
         for human_task_id in resolve:
             # attempt to use id as alias
-            for index, task in enumerate(data["inflight"][-1]["human_tasks"]):
+            for index, task in enumerate(data["inflight"][current_build_index]["human_tasks"]):
                 if human_task_id == task['alias']:
-                    data["inflight"][-1]["human_tasks"][index]["resolved"] = True
+                    data["inflight"][current_build_index]["human_tasks"][index]["resolved"] = True
                     break
             else:
                 # use id as index
                 # 0 based index so -1
                 human_task_id = int(human_task_id) - 1
-                data["inflight"][-1]["human_tasks"][human_task_id]["resolved"] = True
+                data["inflight"][current_build_index]["human_tasks"][human_task_id]["resolved"] = True
     else:
         logger.info("Current existing inflight tasks:")
-        for index, task in enumerate(data["inflight"][-1]["human_tasks"]):
+        for index, task in enumerate(data["inflight"][current_build_index]["human_tasks"]):
             logger.info("ID: %s - %s", index + 1, task["description"])
         # create a new inflight human task through interactive inputs
         new_human_task = generate_inflight_task_from_input()
-        data["inflight"][-1]["human_tasks"].insert(new_human_task.position,
-                                                   {
-                                                       "alias": "", "description": new_human_task.description,
-                                                       "docs": new_human_task.docs, "resolved": False
-                                                   }
-                                                   )
+        data["inflight"][current_build_index]["human_tasks"].insert(
+            new_human_task.position,
+            {
+                "alias": "", "description": new_human_task.description,
+                "docs": new_human_task.docs, "resolved": False
+            }
+        )
+
     return data
 
 
@@ -205,17 +214,20 @@ def update_prereq_human_tasks(data, resolve):
     return data
 
 
-def update_inflight_issue(data, resolve):
+def update_inflight_issue(data, resolve, logger):
     data = deepcopy(data)
+    current_build_index = get_current_build_index(data)
     if resolve:
         for issue_id in resolve:
             # 0 based index so -1
             issue_id = int(issue_id) - 1
-            data["inflight"][-1]["issues"][issue_id]["resolved"] = True
+            data["inflight"][current_build_index]["issues"][issue_id]["resolved"] = True
+            data["inflight"][current_build_index]["issues"][issue_id]["future_threat"] = is_future_threat_input()
+
     else:
         # create a new issueuisite task through interactive inputs
         new_issue = generate_inflight_issue_from_input()
-        data["inflight"][-1]["issues"].append(
+        data["inflight"][current_build_index]["issues"].append(
             {
                 "who": new_issue.who, "bug": new_issue.bug, "description": new_issue.description,
                 "resolved": False, "future_threat": True

@@ -3,7 +3,8 @@ import arrow
 
 from releasewarrior.helpers import get_config, load_json, validate, get_remaining_items
 from releasewarrior.helpers import get_logger
-from releasewarrior.wiki_data import get_tracking_release_data, write_and_commit, generate_newbuild_data
+from releasewarrior.wiki_data import get_tracking_release_data, write_and_commit, \
+    generate_newbuild_data, get_current_build_index
 from releasewarrior.wiki_data import update_prereq_human_tasks, get_release_info
 from releasewarrior.wiki_data import update_inflight_human_tasks, update_inflight_issue
 from releasewarrior.wiki_data import get_incomplete_releases
@@ -98,8 +99,8 @@ def task(product, version, resolve, logger=LOGGER, config=CONFIG):
     Without any options, you will be prompted to add a task
     """
     release, data_path, wiki_path = get_release_info(product, version, logger, config)
-    data = load_json(data_path)
     validate(release, logger, config, must_exist=True, must_exist_in="inflight")
+    data = load_json(data_path)
 
     resolve_msg = "Resolved {}".format(resolve) if resolve else ""
     commit_msg = "{} {} - updated inflight tasks. {}".format(product, version, resolve_msg)
@@ -123,7 +124,7 @@ def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
 
     resolve_msg = "Resolved {}".format(resolve) if resolve else ""
     commit_msg = "{} {} - updated inflight issue. {}".format(product, version, resolve_msg)
-    data = update_inflight_issue(data, resolve)
+    data = update_inflight_issue(data, resolve, logger)
 
     write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config)
 
@@ -132,6 +133,9 @@ def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
 @click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
 @click.argument('version')
 def sync(product, version, logger=LOGGER, config=CONFIG):
+    """takes currently saved json data of given release from data repo, generates wiki, and commits
+    product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
+    """
     release, data_path, wiki_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=True, must_exist_in="inflight")
     data = load_json(data_path)
@@ -143,12 +147,11 @@ def sync(product, version, logger=LOGGER, config=CONFIG):
 
 @cli.command()
 def status(logger=LOGGER, config=CONFIG):
-    """Add or resolve a issue against current buildnum
-    Without any options, you will be prompted to add an issue
+    """shows upcoming prerequisites and inflight human tasks
     """
     ###
     # upcoming prerequisites
-    upcoming_releases = get_incomplete_releases(config, inflight=False)
+    upcoming_releases = get_incomplete_releases(config, logger, inflight=False)
     upcoming_releases = sorted(upcoming_releases, key=lambda x: x["date"], reverse=True)
     logger.info("UPCOMING RELEASES...")
     if not upcoming_releases:
@@ -169,25 +172,22 @@ def status(logger=LOGGER, config=CONFIG):
 
     ###
     # releases in flight
-    incomplete_releases = get_incomplete_releases(config)
+    incomplete_releases = [release for release in get_incomplete_releases(config, logger)]
     logger.info("")
     logger.info("INFLIGHT RELEASES...")
     if not incomplete_releases:
         logger.info("=" * 79)
-        logger.info("no inflight releases with human tasks to do")
+        logger.info("[no inflight releases with human tasks to do]")
     for release in incomplete_releases:
-        for build in release['inflight']:
-            if not build["aborted"]:
-                current_build = build
-                break
-        remaining_tasks = get_remaining_items(current_build["human_tasks"])
-        remaining_issues = get_remaining_items(current_build["issues"])
+        current_build_index = get_current_build_index(release)
+        remaining_tasks = get_remaining_items(release["inflight"][current_build_index]["human_tasks"])
+        remaining_issues = get_remaining_items(release["inflight"][current_build_index]["issues"])
 
         logger.info("=" * 79)
         logger.info("RELEASE IN FLIGHT: %s %s build%s %s",
-                    release["product"], release["version"], current_build["buildnum"],
-                    release["date"])
-        for index, graphid in enumerate(current_build["graphids"]):
+                    release["product"], release["version"],
+                    release["inflight"][current_build_index]["buildnum"], release["date"])
+        for index, graphid in enumerate(release["inflight"][current_build_index]["graphids"]):
             logger.info("Graph %s: https://tools.taskcluster.net/task-group-inspector/#/%s",
                         index + 1, graphid)
         logger.info("\tIncomplete human tasks:")
