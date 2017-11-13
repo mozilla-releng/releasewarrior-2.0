@@ -57,7 +57,7 @@ Aside from the readonly `status` command, every command does the following:
 
 **note:** unlike previous versions of releasewarrior, the branch is inferred from the product and version. Less typing for you, more validation internally to catch mistakes.
 
-#### status
+### status
 
 check current state of releases
 
@@ -101,7 +101,7 @@ INFO:           * ID: 2 bug: 999 - beetmover l10n tasks missing config key "dest
 ```
 
 
-#### track
+### track
 
 start tracking an upcoming release
 
@@ -122,7 +122,7 @@ $ release track fennec 17.0b1 --date 2017-11-02
 
 
 
-#### prereq
+### prereq
 
 add or resolve a prerequisite task for upcoming (tracked) release
 
@@ -156,7 +156,7 @@ When does this have to be completed [2017-11-09]: 2017-12-01
 ```
 
 
-#### newbuild
+### newbuild
 
 marking gtb or start a new build num
 
@@ -181,7 +181,7 @@ $ release newbuild firefox release-rc 15.0 --graphid 1234
 **note:** if you forget to include all the graphids, manually add them to the json files and run `release sync $PRODUCT $VERSION`
 
 
-#### task
+### task
 
 add or resolve a human task for an inflight release
 
@@ -216,7 +216,7 @@ Description of the inflight task: setup wnp
 Docs for this? Use a URL if possible []: github.com/releasewarrior/how-tos/wnp.md
 ```
 
-#### issue
+### issue
 
 add or resolve an issue for an inflight release
 
@@ -246,11 +246,11 @@ Description of issue: Update verify tests failing bc of release-localtest rule 2
 ```
 
 
-#### postmortem
+### postmortem
 
 TODO - not implemented
 
-## sync
+### sync
 
 semi-manually updating releasewarrior
 
