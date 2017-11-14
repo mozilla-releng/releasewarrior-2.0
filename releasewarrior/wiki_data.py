@@ -124,7 +124,9 @@ def generate_corsica(corsica_path, config, logger):
         for task in release["inflight"][current_build_index]["human_tasks"]:
             if task.get("alias"):
                 human_tasks[task["alias"]] = task["resolved"]
-        corsica_data["releases"][branch] = {
+        if not corsica_data["releases"].get(release["product"]):
+            corsica_data["releases"][release["product"]] = {}
+        corsica_data["releases"][release["product"]][branch] = {
             "buildnum": release["inflight"][current_build_index]["buildnum"],
             "version": release["version"].replace("rc", ""),
             "human_tasks": human_tasks

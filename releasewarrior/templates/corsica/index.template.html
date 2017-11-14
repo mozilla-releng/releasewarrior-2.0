@@ -4,98 +4,92 @@
     <title>Releases In-flight</title>
     <!-- Required meta tags -->
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=2, shrink-to-fit=no">
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
     <link href="/assets/open-iconic/font/css/open-iconic-bootstrap.css" rel="stylesheet">
   </head>
-  <body class="bg-dark bg-gradient-dark">
-
-    <div class="container bg-gradient-dark text-white mt-5">
+  <body class="bg-dark bg-gradient-dark text-white p-0">
+    <!-- generated from jinja -->
+    <div class="container border border-secondary rounded mt-5 p-5">
       <div>
-        <h1>Releases Status <small class="text-muted">tracking releases in-flight</small></h1>
+        <h1>Desktop Releases In-flight</h1>
       </div>
-
-      <!-- generated from jinja -->
-
       <!-- release -->
-      <div class="container mt-5 border border-dark">
-        {% if releases.get("release") %}
+      <div class="pt-3 pb-3">
+        {% if releases.get("firefox", {}).get("release") %}
           {% macro release_status() %}
-          {% include "corsica/release_progress.template.html" %}
+          {% include "corsica/firefox_release_progress.template.html" %}
           {% endmacro %}
           {{ release_status()|indent(4) }}
         {% else %}
-        <h2>Desktop Firefox Quantum></h2>
-        <div class="progress" style="height: 30px;">
-        </div>
+        <h2>Desktop Firefox Quantum <small class="text-muted"> no release in-flight</small></h2>
+        <div class="progress" style="height: 40px;"></div>
         {% endif %}
-        <div class="container mt-3">
-          {% if releases.get("release") %}
-            {% macro release_steps() %}
-            {% include "corsica/release_steps.template.html" %}
-            {% endmacro %}
-            {{ release_steps()|indent(4) }}
-          {% else %}
-          <h5>no release in flight</h5>
-          {% endif %}
-        </div>
       </div>
       <!-- -->
 
       <!-- beta -->
-      <div class="container mt-5 border border-dark">
-        {% if releases.get("beta") %}
+      <div class="pt-3 pb-3">
+        {% if releases.get("firefox", {}).get("beta") %}
         {% macro beta_status() %}
-        {% include "corsica/beta_progress.template.html" %}
+        {% include "corsica/firefox_beta_progress.template.html" %}
         {% endmacro %}
         {{ beta_status()|indent(4) }}
         {% else %}
-          <h2>Desktop Firefox Beta></h2>
-          <div class="progress" style="height: 30px;">
-          </div>
+          <h2>Desktop Firefox Beta <small class="text-muted">no release in-flight</small></h2>
+          <div class="progress" style="height: 40px;"></div>
         {% endif %}
-
-        <div class="container mt-3">
-          {% if releases.get("beta") %}
-          {% macro beta_steps() %}
-          {% include "corsica/beta_steps.template.html" %}
-          {% endmacro %}
-          {{ beta_steps()|indent(4) }}
-          {% else %}
-            <h5>no beta in flight</h5>
-          {% endif %}
-        </div>
       </div>
       <!-- -->
 
       <!-- devedition -->
-      <div class="container mt-5 border border-dark">
-        {% if releases.get("devedition") %}
+      <div class="pt-3 pb-3">
+        {% if releases.get("devedition", {}).get("devedition") %}
         {% macro devedition_status() %}
-        {% include "corsica/devedition_progress.template.html" %}
+        {% include "corsica/firefox_devedition_progress.template.html" %}
         {% endmacro %}
         {{ devedition_status()|indent(4) }}
         {% else %}
-          <h2>Desktop Firefox Devedition></h2>
-          <div class="progress" style="height: 30px;">
-          </div>
+          <h2>Desktop Firefox Devedition <small class="text-muted">no release in-flight</small></h2>
+          <div class="progress" style="height: 40px;"></div>
         {% endif %}
-
-        <div class="container mt-3">
-          {% if releases.get("devedition") %}
-          {% macro devedetion_steps() %}
-          {% include "corsica/devedition_steps.template.html" %}
-          {% endmacro %}
-          {{ devedetion_steps()|indent(4) }}
-          {% else %}
-            <h5>no devedition in flight</h5>
-          {% endif %}
-        </div>
       </div>
-
     </div>
+
+  <div class="container border border-secondary rounded mt-5 p-5">
+    <div>
+      <h1>Mobile Releases In-flight</h1>
+    </div>
+    <!-- release -->
+    <div class="pt-3 pb-3">
+      {% if releases.get("fennec", {}).get("release") %}
+      {% macro release_status() %}
+      {% include "corsica/fennec_release_progress.template.html" %}
+      {% endmacro %}
+      {{ release_status()|indent(4) }}
+      {% else %}
+      <h2>Desktop Firefox Quantum <small class="text-muted"> no release in-flight</small></h2>
+      <div class="progress" style="height: 40px;"></div>
+      {% endif %}
+    </div>
+    <!-- -->
+
+    <!-- beta -->
+    <div class="pt-3 pb-3">
+      {% if releases.get("fennec", {}).get("beta") %}
+      {% macro beta_status() %}
+      {% include "corsica/fennec_beta_progress.template.html" %}
+      {% endmacro %}
+      {{ beta_status()|indent(4) }}
+      {% else %}
+      <h2>Desktop Firefox Beta <small class="text-muted">no release in-flight</small></h2>
+      <div class="progress" style="height: 40px;"></div>
+      {% endif %}
+    </div>
+    <!-- -->
+  </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
