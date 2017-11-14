@@ -80,6 +80,8 @@ def get_branch(version, product, logger):
             branch = "release"
     elif bool(re.match("^\d+\.0b\d+$", version)):
         branch = "beta"
+        if product == "devedition":
+            branch = "devedition"
     elif bool(re.match("^(\d+\.\d(\.\d+)?esr)$", version)):
         branch = "esr"
     else:
@@ -98,7 +100,7 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
     ### branch validation against product
     # not critical so simply prevent basic mistakes
     branch_validations = {
-        "devedition": release.branch in ['beta'],
+        "devedition": release.branch in ['devedition'],
         "fennec": release.branch in ['beta', 'release'],
         "firefox": release.branch in ['beta', 'release', 'release-rc', 'esr'],
     }

@@ -4,10 +4,9 @@ import arrow
 from releasewarrior.helpers import get_config, load_json, validate, get_remaining_items
 from releasewarrior.helpers import get_logger
 from releasewarrior.wiki_data import get_tracking_release_data, write_and_commit, \
-    generate_newbuild_data, get_current_build_index
+    generate_newbuild_data, get_current_build_index, get_all_releases
 from releasewarrior.wiki_data import update_prereq_human_tasks, get_release_info
 from releasewarrior.wiki_data import update_inflight_human_tasks, update_inflight_issue
-from releasewarrior.wiki_data import get_incomplete_releases
 
 LOGGER = get_logger(verbose=False)
 CONFIG = get_config()
@@ -36,14 +35,14 @@ def track(product, version, gtb_date, logger=LOGGER, config=CONFIG):
     """Start tracking an upcoming release.
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     """
-    release, data_path, wiki_path = get_release_info(product, version, logger, config)
+    release, data_path, wiki_path, corsica_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=False)
     data = {}
 
     commit_msg = "{} {} started tracking upcoming release.".format(product, version)
     data = get_tracking_release_data(release, gtb_date, logger, config)
 
-    write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config)
+    write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config)
 
 
 @cli.command()
@@ -55,7 +54,7 @@ def prereq(product, version, resolve, logger=LOGGER, config=CONFIG):
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     Without any options, you will be prompted to add a prerequisite human task
     """
-    release, data_path, wiki_path = get_release_info(product, version, logger, config)
+    release, data_path, wiki_path, corsica_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=True, must_exist_in="upcoming")
     data = load_json(data_path)
 
@@ -63,7 +62,7 @@ def prereq(product, version, resolve, logger=LOGGER, config=CONFIG):
     commit_msg = "{} {} - updated prerequisites. {}".format(product, version, resolve_msg)
     data = update_prereq_human_tasks(data, resolve)
 
-    write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config)
+    write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config)
 
 
 @cli.command()
@@ -76,7 +75,7 @@ def newbuild(product, version, graphid, logger=LOGGER, config=CONFIG):
     If this is the first buildnum, move the release from upcoming dir to inflight
     Otherwise, increment the buildnum of the already current inflight release
     """
-    release, data_path, wiki_path = get_release_info(product, version, logger, config)
+    release, data_path, wiki_path, corsica_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=True)
     data = load_json(data_path)
 
@@ -85,7 +84,7 @@ def newbuild(product, version, graphid, logger=LOGGER, config=CONFIG):
     data, data_path, wiki_path = generate_newbuild_data(data, graphid, release, data_path,
                                                         wiki_path, logger, config)
 
-    write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config)
+    write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config)
 
 
 # TODO include valid aliases
@@ -98,7 +97,7 @@ def task(product, version, resolve, logger=LOGGER, config=CONFIG):
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     Without any options, you will be prompted to add a task
     """
-    release, data_path, wiki_path = get_release_info(product, version, logger, config)
+    release, data_path, wiki_path, corsica_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=True, must_exist_in="inflight")
     data = load_json(data_path)
 
@@ -106,7 +105,7 @@ def task(product, version, resolve, logger=LOGGER, config=CONFIG):
     commit_msg = "{} {} - updated inflight tasks. {}".format(product, version, resolve_msg)
     data = update_inflight_human_tasks(data, resolve, logger)
 
-    write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config)
+    write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config)
 
 
 @cli.command()
@@ -118,7 +117,7 @@ def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     Without any options, you will be prompted to add an issue
     """
-    release, data_path, wiki_path = get_release_info(product, version, logger, config)
+    release, data_path, wiki_path, corsica_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=True, must_exist_in="inflight")
     data = load_json(data_path)
 
@@ -126,7 +125,7 @@ def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
     commit_msg = "{} {} - updated inflight issue. {}".format(product, version, resolve_msg)
     data = update_inflight_issue(data, resolve, logger)
 
-    write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config)
+    write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config)
 
 
 @cli.command()
@@ -136,13 +135,13 @@ def sync(product, version, logger=LOGGER, config=CONFIG):
     """takes currently saved json data of given release from data repo, generates wiki, and commits
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     """
-    release, data_path, wiki_path = get_release_info(product, version, logger, config)
+    release, data_path, wiki_path, corsica_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=True, must_exist_in="inflight")
     data = load_json(data_path)
 
     commit_msg = "{} {} - syncing wiki with current data".format(product, version)
 
-    write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config)
+    write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config)
 
 
 @cli.command()
@@ -151,7 +150,7 @@ def status(logger=LOGGER, config=CONFIG):
     """
     ###
     # upcoming prerequisites
-    upcoming_releases = get_incomplete_releases(config, logger, inflight=False)
+    upcoming_releases = get_all_releases(config, logger, inflight=False, only_incomplete=True)
     upcoming_releases = sorted(upcoming_releases, key=lambda x: x["date"], reverse=True)
     logger.info("UPCOMING RELEASES...")
     if not upcoming_releases:
@@ -172,7 +171,7 @@ def status(logger=LOGGER, config=CONFIG):
 
     ###
     # releases in flight
-    incomplete_releases = [release for release in get_incomplete_releases(config, logger)]
+    incomplete_releases = [release for release in get_all_releases(config, logger, only_incomplete=True)]
     logger.info("")
     logger.info("INFLIGHT RELEASES...")
     if not incomplete_releases:

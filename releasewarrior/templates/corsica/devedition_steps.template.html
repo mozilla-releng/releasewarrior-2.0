@@ -1,0 +1,28 @@
+<h5>Next Steps</h5>
+<ol>
+  {% if releases["devedition"]["human_tasks"]["shipit"] %}
+    <li class="text-muted">Release kicked off <span class="oi oi-circle-check"></span></li>
+  {% else %}
+    <li>Release kicked off</li>
+  {% endif %}
+  {% if releases["devedition"]["human_tasks"]["publish"] %}
+    <li class="text-muted">Builds available <span class="oi oi-circle-check"></span></li>
+  {% else %}
+    <li>Builds available</li>
+  {% endif %}
+  {% if releases["devedition"]["human_tasks"]["publish"] %}
+    <li class="text-muted">Pushed to mirrors <span class="oi oi-circle-check"></span></li>
+  {% else %}
+    <li>Pushed to mirrors</li>
+  {% endif %}
+  {% if releases["devedition"]["human_tasks"]["publish"] %}
+  <li class="text-muted">QE final sign off <span class="oi oi-circle-check"></span></li>
+  {% else %}
+    <li>QE final sign off</li>
+  {% endif %}
+  {% if releases["devedition"]["human_tasks"]["publish"] %}
+  <li class="text-muted">Published Live <span class="oi oi-circle-check"></span></li>
+  {% else %}
+    <li>Published Live</li>
+  {% endif %}
+</ol>

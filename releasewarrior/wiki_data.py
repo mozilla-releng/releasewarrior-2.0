@@ -43,7 +43,7 @@ def generate_wiki(data, release, logger, config):
     return template.render(**data)
 
 
-def write_data(data_path, content, release, logger, config):
+def write_data(data_path, content, logger, config):
     logger.info("writing to data file: %s", data_path)
     with open(data_path, 'w') as data_file:
         json.dump(content, data_file, indent=4, sort_keys=True)
@@ -51,7 +51,15 @@ def write_data(data_path, content, release, logger, config):
     return data_path
 
 
-def write_wiki(wiki_path, content, release, logger, config):
+def write_corsica(corsica_path, content, logger, config):
+    logger.info("writing to corsica file: %s", corsica_path)
+    with open(corsica_path, 'w') as cp:
+        cp.write(content)
+
+    return corsica_path
+
+
+def write_wiki(wiki_path, content, logger, config):
     logger.info("writing to wiki file: %s", wiki_path)
     with open(wiki_path, 'w') as wp:
         wp.write(content)
@@ -74,8 +82,7 @@ def get_release_files(release, logging, config):
         os.path.join(release_path, wiki_file)
     ]
 
-
-def get_incomplete_releases(config, logger, inflight=True):
+def get_all_releases(config, logger, inflight=True, only_incomplete=False):
     for release_path in config['releases']['inflight' if inflight else 'upcoming'].values():
         search_dir = os.path.join(config['releasewarrior_data_repo'], release_path)
         for root, dirs, files in os.walk(search_dir):
@@ -84,10 +91,10 @@ def get_incomplete_releases(config, logger, inflight=True):
                 with open(abs_f) as data_f:
                     data = json.load(data_f)
                     if inflight:
-                         tasks = data["inflight"][get_current_build_index(data)]["human_tasks"]
+                        tasks = data["inflight"][get_current_build_index(data)]["human_tasks"]
                     else:
                         tasks = data["preflight"]["human_tasks"]
-                    if not all(task["resolved"] for task in tasks):
+                    if not all(task["resolved"] for task in tasks) or not only_incomplete:
                         # this release is incomplete!
                         yield data
 
@@ -96,20 +103,52 @@ def get_release_info(product, version, logger, config):
     branch = get_branch(version, product, logger)
     release = Release(product=product, version=version, branch=branch)
     data_path, wiki_path = get_release_files(release, logger, config)
+    corsica_path = os.path.join(config["releasewarrior_data_repo"], config["corsica"])
     logger.debug("release info: %s", release)
     logger.debug("data path: %s", data_path)
     logger.debug("wiki path: %s", wiki_path)
-    return release, data_path, wiki_path
+    logger.debug("corsica path: %s", corsica_path)
+    return release, data_path, wiki_path, corsica_path
 
 
-def write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config):
+def generate_corsica(corsica_path, config, logger):
+    all_inflight_releases = get_all_releases(config, logger)
+    corsica_data = {
+        "releases": {}
+    }
+    for release in all_inflight_releases:
+        branch = get_branch(release["version"], release["product"], logger)
+        branch = branch.replace("-rc", "")
+        human_tasks = {}
+        current_build_index = get_current_build_index(release)
+        for task in release["inflight"][current_build_index]["human_tasks"]:
+            if task.get("alias"):
+                human_tasks[task["alias"]] = task["resolved"]
+        corsica_data["releases"][branch] = {
+            "buildnum": release["inflight"][current_build_index]["buildnum"],
+            "version": release["version"].replace("rc", ""),
+            "human_tasks": human_tasks
+        }
+    index_template = config['templates']["corsica"]["index"]
+
+    env = Environment(loader=FileSystemLoader(config['templates_dir']),
+                      undefined=StrictUndefined, trim_blocks=True)
+
+    template = env.get_template(index_template)
+    return template.render(**corsica_data)
+
+
+def write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config):
     data = order_data(data)
     wiki = generate_wiki(data, release, logger, config)
-    data_path = write_data(data_path, data, release, logger, config)
-    wiki_path = write_wiki(wiki_path, wiki, release, logger, config)
+    corsica = generate_corsica(corsica_path, config, logger)
+    data_path = write_data(data_path, data, logger, config)
+    wiki_path = write_wiki(wiki_path, wiki, logger, config)
+    corsica_path = write_corsica(corsica_path, corsica, logger, config)
     logger.debug(data_path)
     logger.debug(wiki_path)
-    commit([data_path, wiki_path], commit_msg, logger, config)
+    logger.debug(corsica_path)
+    commit([data_path, wiki_path, corsica_path], commit_msg, logger, config)
 
 
 def generate_newbuild_data(data, graphid, release, data_path, wiki_path, logger, config):
