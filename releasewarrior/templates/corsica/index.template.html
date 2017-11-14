@@ -85,10 +85,10 @@
 
         <div class="container mt-3">
           {% if releases.get("devedition") %}
-          {% macro release_steps() %}
-          {% include "corsica/release_steps.template.html" %}
+          {% macro devedetion_steps() %}
+          {% include "corsica/devedition_steps.template.html" %}
           {% endmacro %}
-          {{ release_steps()|indent(4) }}
+          {{ devedetion_steps()|indent(4) }}
           {% else %}
             <h5>no devedition in flight</h5>
           {% endif %}
