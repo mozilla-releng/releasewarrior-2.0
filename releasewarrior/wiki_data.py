@@ -141,9 +141,9 @@ def generate_corsica(corsica_path, config, logger):
 def write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config):
     data = order_data(data)
     wiki = generate_wiki(data, release, logger, config)
-    corsica = generate_corsica(corsica_path, config, logger)
     data_path = write_data(data_path, data, logger, config)
     wiki_path = write_wiki(wiki_path, wiki, logger, config)
+    corsica = generate_corsica(corsica_path, config, logger)
     corsica_path = write_corsica(corsica_path, corsica, logger, config)
     logger.debug(data_path)
     logger.debug(wiki_path)
