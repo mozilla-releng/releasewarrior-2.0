@@ -24,6 +24,7 @@ releases:
     thunderbird: archive/thunderbird
 
 postmortems: postmortems
+corsica: index.html
 ###
 
 ###
@@ -47,6 +48,8 @@ templates:
   # output
   wiki:
     generic: markdown/generic.md.tmpl
+  corsica:
+    index: corsica/index.template.html
 
 
 ### location of release cmd output artifacts
