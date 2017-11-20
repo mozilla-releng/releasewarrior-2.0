@@ -103,6 +103,7 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
         "devedition": release.branch in ['devedition'],
         "fennec": release.branch in ['beta', 'release'],
         "firefox": release.branch in ['beta', 'release', 'release-rc', 'esr'],
+        "thunderbird": release.branch in ['beta', 'release']
     }
     if not branch_validations[release.product]:
         logger.fatal("Conflict. Product: %s, can't be used with Branch: %s, determined by Version: %s",
