@@ -82,7 +82,16 @@ def get_release_files(release, logging, config):
         os.path.join(release_path, wiki_file)
     ]
 
-def get_all_releases(config, logger, inflight=True, only_incomplete=False):
+def complete_filter(tasks):
+    return all(task["resolved"] for task in tasks)
+
+def incomplete_filter(tasks):
+    return not all(task["resolved"] for task in tasks)
+
+def no_filter(tasks):
+    return True
+
+def get_releases(config, logger, inflight=True, filter=no_filter):
     for release_path in config['releases']['inflight' if inflight else 'upcoming'].values():
         search_dir = os.path.join(config['releasewarrior_data_repo'], release_path)
         for root, dirs, files in os.walk(search_dir):
@@ -94,8 +103,7 @@ def get_all_releases(config, logger, inflight=True, only_incomplete=False):
                         tasks = data["inflight"][get_current_build_index(data)]["human_tasks"]
                     else:
                         tasks = data["preflight"]["human_tasks"]
-                    if not all(task["resolved"] for task in tasks) or not only_incomplete:
-                        # this release is incomplete!
+                    if filter(tasks):
                         yield data
 
 
@@ -112,7 +120,7 @@ def get_release_info(product, version, logger, config):
 
 
 def generate_corsica(corsica_path, config, logger):
-    all_inflight_releases = get_all_releases(config, logger)
+    all_inflight_releases = get_releases(config, logger)
     corsica_data = {
         "releases": {}
     }

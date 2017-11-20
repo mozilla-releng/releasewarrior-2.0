@@ -1,10 +1,12 @@
 import click
 import arrow
+import sys
 
 from releasewarrior.helpers import get_config, load_json, validate, get_remaining_items
 from releasewarrior.helpers import get_logger
-from releasewarrior.wiki_data import get_tracking_release_data, write_and_commit, \
-    generate_newbuild_data, get_current_build_index, get_all_releases
+from releasewarrior.wiki_data import get_tracking_release_data, write_and_commit
+from releasewarrior.wiki_data import generate_newbuild_data, get_current_build_index, get_releases
+from releasewarrior.wiki_data import incomplete_filter, complete_filter
 from releasewarrior.wiki_data import update_prereq_human_tasks, get_release_info
 from releasewarrior.wiki_data import update_inflight_human_tasks, update_inflight_issue
 
@@ -127,6 +129,41 @@ def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
 
     write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config)
 
+# TODO assign default date to the "next wed"
+# TODO accept various date inputs
+@cli.command()
+@click.option('--date', help="date of planned postmortem. format: YYYY-MM-DD")
+def postmortem(date, logger=LOGGER, config=CONFIG):
+    """creates a postmortem file based on completed releases and their unresolved issues.
+    archives release files that are completed
+    using the same date will only append and archive releases as they are updated
+    """
+
+    completed_releases = [release for release in get_releases(config, logger, filter=complete_filter)]
+
+    #validate
+    if not completed_releases:
+        logger.warning("No recently completed releases. Nothing to do!")
+        sys.exit(1)
+
+    # TODO load initial data for postmortem if one with given date exists
+    # postmortem_data = {}
+    # if exists:
+        # postmortem_data = load_json("postmortem-{}".format(date))
+
+    # TODO append completed release to postmortem data
+    # postmortem_data.append(release)  # strip release data down to what matters
+
+    # archive data and wiki files for each complete release
+    # TODO
+    for release in completed_releases:
+        _, data_path, wiki_path, __ = get_release_info(release["product"], release["version"],
+                                                       logger, config)
+    commit_msg = "updates {} postmortem".format(date)
+
+    # TODO
+    # write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config)
+
 
 @cli.command()
 @click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
@@ -150,7 +187,7 @@ def status(logger=LOGGER, config=CONFIG):
     """
     ###
     # upcoming prerequisites
-    upcoming_releases = get_all_releases(config, logger, inflight=False, only_incomplete=True)
+    upcoming_releases = get_releases(config, logger, inflight=False, filter=incomplete_filter)
     upcoming_releases = sorted(upcoming_releases, key=lambda x: x["date"], reverse=True)
     logger.info("UPCOMING RELEASES...")
     if not upcoming_releases:
@@ -171,7 +208,7 @@ def status(logger=LOGGER, config=CONFIG):
 
     ###
     # releases in flight
-    incomplete_releases = [release for release in get_all_releases(config, logger, only_incomplete=True)]
+    incomplete_releases = [release for release in get_releases(config, logger, filter=incomplete_filter)]
     logger.info("")
     logger.info("INFLIGHT RELEASES...")
     if not incomplete_releases:
