@@ -31,3 +31,9 @@ def commit(files, msg, logger, config):
     commit = repo.index.commit(msg)
     for patch in repo.commit("HEAD~1").diff(commit, create_patch=True):
         logger.debug(patch)
+
+
+def move(src, dest, logger, config):
+    logger.debug("archiving {src} to {dest}", src, dest)
+    repo = Repo(config['releasewarrior_data_repo'])
+    repo.index.move([src, dest])

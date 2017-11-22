@@ -48,6 +48,7 @@ templates:
   # output
   wiki:
     generic: markdown/generic.md.tmpl
+    postmortem: markdown/postmortem.md.tmpl
   corsica:
     index: corsica/index.template.html
 

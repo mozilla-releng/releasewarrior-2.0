@@ -2,9 +2,14 @@ import click
 import arrow
 import sys
 
+import os
+
+from releasewarrior import git
 from releasewarrior.helpers import get_config, load_json, validate, get_remaining_items
 from releasewarrior.helpers import get_logger
-from releasewarrior.wiki_data import get_tracking_release_data, write_and_commit
+from releasewarrior.wiki_data import get_tracking_release_data, write_and_commit, order_data, \
+    log_release_status, no_filter
+from releasewarrior.wiki_data import generate_release_postmortem_data
 from releasewarrior.wiki_data import generate_newbuild_data, get_current_build_index, get_releases
 from releasewarrior.wiki_data import incomplete_filter, complete_filter
 from releasewarrior.wiki_data import update_prereq_human_tasks, get_release_info
@@ -37,14 +42,14 @@ def track(product, version, gtb_date, logger=LOGGER, config=CONFIG):
     """Start tracking an upcoming release.
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     """
-    release, data_path, wiki_path, corsica_path = get_release_info(product, version, logger, config)
+    release, data_path, wiki_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=False)
     data = {}
 
     commit_msg = "{} {} started tracking upcoming release.".format(product, version)
     data = get_tracking_release_data(release, gtb_date, logger, config)
 
-    write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config)
+    write_and_commit(data, data_path, wiki_path, commit_msg, logger, config)
 
 
 @cli.command()
@@ -56,7 +61,7 @@ def prereq(product, version, resolve, logger=LOGGER, config=CONFIG):
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     Without any options, you will be prompted to add a prerequisite human task
     """
-    release, data_path, wiki_path, corsica_path = get_release_info(product, version, logger, config)
+    release, data_path, wiki_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=True, must_exist_in="upcoming")
     data = load_json(data_path)
 
@@ -64,7 +69,8 @@ def prereq(product, version, resolve, logger=LOGGER, config=CONFIG):
     commit_msg = "{} {} - updated prerequisites. {}".format(product, version, resolve_msg)
     data = update_prereq_human_tasks(data, resolve)
 
-    write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config)
+    data = order_data(data)
+    write_and_commit(data, data_path, wiki_path, commit_msg, logger, config)
 
 
 @cli.command()
@@ -77,7 +83,7 @@ def newbuild(product, version, graphid, logger=LOGGER, config=CONFIG):
     If this is the first buildnum, move the release from upcoming dir to inflight
     Otherwise, increment the buildnum of the already current inflight release
     """
-    release, data_path, wiki_path, corsica_path = get_release_info(product, version, logger, config)
+    release, data_path, wiki_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=True)
     data = load_json(data_path)
 
@@ -86,7 +92,8 @@ def newbuild(product, version, graphid, logger=LOGGER, config=CONFIG):
     data, data_path, wiki_path = generate_newbuild_data(data, graphid, release, data_path,
                                                         wiki_path, logger, config)
 
-    write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config)
+    data = order_data(data)
+    write_and_commit(data, data_path, wiki_path, commit_msg, logger, config)
 
 
 # TODO include valid aliases
@@ -99,7 +106,7 @@ def task(product, version, resolve, logger=LOGGER, config=CONFIG):
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     Without any options, you will be prompted to add a task
     """
-    release, data_path, wiki_path, corsica_path = get_release_info(product, version, logger, config)
+    release, data_path, wiki_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=True, must_exist_in="inflight")
     data = load_json(data_path)
 
@@ -107,7 +114,8 @@ def task(product, version, resolve, logger=LOGGER, config=CONFIG):
     commit_msg = "{} {} - updated inflight tasks. {}".format(product, version, resolve_msg)
     data = update_inflight_human_tasks(data, resolve, logger)
 
-    write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config)
+    data = order_data(data)
+    write_and_commit(data, data_path, wiki_path, commit_msg, logger, config)
 
 
 @cli.command()
@@ -119,7 +127,7 @@ def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     Without any options, you will be prompted to add an issue
     """
-    release, data_path, wiki_path, corsica_path = get_release_info(product, version, logger, config)
+    release, data_path, wiki_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=True, must_exist_in="inflight")
     data = load_json(data_path)
 
@@ -127,42 +135,70 @@ def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
     commit_msg = "{} {} - updated inflight issue. {}".format(product, version, resolve_msg)
     data = update_inflight_issue(data, resolve, logger)
 
-    write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config)
+    data = order_data(data)
+    write_and_commit(data, data_path, wiki_path, commit_msg, logger, config)
 
 # TODO assign default date to the "next wed"
 # TODO accept various date inputs
 @cli.command()
-@click.option('--date', help="date of planned postmortem. format: YYYY-MM-DD")
+@click.argument('date')
 def postmortem(date, logger=LOGGER, config=CONFIG):
     """creates a postmortem file based on completed releases and their unresolved issues.
     archives release files that are completed
     using the same date will only append and archive releases as they are updated
+
+    argument: date of planned postmortem. format: YYYY-MM-DD
     """
 
+    if not date:
+        logger.critical("For now, you must be explicit and specify --date")
+        sys.exit(1)
+
     completed_releases = [release for release in get_releases(config, logger, filter=complete_filter)]
+    postmortem_data_path = os.path.join(config["releasewarrior_data_repo"], config["postmortems"],
+                                        "{}.json".format(date))
+    postmortem_wiki_path = os.path.join(config["releasewarrior_data_repo"], config["postmortems"],
+                                        "{}.md".format(date))
+    wiki_template = config['templates']["wiki"]["postmortem"]
 
     #validate
     if not completed_releases:
         logger.warning("No recently completed releases. Nothing to do!")
         sys.exit(1)
+    # make sure archive and postmortem dirs exist
+    for product in config['releases']['archive']:
+        os.makedirs(
+            os.path.join(config['releasewarrior_data_repo'], config['releases']['archive'][product]),
+            exist_ok=True
+        )
+    os.makedirs(os.path.join(config['releasewarrior_data_repo'], config['postmortems']), exist_ok=True)
 
-    # TODO load initial data for postmortem if one with given date exists
-    # postmortem_data = {}
-    # if exists:
-        # postmortem_data = load_json("postmortem-{}".format(date))
 
-    # TODO append completed release to postmortem data
-    # postmortem_data.append(release)  # strip release data down to what matters
+    # get existing postmortem data
+    postmortem_data = {
+        "date": date,
+        "complete_releases": []
+    }
+    if os.path.exists(postmortem_data_path):
+        postmortem_data = load_json(postmortem_data_path)
 
-    # archive data and wiki files for each complete release
-    # TODO
+    # archive completed releases
     for release in completed_releases:
         _, data_path, wiki_path, __ = get_release_info(release["product"], release["version"],
                                                        logger, config)
-    commit_msg = "updates {} postmortem".format(date)
+        # add release to postmortem data
+        postmortem_data["complete_releases"].append(generate_release_postmortem_data(release))
+        # archive release
+        archive_dir = os.path.join(config["releasewarrior_data_repo"],
+                                   config["releases"]["archive"][release["product"]])
+        git.move(data_path, os.path.join(archive_dir, os.path.basename(data_path)), logger, config)
+        git.move(wiki_path, os.path.join(archive_dir, os.path.basename(wiki_path)), logger, config)
 
-    # TODO
-    # write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config)
+    commit_msg = "updates {} postmortem".format(date)
+    postmortem_data["complete_releases"] = sorted(postmortem_data["complete_releases"],
+                                                    key=lambda x: x["date"])
+    write_and_commit(postmortem_data, postmortem_data_path, postmortem_wiki_path,
+                     commit_msg, logger, config, wiki_template=wiki_template)
 
 
 @cli.command()
@@ -178,16 +214,19 @@ def sync(product, version, logger=LOGGER, config=CONFIG):
 
     commit_msg = "{} {} - syncing wiki with current data".format(product, version)
 
-    write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config)
+    write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config)
 
 
 @cli.command()
-def status(logger=LOGGER, config=CONFIG):
+@click.option('--verbose', is_flag=True, help="shows all tracked releases as well as completed releases")
+def status(verbose, logger=LOGGER, config=CONFIG):
     """shows upcoming prerequisites and inflight human tasks
     """
     ###
     # upcoming prerequisites
     upcoming_releases = get_releases(config, logger, inflight=False, filter=incomplete_filter)
+    if verbose:
+        upcoming_releases = get_releases(config, logger, inflight=False, filter=no_filter)
     upcoming_releases = sorted(upcoming_releases, key=lambda x: x["date"], reverse=True)
     logger.info("UPCOMING RELEASES...")
     if not upcoming_releases:
@@ -203,6 +242,8 @@ def status(logger=LOGGER, config=CONFIG):
         for prereq in remaining_prereqs:
             logger.info("\t\t* ID: %s, deadline: %s, bug %s - %s", prereq['id'], prereq['deadline'],
                         prereq["bug"], prereq["description"])
+        if not remaining_prereqs:
+            logger.info("\t\t* none")
 
     ###
 
@@ -215,26 +256,20 @@ def status(logger=LOGGER, config=CONFIG):
         logger.info("=" * 79)
         logger.info("[no inflight releases with human tasks to do]")
     for release in incomplete_releases:
-        current_build_index = get_current_build_index(release)
-        remaining_tasks = get_remaining_items(release["inflight"][current_build_index]["human_tasks"])
-        remaining_issues = get_remaining_items(release["inflight"][current_build_index]["issues"])
+        log_release_status(release, logger)
+    ###
 
-        logger.info("=" * 79)
-        logger.info("RELEASE IN FLIGHT: %s %s build%s %s",
-                    release["product"], release["version"],
-                    release["inflight"][current_build_index]["buildnum"], release["date"])
-        for index, graphid in enumerate(release["inflight"][current_build_index]["graphids"]):
-            logger.info("Graph %s: https://tools.taskcluster.net/task-group-inspector/#/%s",
-                        index + 1, graphid)
-        logger.info("\tIncomplete human tasks:")
-        for task in remaining_tasks:
-            alias = ""
-            if task.get("alias"):
-                alias = "(alias: {})".format(task["alias"])
-            logger.info("\t\t* ID %s %s - %s", task["id"], alias, task["description"])
-        logger.info("\tUnresolved issues:")
-        for issue in remaining_issues:
-            logger.info("\t\t* ID: %s bug: %s - %s", issue["id"], issue["bug"], issue["description"])
+    ###
+    # completed releases (unresolved issues)
+    if verbose:
+        complete_releases = [release for release in get_releases(config, logger, filter=complete_filter)]
+        logger.info("")
+        logger.info("COMPLETED RELEASES...")
+        if not complete_releases:
+            logger.info("=" * 79)
+            logger.info("[all completed releases have been archived]")
+        for release in complete_releases:
+            log_release_status(release, logger)
     ###
 
 # TODO postmortem
