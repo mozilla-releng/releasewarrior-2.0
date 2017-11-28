@@ -1,0 +1,29 @@
+# Postmortem {{ date }}
+
+{% for release in complete_releases %}
+
+## Release: {{ release["product"].capitalize() }} {{ release["version"] }} {{ release["date"] }}
+
+### Resolved issues
+{% for issue in release['resolved'] %}
+- {{ issue["who"] }} - [bug {{ issue["bug"] }}](http://bugzilla/{{ issue["bug"] }}) - {{ issue["description"] }}
+{% endfor %}
+{% if not release["resolved"] %}
+- none
+{% endif %}
+
+### Action Items
+| Bug                                                           | Description                | Reported By         | Priority | Owner | Follow Up Date |
+| ------------------------------------------------------------- | -------------------------- | ------------------- | -------- | ----- | -------------- |
+{% for issue in release['future_threats'] %}
+| [bug {{ issue["bug"] }}](http://bugzilla/{{ issue["bug"] }})  | {{ issue["description"] }} | {{ issue["who"] }}  |          |       |                |
+{% endfor %}
+{% if not release["future_threats"] %}
+| none | | | | | |
+{% endif %}
+
+{% endfor %}
+
+
+## Roundtable
+- All topics in [Our Trello Board](https://trello.com/b/MXHaVRcP/release-promotion-meeting).

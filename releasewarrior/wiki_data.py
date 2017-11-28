@@ -31,10 +31,11 @@ def get_current_build_index(release):
     return None
 
 
-def generate_wiki(data, release, logger, config):
+def generate_wiki(data, wiki_template, logger, config):
     logger.info("generating wiki from template and config")
 
-    wiki_template = config['templates']["wiki"]["generic"]
+    if not wiki_template:
+        wiki_template = config['templates']["wiki"]["generic"]
 
     env = Environment(loader=FileSystemLoader(config['templates_dir']),
                       undefined=StrictUndefined, trim_blocks=True)
@@ -82,7 +83,16 @@ def get_release_files(release, logging, config):
         os.path.join(release_path, wiki_file)
     ]
 
-def get_all_releases(config, logger, inflight=True, only_incomplete=False):
+def complete_filter(tasks):
+    return all(task["resolved"] for task in tasks)
+
+def incomplete_filter(tasks):
+    return not all(task["resolved"] for task in tasks)
+
+def no_filter(tasks):
+    return True
+
+def get_releases(config, logger, inflight=True, filter=no_filter):
     for release_path in config['releases']['inflight' if inflight else 'upcoming'].values():
         search_dir = os.path.join(config['releasewarrior_data_repo'], release_path)
         for root, dirs, files in os.walk(search_dir):
@@ -94,8 +104,7 @@ def get_all_releases(config, logger, inflight=True, only_incomplete=False):
                         tasks = data["inflight"][get_current_build_index(data)]["human_tasks"]
                     else:
                         tasks = data["preflight"]["human_tasks"]
-                    if not all(task["resolved"] for task in tasks) or not only_incomplete:
-                        # this release is incomplete!
+                    if filter(tasks):
                         yield data
 
 
@@ -112,7 +121,7 @@ def get_release_info(product, version, logger, config):
 
 
 def generate_corsica(corsica_path, config, logger):
-    all_inflight_releases = get_all_releases(config, logger)
+    all_inflight_releases = get_releases(config, logger)
     corsica_data = {
         "releases": {}
     }
@@ -140,9 +149,10 @@ def generate_corsica(corsica_path, config, logger):
     return template.render(**corsica_data)
 
 
-def write_and_commit(data, release, data_path, wiki_path, corsica_path, commit_msg, logger, config):
-    data = order_data(data)
-    wiki = generate_wiki(data, release, logger, config)
+def write_and_commit(data, data_path, wiki_path, commit_msg, logger, config, wiki_template=None):
+    corsica_path = os.path.join(config["releasewarrior_data_repo"], config["corsica"])
+
+    wiki = generate_wiki(data, wiki_template, logger, config)
     data_path = write_data(data_path, data, logger, config)
     wiki_path = write_wiki(wiki_path, wiki, logger, config)
     corsica = generate_corsica(corsica_path, config, logger)
@@ -280,3 +290,48 @@ def update_inflight_issue(data, resolve, logger):
             }
         )
     return data
+
+
+def generate_release_postmortem_data(release):
+    postmortem_release = {
+        "version": release['version'],
+        "product": release['product'],
+        "date": release['date'],
+    }
+    future_threat_issues = []
+    resolved_issues = []
+    for build in release["inflight"]:
+        for issue in build["issues"]:
+            issue["buildnum"] = build["buildnum"]
+            if issue["future_threat"]:
+                future_threat_issues.append(issue)
+            else:
+                resolved_issues.append(issue)
+
+    postmortem_release["future_threats"] = future_threat_issues
+    postmortem_release["resolved"] = resolved_issues
+
+    return postmortem_release
+
+
+def log_release_status(release, logger):
+    current_build_index = get_current_build_index(release)
+    remaining_tasks = get_remaining_items(release["inflight"][current_build_index]["human_tasks"])
+    remaining_issues = get_remaining_items(release["inflight"][current_build_index]["issues"])
+
+    logger.info("=" * 79)
+    logger.info("RELEASE: %s %s build%s %s",
+                release["product"], release["version"],
+                release["inflight"][current_build_index]["buildnum"], release["date"])
+    for index, graphid in enumerate(release["inflight"][current_build_index]["graphids"]):
+        logger.info("Graph %s: https://tools.taskcluster.net/task-group-inspector/#/%s",
+                    index + 1, graphid)
+    logger.info("\tIncomplete human tasks:")
+    for task in remaining_tasks:
+        alias = ""
+        if task.get("alias"):
+            alias = "(alias: {})".format(task["alias"])
+        logger.info("\t\t* ID %s %s - %s", task["id"], alias, task["description"])
+    logger.info("\tUnresolved issues:")
+    for issue in remaining_issues:
+        logger.info("\t\t* ID: %s bug: %s - %s", issue["id"], issue["bug"], issue["description"])
