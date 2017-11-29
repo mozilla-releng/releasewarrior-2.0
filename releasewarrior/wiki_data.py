@@ -112,12 +112,10 @@ def get_release_info(product, version, logger, config):
     branch = get_branch(version, product, logger)
     release = Release(product=product, version=version, branch=branch)
     data_path, wiki_path = get_release_files(release, logger, config)
-    corsica_path = os.path.join(config["releasewarrior_data_repo"], config["corsica"])
     logger.debug("release info: %s", release)
     logger.debug("data path: %s", data_path)
     logger.debug("wiki path: %s", wiki_path)
-    logger.debug("corsica path: %s", corsica_path)
-    return release, data_path, wiki_path, corsica_path
+    return release, data_path, wiki_path
 
 
 def generate_corsica(corsica_path, config, logger):

@@ -208,13 +208,13 @@ def sync(product, version, logger=LOGGER, config=CONFIG):
     """takes currently saved json data of given release from data repo, generates wiki, and commits
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     """
-    release, data_path, wiki_path, corsica_path = get_release_info(product, version, logger, config)
+    release, data_path, wiki_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=True, must_exist_in="inflight")
     data = load_json(data_path)
 
     commit_msg = "{} {} - syncing wiki with current data".format(product, version)
 
-    write_and_commit(data, release, data_path, wiki_path, commit_msg, logger, config)
+    write_and_commit(data, data_path, wiki_path, commit_msg, logger, config)
 
 
 @cli.command()
