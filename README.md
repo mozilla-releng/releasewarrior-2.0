@@ -184,7 +184,10 @@ What it does:
 
 If this is first gtb (buildnum1), the data and wiki files are moved to: releasewarrior-data/inflight/
 
-If this release is already in flight, the data file's most recent buildnum marked as aborted, any previous unresolved issues are carried forward to new buildnumThis means it is safe to use `release newbuild` for a product and version that are already listed, it will just start a new build number.
+If this release is already in flight, the data file's most recent buildnum
+marked as aborted, any previous unresolved issues are carried forward to new
+buildnum. This means it is safe to use `release newbuild` for a product and
+version that are already listed, it will just start a new build number.
 
 
 Example:
