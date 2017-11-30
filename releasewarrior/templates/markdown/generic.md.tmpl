@@ -4,7 +4,7 @@
 
 ## Preflight tasks (pre go-to-build)
 {% for task in preflight["human_tasks"] %}
-- [{% if task["resolved"] %}x{% else %} {% endif %}] {{ loop.index }}. due:{{ task["deadline"] }} - [bug {{ task["bug"] }}](http://bugzilla/{{ task["bug"] }}): {{ task["description"] }}
+- [{% if task["resolved"] %}x{% else %} {% endif %}] {{ loop.index }}. due:{{ task["deadline"] }} - [bug {{ task["bug"] }}](https://bugzil.la/{{ task["bug"] }}): {{ task["description"] }}
 {% endfor %}
 {% if not preflight["human_tasks"] %}
 - none
@@ -28,10 +28,10 @@ task graph url: unknown
 {% endfor %}
 
 ### Issues
-| Who                 | ID               | Bug                                                                 | Descripiton                | Release Unblocked       | Future Threat                |
+| Who                 | ID               | Bug                                                                 | Description                | Release Unblocked       | Future Threat                |
 | ------------------- | ---------------- | ------------------------------------------------------------------- | -------------------------- | ----------------------- | ---------------------------- |
 {% for issue in build['issues'] %}
-| {{ issue["who"] }}  | {{ loop.index }} | [bug {{ issue["bug"] }}](http://bugzilla/{{ issue["bug"] }})        | {{ issue["description"] }} | {{ issue["resolved"] }} | {{ issue["future_threat"] }} |
+| {{ issue["who"] }}  | {{ loop.index }} | [bug {{ issue["bug"] }}](https://bugzil.la/{{ issue["bug"] }})        | {{ issue["description"] }} | {{ issue["resolved"] }} | {{ issue["future_threat"] }} |
 {% endfor %}
 {% if not build["issues"] %}
 | none | | | | | |
