@@ -155,7 +155,7 @@ def postmortem(date, logger=LOGGER, config=CONFIG):
         logger.critical("For now, you must be explicit and specify --date")
         sys.exit(1)
 
-    date = sanitize_date_input(date)
+    date = sanitize_date_input(date, logger)
 
     completed_releases = [release for release in get_releases(config, logger, filter=complete_filter)]
     postmortem_data_path = os.path.join(config["releasewarrior_data_repo"], config["postmortems"],
