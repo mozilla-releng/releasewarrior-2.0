@@ -6,7 +6,7 @@ import os
 
 from releasewarrior import git
 from releasewarrior.helpers import get_config, load_json, validate, get_remaining_items
-from releasewarrior.helpers import get_logger
+from releasewarrior.helpers import get_logger, sanitize_date_input
 from releasewarrior.wiki_data import get_tracking_release_data, write_and_commit, order_data, \
     log_release_status, no_filter
 from releasewarrior.wiki_data import generate_release_postmortem_data
@@ -47,6 +47,7 @@ def track(product, version, gtb_date, logger=LOGGER, config=CONFIG):
     data = {}
 
     commit_msg = "{} {} started tracking upcoming release.".format(product, version)
+    gtb_date = sanitize_date_input(gtb_date, logger)
     data = get_tracking_release_data(release, gtb_date, logger, config)
 
     write_and_commit(data, data_path, wiki_path, commit_msg, logger, config)
@@ -154,6 +155,8 @@ def postmortem(date, logger=LOGGER, config=CONFIG):
         logger.critical("For now, you must be explicit and specify --date")
         sys.exit(1)
 
+    date = sanitize_date_input(date)
+
     completed_releases = [release for release in get_releases(config, logger, filter=complete_filter)]
     postmortem_data_path = os.path.join(config["releasewarrior_data_repo"], config["postmortems"],
                                         "{}.json".format(date))
@@ -161,7 +164,7 @@ def postmortem(date, logger=LOGGER, config=CONFIG):
                                         "{}.md".format(date))
     wiki_template = config['templates']["wiki"]["postmortem"]
 
-    #validate
+    # validate
     if not completed_releases:
         logger.warning("No recently completed releases. Nothing to do!")
         sys.exit(1)

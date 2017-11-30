@@ -4,6 +4,8 @@ import sys
 import json
 import re
 import yaml
+from datetime import datetime
+from dateutil.parser import parse
 from git import Repo
 
 from releasewarrior.git import find_upstream_repo
@@ -176,3 +178,19 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
     ###
     if not passed:
         sys.exit(1)
+
+
+def sanitize_date_input(date, logger):
+    try:
+        dt = parse(date)
+    except ValueError:
+        logger.error('%s does not contain a date', date)
+        sys.exit(1)
+
+    # is this date in the past? If so assume we meant next year, same month/day
+    # Don't do this if the year was explicitly set.
+    if dt < datetime.now() and str(dt.year) not in date:
+        logger.info("Adjusting %s, assuming it's meant to be next year.", dt)
+        dt = dt.replace(year=dt.year+1)
+
+    return dt.strftime('%Y-%m-%d')
