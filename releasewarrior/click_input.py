@@ -13,11 +13,15 @@ def generate_inflight_task_from_input():
     return InflightTask(position, description, docs, resolved=False)
 
 
-def generate_prereq_task_from_input():
+def generate_prereq_task_from_input(gtb_date=None):
     bug = click.prompt('Bug number if exists', type=str, default="none")
     description = click.prompt('Description of prerequisite task', type=str)
+
+    # Already in US/Pacific, shouldn't adjust here as well or we'll
+    # move back in time if not working in US/P
+    due_by = arrow.get(gtb_date).replace(days=-1)
     deadline = click.prompt('When does this have to be completed', type=str,
-                            default=arrow.now('US/Pacific').format("YYYY-MM-DD"))
+                            default=due_by.format("YYYY-MM-DD"))
     return PrerequisiteTask(bug, deadline, description, resolved=False)
 
 
@@ -30,6 +34,3 @@ def generate_inflight_issue_from_input():
 
 def is_future_threat_input():
     return click.prompt('Is this a future release threat?', type=bool)
-
-
-
