@@ -28,7 +28,7 @@ task graph url: unknown
 {% endfor %}
 
 ### Issues
-| Who                 | ID               | Bug                                                                 | Description                | Release Unblocked       | Future Threat                |
+| Who                 | ID               | Bug                                                                 | Description                | Resolved                | Future Threat                |
 | ------------------- | ---------------- | ------------------------------------------------------------------- | -------------------------- | ----------------------- | ---------------------------- |
 {% for issue in build['issues'] %}
 | {{ issue["who"] }}  | {{ loop.index }} | [bug {{ issue["bug"] }}](https://bugzil.la/{{ issue["bug"] }})        | {{ issue["description"] }} | {{ issue["resolved"] }} | {{ issue["future_threat"] }} |
