@@ -256,7 +256,7 @@ def update_prereq_human_tasks(data, resolve):
             data["preflight"]["human_tasks"][human_task_id]["resolved"] = True
     else:
         # create a new prerequisite task through interactive inputs
-        new_prereq = generate_prereq_task_from_input()
+        new_prereq = generate_prereq_task_from_input(gtb_date=data.get('date'))
         data["preflight"]["human_tasks"].append(
             {
                 "bug": new_prereq.bug, "deadline": new_prereq.deadline,
