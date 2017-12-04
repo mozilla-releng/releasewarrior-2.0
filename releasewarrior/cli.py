@@ -108,7 +108,9 @@ def task(product, version, resolve, logger=LOGGER, config=CONFIG):
     Without any options, you will be prompted to add a task
     """
     release, data_path, wiki_path = get_release_info(product, version, logger, config)
-    validate(release, logger, config, must_exist=True, must_exist_in="inflight")
+    # if we are adding a human_task, the release does not have to be inflight yet
+    must_exist_in = "inflight" if resolve else None
+    validate(release, logger, config, must_exist=True, must_exist_in=must_exist_in)
     data = load_json(data_path)
 
     resolve_msg = "Resolved {}".format(resolve) if resolve else ""
