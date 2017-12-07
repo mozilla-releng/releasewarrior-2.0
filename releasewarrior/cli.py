@@ -189,8 +189,8 @@ def postmortem(date, logger=LOGGER, config=CONFIG):
 
     # archive completed releases
     for release in completed_releases:
-        _, data_path, wiki_path, __ = get_release_info(release["product"], release["version"],
-                                                       logger, config)
+        _, data_path, wiki_path = get_release_info(release["product"], release["version"],
+                                                   logger, config)
         # add release to postmortem data
         postmortem_data["complete_releases"].append(generate_release_postmortem_data(release))
         # archive release
