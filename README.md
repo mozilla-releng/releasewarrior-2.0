@@ -1,6 +1,6 @@
-# releasewarrior 2.0
+# Releasewarrior 2.0
 
-your assistant while on releaseduty
+Your assistant while on Release Duty
 
 ![squirrel spartan](https://pbs.twimg.com/profile_images/571907614906310658/HDB_I-Nr.jpeg)
 
@@ -10,7 +10,7 @@ Rather than manually managing a wiki of releases, releasewarrior provides a set 
 
 ## Installing
 
-get copy of releasewarrior
+Get a copy of releasewarrior
 ```
 git clone git@github.com:mozilla-releng/releasewarrior-2.0.git && cd releasewarrior-2.0
 mkvirtualenv --python=/path/to/python3 releasewarrior
@@ -19,7 +19,7 @@ python setup.py develop
 Using the develop target ensures that you get code updates along with data when pulling in changes.
 
 ## Configuring
-the minimal configuration required is to tell releasewarrior the local abs path location of the releasewarrior-data repo
+The minimal configuration required is the absolute local path of the releasewarrior-data repository.
 
 ```
 # clone data repo somewhere on your system
@@ -30,28 +30,36 @@ cp releasewarrior/configs/config_example.yaml releasewarrior/configs/config.yaml
 ```
 
 
+## Common terminology
+
+- `gtb`: Go to build
+- `buildnum`: buildnumber
+
 ## Quick start
 
-releasewarrior is made up of a number of subcommands. `status`, `track`, `newbuild`, `prereq`, `issue`, and `sync`.
+`releasewarrior` is made up of a number of subcommands. `status`, `track`, `newbuild`, `prereq`, `issue`, and `sync`.
 
-At its core, releasewarrior tracks three todo lists: prerequite gtb tasks (`prereq`), inflight tasks (`task`), inflight issues (`issue`)
+At its core, releasewarrior tracks three todo lists:
+- `prereq` - prerequite "Go to build" (GTB) tasks
+- `task` - Expected operational tasks for a release in-flight
+- `issue` - Issues/Problems that have been addressed, or need to be worked on, for a release in-flight.
 
 The usage for resolving and adding these lists are identical:
 
 ```
-# resolve a list item
-release {prereq, task, issue} $product $version --resolve $id
 # add an item to a list
 release {prereq, task, issue} $product $version # uses CLI inputs to add
+# resolve a list item
+release {prereq, task, issue} $product $version --resolve $id
 ```
 
 Aside from the readonly `status` command, every command does the following:
 
-1. date file updated:  releasewarrior-data/{inflight,upcoming}/fennec-release-17.0.json
-2. wiki file rendered from data:  releasewarrior-data/{inflight,upcoming}/fennec-release-17.0.md
-3. change of those two files are committed
+1. Updates the data file:  releasewarrior-data/{inflight,upcoming}/fennec-release-17.0.json
+2. Wiki file rendered from data:  releasewarrior-data/{inflight,upcoming}/fennec-release-17.0.md
+3. Changed files are committed **but not currently pushed**.
 
-**pro tip**: use `release --help` and `release <subcommand> --help` lots
+**pro tip**: use `release --help` and `release <subcommand> --help`
 
 ## More on each subcommand
 
@@ -59,20 +67,22 @@ Aside from the readonly `status` command, every command does the following:
 
 ### status
 
-check current state of releases
+Checks the current state of releases
 
-usage:
-
-`release status`
-
-what happens:
-
-`status` will tell you all of the upcoming releases with prerequisite tasks before gtb as well as current tasks and issues for releases inflight.
-
-example:
+Usage:
 
 ```
 release status
+```
+
+What happens:
+
+`status` will tell you all of the upcoming releases with prerequisite tasks before gtb as well as current tasks and issues for releases inflight.
+
+Examples:
+
+```
+$ release status
 INFO: UPCOMING RELEASES...
 INFO: ===============================================================================
 INFO: Upcoming Release: firefox 57.0b1
@@ -103,48 +113,47 @@ INFO:           * ID: 2 bug: 999 - beetmover l10n tasks missing config key "dest
 
 ### track
 
-start tracking an upcoming release
+Start tracking an upcoming release. This is a required command before `newbuild`, below.
 
-usage:
+Usage:
 
-`release track $PRODUCT $VERSION --date $defaults_to_today`
+`release track $PRODUCT $VERSION --date YYYY-MM-DD`
+`release track $PRODUCT $VERSION  # --date defaults to today`
 
-what it does:
+What it does:
 
-commits a json and markdown file in: releasewarrior-data/upcoming/
-release is primed to either "gtb" or add/resolve `prereq`uisites
+- Creates and commits json and markdown files in releasewarrior-data/upcoming/
+- Release is primed to either "gtb" or add/resolve `prereq`uisites
 
-example:
+Examples:
 
 ```
 $ release track fennec 17.0b1 --date 2017-11-02
 ```
 
 
-
 ### prereq
 
-add or resolve a prerequisite task for upcoming (tracked) release
+Add or resolve a prerequisite task for an upcoming (tracked) release.
 
-usage:
-
-`release prereq $PRODUCT $VERSION --resolve $prerequisite_id`
-
-what it does:
-
-prerequisites are tasks that must be completed before gtb. They do not carry over as part of post gtb.
-
-`prereq` when run without options will add a prereq by asking for details of the prereq task through CLI inputs. Examples of both below.
-
-**note:** this replaces the previous FUTURE/ style
-
-example:
+Usage:
 
 ```
-# resolve a prereq
-$ release status  # list prereqs and IDs
-$ release prereq firefox 57.0rc --resolve $prerequisite_id
+# Create a prerequisite
+release prereq $PRODUCT $VERSION
+# Resolve an existing prerequisite
+release prereq $PRODUCT $VERSION --resolve $prerequisite_id
 ```
+
+What it does:
+
+Prerequisites are tasks that must be completed before go-to-build. They do not carry over as part of post gtb.
+
+`prereq` when run without options will add a prereq by asking for details through CLI inputs. Examples of both below.
+
+**note:** this replaces the previous FUTURE/ style from releasewarrior 1.
+
+Examples:
 
 ```
 # add a prereq
@@ -155,24 +164,33 @@ Description of prerequisite task: bump in tree version manually
 When does this have to be completed [2017-11-09]: 2017-12-01
 ```
 
+```
+# resolve a prereq
+$ release status  # list prereqs and IDs
+$ release prereq firefox 57.0rc --resolve $prerequisite_id
+```
+
 
 ### newbuild
 
-marking gtb or start a new build num
+Marking gtb for a tracked release, or start a new build number for an existing build.
 
-usage:
+Usage:
 
 `release newbuild $PRODUCT $VERSION --graphid $graph1 --graphid $graph2`
 
 
-what it does:
+What it does:
 
-If this is first gtb (buildnum1), the data and wiki files are moved to: releasewarrior-data/inflight/*
+If this is first gtb (buildnum1), the data and wiki files are moved to: releasewarrior-data/inflight/
 
-If this release is already in flight, the data file's most recent buildnum marked as aborted, any previous unresolved issues are carried forward to new buildnum
+If this release is already in flight, the data file's most recent buildnum
+marked as aborted, any previous unresolved issues are carried forward to new
+buildnum. This means it is safe to use `release newbuild` for a product and
+version that are already listed, it will just start a new build number.
 
 
-example:
+Example:
 
 ```
 $ release newbuild firefox release-rc 15.0 --graphid 1234
@@ -183,25 +201,19 @@ $ release newbuild firefox release-rc 15.0 --graphid 1234
 
 ### task
 
-add or resolve a human task for an inflight release
+Add or resolve a human task for an inflight release
 
-usage:
+Usage:
 
 `release task $PRODUCT $VERSION --resolve $task_id_or_alias`
 
-what it does:
+What it does:
 
-Tasks are tracked work that must be completed during a release inflight. When you start a new buildnum, the previous human tasks are reset to unresolved and carried over to next buildnum.
+Tasks are tracked work that must be completed during an in-flight release. When you start a new buildnum, the previous human tasks are reset to unresolved and carried over to next buildnum.
 
 `task` when run without options will add a task by asking for details through CLI inputs. Examples of both below.
 
-example:
-
-```
-# resolve a task
-$ release status  # list human_task warrior IDs and aliases
-$ release task firefox 57.0rc --resolve $task_id_or_alias
-```
+Examples:
 
 ```
 # add a task
@@ -216,26 +228,30 @@ Description of the inflight task: setup wnp
 Docs for this? Use a URL if possible []: github.com/releasewarrior/how-tos/wnp.md
 ```
 
+```
+# resolve a task
+$ release status  # list human_task warrior IDs and aliases
+$ release task firefox 57.0rc --resolve $task_id_or_alias
+```
+
+
 ### issue
 
-add or resolve an issue for an inflight release
+Add or resolve an issue for an inflight release
 
-usage:
+Usage:
 
-`release issue $PRODUCT $VERSION --resolve $issue_id
+```
+release issue $PRODUCT $VERSION
+release issue $PRODUCT $VERSION --resolve $issue_id
+```
 
-what it does:
+What it does:
 
 Issues are tracked failures or problems while a release is inflight. When you start a new buildnum, the previous unresolved issues are carried over to next buildnum.
 `issue` when run without options will add a task by asking for details through CLI inputs. Examples of both below.
 
-example:
-
-```
-# resolve an issue
-$ release status  # list issue IDs from inflight releases
-$ release issue firefox 57.0rc --resolve $issue_id
-```
+Examples:
 
 ```
 # add an issue
@@ -245,6 +261,13 @@ Bug number if exists [none]: 12345
 Description of issue: Update verify tests failing bc of release-localtest rule 234
 ```
 
+```
+# resolve an issue
+$ release status  # list issue IDs from inflight releases
+$ release issue firefox 57.0rc --resolve $issue_id
+```
+
+
 
 ### postmortem
 
@@ -252,17 +275,21 @@ TODO - not implemented
 
 ### sync
 
-semi-manually updating releasewarrior
+Semi-manually updating releasewarrior
 
-of course, given that the data is just a json file and changes are tracked by this repo's revision history, you can always manually update the data and have the tool re-create the wiki presentation against your data changes
+The data is just a json file and changes are tracked by the repository's
+revision history, you can always manually update the data and have the tool
+re-create the wiki presentation.
 
-usage:
-
-`release sync $PRODUCT $VERSION`
-
-example:
+Usage:
 
 ```
-$ vim releasewarrior-data/inflight/firefox-esr-27.0esr.json  # change some value from false to true
+release sync $PRODUCT $VERSION
+```
+
+Example:
+
+```
+$ vim releasewarrior-data/inflight/firefox-esr-27.0esr.json  # change some value
 $ release sync firefox 27.0esr
 ```
