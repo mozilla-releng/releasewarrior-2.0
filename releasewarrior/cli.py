@@ -141,6 +141,7 @@ def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
     data = order_data(data)
     write_and_commit(data, data_path, wiki_path, commit_msg, logger, config)
 
+
 # TODO assign default date to the "next wed"
 # TODO accept various date inputs
 @cli.command()
@@ -204,6 +205,25 @@ def postmortem(date, logger=LOGGER, config=CONFIG):
                                                     key=lambda x: x["date"])
     write_and_commit(postmortem_data, postmortem_data_path, postmortem_wiki_path,
                      commit_msg, logger, config, wiki_template=wiki_template)
+
+
+@cli.command()
+@click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
+@click.argument('version')
+def cancel(product, version, logger=LOGGER, config=CONFIG):
+    """Similar to newbuild where it aborts current buildnum of given release but does not create
+    a new build.
+    """
+    release, data_path, wiki_path = get_release_info(product, version, logger, config)
+    validate(release, logger, config, must_exist=True, must_exist_in="inflight")
+    data = load_json(data_path)
+
+    logger.info("Most recent buildnum has been aborted. Release cancelled.")
+    commit_msg = "{} {} - cancelling release".format(product, version)
+    current_build_index = get_current_build_index(data)
+    data["inflight"][current_build_index]["aborted"] = True
+
+    write_and_commit(data, data_path, wiki_path, commit_msg, logger, config)
 
 
 @cli.command()
@@ -276,6 +296,3 @@ def status(verbose, logger=LOGGER, config=CONFIG):
         for release in complete_releases:
             log_release_status(release, logger)
     ###
-
-# TODO postmortem
-# TODO cancel
