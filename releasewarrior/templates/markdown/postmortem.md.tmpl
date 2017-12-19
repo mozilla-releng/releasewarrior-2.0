@@ -1,29 +1,41 @@
 # Postmortem {{ date }}
 
-{% for release in complete_releases %}
+## Previous Action Items
 
-## Release: {{ release["product"].capitalize() }} {{ release["version"] }} {{ release["date"] }}
+* Review in [Trello](https://trello.com/b/xLXT4chg/release-postmortem)
 
-### Resolved issues
+## New Action Items (Future Threats)
+
+| Bug                                                           | Description                | Reported By         | For release |
+| ------------------------------------------------------------- | -------------------------- | ------------------- | ----------- |
+{% for release in complete_releases -%}
+{%- for issue in release['future_threats'] %}
+| [bug {{ issue["bug"] }}](https://bugzil.la/{{ issue["bug"] }})  | {{ issue["description"] }} | {{ issue["who"] }}  | {{ release["product"].capitalize() }} {{ release["version"] }} |
+{% endfor -%}
+{%- endfor %}
+| <> | Possibly some others in [Trello](https://trello.com/b/xLXT4chg/release-postmortem) | | | | |
+
+## Releases which had issues
+
+{% for release in complete_releases -%}
+{% if release['resolved'] -%}
+
+### Release: {{ release["product"].capitalize() }} {{ release["version"] }} {{ release["date"] }}
+
+#### Resolved issues
 {% for issue in release['resolved'] %}
 - {{ issue["who"] }} - [bug {{ issue["bug"] }}](https://bugzil.la/{{ issue["bug"] }}) - {{ issue["description"] }}
-{% endfor %}
-{% if not release["resolved"] %}
-- none
-{% endif %}
-
-### Action Items
-| Bug                                                           | Description                | Reported By         | Priority | Owner | Follow Up Date |
-| ------------------------------------------------------------- | -------------------------- | ------------------- | -------- | ----- | -------------- |
-{% for issue in release['future_threats'] %}
-| [bug {{ issue["bug"] }}](https://bugzil.la/{{ issue["bug"] }})  | {{ issue["description"] }} | {{ issue["who"] }}  |          |       |                |
-{% endfor %}
-{% if not release["future_threats"] %}
-| none | | | | | |
-{% endif %}
-
+{% endfor -%}
+{% endif -%}
 {% endfor %}
 
+## Releases without issue
+
+{% for release in complete_releases -%}
+{% if not release['resolved'] %}
+* {{ release["product"].capitalize() }} {{ release["version"] }} - ''{{ release["date"] }}
+{% endif -%}
+{% endfor %}
 
 ## Roundtable
-- All topics in [Our Trello Board](https://trello.com/b/MXHaVRcP/release-promotion-meeting).
+- All topics in [our Trello board](https://trello.com/b/xLXT4chg/release-postmortem).
