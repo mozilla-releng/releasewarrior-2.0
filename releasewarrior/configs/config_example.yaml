@@ -24,7 +24,6 @@ releases:
     thunderbird: archive/thunderbird
 
 postmortems: postmortems
-corsica: index.html
 ###
 
 ###
@@ -56,3 +55,7 @@ templates:
 ### location of release cmd output artifacts
 releasewarrior_artifacts:
   logs: logs
+
+## corsica settings
+corsica_enabled: true
+corsica: index.html
