@@ -5,8 +5,8 @@ import sys
 import os
 
 from releasewarrior import git
-from releasewarrior.helpers import get_config, load_json, validate, get_remaining_items
-from releasewarrior.helpers import get_logger, sanitize_date_input
+from releasewarrior.helpers import get_config, load_json, validate, validate_data_repo_updated
+from releasewarrior.helpers import get_remaining_items, get_logger, sanitize_date_input
 from releasewarrior.wiki_data import get_tracking_release_data, write_and_commit, order_data, \
     log_release_status, no_filter
 from releasewarrior.wiki_data import generate_release_postmortem_data
@@ -248,6 +248,9 @@ def status(verbose, logger=LOGGER, config=CONFIG):
     """shows upcoming prerequisites and inflight human tasks
     """
     ###
+    if not validate_data_repo_updated(logger, config):
+        sys.exit(1)
+
     # upcoming prerequisites
     upcoming_releases = get_releases(config, logger, inflight=False, filter=incomplete_filter)
     if verbose:
