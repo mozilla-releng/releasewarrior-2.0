@@ -3,19 +3,20 @@ import re
 from git import Repo
 
 
-def find_upstream_repo(repo, logger, config):
-    upstream_repo_url = re.compile(config['upstream_repo_url_pattern'])
+def find_upstream_repo(repo, logger, config, pattern_key='upstream_repo_url_pattern',
+                       simplified_pattern_key='simplified_repo_url'):
+    upstream_repo_url = re.compile(config[pattern_key])
     upstream_repos = [
         repo for repo in repo.remotes if upstream_repo_url.match(repo.url) is not None
     ]
     number_of_repos_found = len(upstream_repos)
     if number_of_repos_found == 0:
-        raise Exception('No remote repository pointed to "{}" found!'.format(config['simplified_repo_url']))
+        raise Exception('No remote repository pointed to "{}" found!'.format(config[simplified_pattern_key]))
     elif number_of_repos_found > 1:
-        raise Exception('More than one repository is pointed to "{}". Found repos: {}'.format(config['simplified_repo_url'], upstream_repos))
+        raise Exception('More than one repository is pointed to "{}". Found repos: {}'.format(config[simplified_pattern_key], upstream_repos))
 
     correct_repo = upstream_repos[0]
-    logger.debug('{} is detected as being the remote repository pointed to "{}"'.format(correct_repo, config['simplified_repo_url']))
+    logger.debug('{} is detected as being the remote repository pointed to "{}"'.format(correct_repo, config[simplified_pattern_key]))
     return correct_repo
 
 

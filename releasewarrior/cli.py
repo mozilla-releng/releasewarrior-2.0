@@ -6,7 +6,8 @@ import os
 
 from releasewarrior import git
 from releasewarrior.helpers import get_config, load_json, validate, validate_data_repo_updated
-from releasewarrior.helpers import get_remaining_items, get_logger, sanitize_date_input
+from releasewarrior.helpers import get_remaining_items, get_logger, sanitize_date_input, \
+    validate_rw_repo
 from releasewarrior.wiki_data import get_tracking_release_data, write_and_commit, order_data, \
     log_release_status, no_filter
 from releasewarrior.wiki_data import generate_release_postmortem_data
@@ -42,6 +43,7 @@ def track(product, version, gtb_date, logger=LOGGER, config=CONFIG):
     """Start tracking an upcoming release.
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     """
+    validate_rw_repo(logger, config)
     release, data_path, wiki_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=False)
     data = {}
@@ -62,6 +64,7 @@ def prereq(product, version, resolve, logger=LOGGER, config=CONFIG):
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     Without any options, you will be prompted to add a prerequisite human task
     """
+    validate_rw_repo(logger, config)
     release, data_path, wiki_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=True, must_exist_in="upcoming")
     data = load_json(data_path)
@@ -84,6 +87,7 @@ def newbuild(product, version, graphid, logger=LOGGER, config=CONFIG):
     If this is the first buildnum, move the release from upcoming dir to inflight
     Otherwise, increment the buildnum of the already current inflight release
     """
+    validate_rw_repo(logger, config)
     release, data_path, wiki_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=True)
     data = load_json(data_path)
@@ -107,6 +111,7 @@ def task(product, version, resolve, logger=LOGGER, config=CONFIG):
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     Without any options, you will be prompted to add a task
     """
+    validate_rw_repo(logger, config)
     release, data_path, wiki_path = get_release_info(product, version, logger, config)
     # if we are adding a human_task, the release does not have to be inflight yet
     must_exist_in = "inflight" if resolve else None
@@ -130,6 +135,7 @@ def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     Without any options, you will be prompted to add an issue
     """
+    validate_rw_repo(logger, config)
     release, data_path, wiki_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=True, must_exist_in="inflight")
     data = load_json(data_path)
@@ -168,6 +174,7 @@ def postmortem(date, logger=LOGGER, config=CONFIG):
     wiki_template = config['templates']["wiki"]["postmortem"]
 
     # validate
+    validate_rw_repo(logger, config)
     if not completed_releases:
         logger.warning("No recently completed releases. Nothing to do!")
         sys.exit(1)
@@ -214,6 +221,7 @@ def cancel(product, version, logger=LOGGER, config=CONFIG):
     """Similar to newbuild where it aborts current buildnum of given release but does not create
     a new build.
     """
+    validate_rw_repo(logger, config)
     release, data_path, wiki_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=True, must_exist_in="inflight")
     data = load_json(data_path)
@@ -233,6 +241,7 @@ def sync(product, version, logger=LOGGER, config=CONFIG):
     """takes currently saved json data of given release from data repo, generates wiki, and commits
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     """
+    validate_rw_repo(logger, config)
     release, data_path, wiki_path = get_release_info(product, version, logger, config)
     validate(release, logger, config, must_exist=True, must_exist_in="inflight")
     data = load_json(data_path)

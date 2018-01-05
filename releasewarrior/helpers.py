@@ -6,7 +6,7 @@ import re
 import yaml
 from datetime import datetime
 from dateutil.parser import parse
-from git import Repo
+from git import Repo, exc as git_exc
 
 from releasewarrior.git import find_upstream_repo
 
@@ -23,6 +23,8 @@ DEFAULT_TEMPLATES_DIR = os.path.join(
     os.path.abspath(os.path.join(os.path.realpath(__file__), '..', '..')),
     "releasewarrior/templates"
 )
+
+RW_REPO = os.path.abspath(os.path.join(os.path.realpath(__file__), '..', '..'))
 
 
 def get_logger(verbose=False):
@@ -185,6 +187,41 @@ def validate_data_repo_updated(logger, config):
         return False
 
     return True
+
+
+def validate_rw_repo(logger, config):
+    ### data repo state file
+    state_file = os.path.join(config['releasewarrior_data_repo'], 'state.yml')
+    min_sha = None
+    if os.path.isfile(state_file):
+        with open(state_file) as fh:
+            state = yaml.load(fh)
+        min_sha = state.get('min-rw-sha')
+    else:
+        logger.warning('no release data state file')
+        return
+
+    if not min_sha:
+        logger.warning('no release data information on minimum sha for releasewarrior')
+
+    if not re.match('[0-9a-fA-F]', min_sha):
+        logger.fatal('min sha ({}) is invalid format'.format(min_sha))
+        sys.exit(1)
+
+    repo = Repo(RW_REPO)
+    if repo.is_dirty():
+        logger.warning("releasewarrior repo dirty")
+    upstream = find_upstream_repo(
+        repo, logger, config, pattern_key='upstream_rw_repo_url_pattern',
+        simplified_pattern_key='simplified_rw_repo_url')
+
+    logger.info("ensuring releasewarrior repo is newer than {} from {}".format(min_sha, upstream))
+    try:
+        repo.git.merge_base('--is-ancestor', min_sha, repo.head.commit)
+    except git_exc.GitCommandError:
+        logger.fatal('Local releasewarrior repo does not contain {} please pull'
+                     'in newer content'.format(min_sha))
+        sys.exit(1)
 
 def sanitize_date_input(date, logger):
     try:
