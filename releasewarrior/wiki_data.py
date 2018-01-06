@@ -191,6 +191,7 @@ def generate_newbuild_data(data, graphid, release, data_path, wiki_path, logger,
         newbuild = deepcopy(data["inflight"][current_build_index])
         # abort the now previous buildnum
         data["inflight"][current_build_index]["aborted"] = True
+        newbuild["aborted"] = False
         for task in newbuild["human_tasks"]:
             if task["alias"] == "shipit":
                 continue  # leave submitted to shipit as resolved
