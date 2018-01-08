@@ -10,11 +10,6 @@
   {% else %}
   <div class="progress-bar bg-white text-muted" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">Upload builds</div>
   {% endif %}
-  {% if releases["fennec"]["release"]["human_tasks"]["candidates"] %}
-  <div class="progress-bar bg-primary" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">QE signed off</div>
-  {% else %}
-  <div class="progress-bar bg-white text-muted" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">QE sign off</div>
-  {% endif %}
   {% if releases["fennec"]["release"]["human_tasks"]["pushapk"] %}
   <div class="progress-bar bg-primary" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">Published on Google Play</div>
   {% else %}
