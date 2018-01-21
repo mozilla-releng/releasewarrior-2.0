@@ -25,10 +25,13 @@ def order_data(data):
 
 
 def get_current_build_index(release):
+    highest_buildnum = 0
+    return_index = 0
     for index, build in enumerate(release['inflight']):
-        if not build["aborted"]:
-            return index
-    return None
+        if build["buildnum"] > highest_buildnum:
+            highest_buildnum = build["buildnum"]
+            return_index = index
+    return return_index
 
 
 def generate_wiki(data, wiki_template, logger, config):
@@ -83,13 +86,13 @@ def get_release_files(release, logging, config):
         os.path.join(release_path, wiki_file)
     ]
 
-def complete_filter(tasks):
-    return all(task["resolved"] for task in tasks)
+def complete_filter(tasks, aborted):
+    return all(task["resolved"] for task in tasks) or aborted
 
-def incomplete_filter(tasks):
-    return not all(task["resolved"] for task in tasks)
+def incomplete_filter(tasks, aborted):
+    return not all(task["resolved"] for task in tasks) and not aborted
 
-def no_filter(tasks):
+def no_filter(tasks, aborted):
     return True
 
 def get_releases(config, logger, inflight=True, filter=no_filter):
@@ -102,9 +105,11 @@ def get_releases(config, logger, inflight=True, filter=no_filter):
                     data = json.load(data_f)
                     if inflight:
                         tasks = data["inflight"][get_current_build_index(data)]["human_tasks"]
+                        aborted = data["inflight"][get_current_build_index(data)]["aborted"]
                     else:
                         tasks = data["preflight"]["human_tasks"]
-                    if filter(tasks):
+                        aborted = False
+                    if filter(tasks, aborted):
                         yield data
 
 
@@ -186,6 +191,7 @@ def generate_newbuild_data(data, graphid, release, data_path, wiki_path, logger,
         newbuild = deepcopy(data["inflight"][current_build_index])
         # abort the now previous buildnum
         data["inflight"][current_build_index]["aborted"] = True
+        newbuild["aborted"] = False
         for task in newbuild["human_tasks"]:
             if task["alias"] == "shipit":
                 continue  # leave submitted to shipit as resolved

@@ -5,8 +5,8 @@ import sys
 import os
 
 from releasewarrior import git
-from releasewarrior.helpers import get_config, load_json, validate, get_remaining_items
-from releasewarrior.helpers import get_logger, sanitize_date_input
+from releasewarrior.helpers import get_config, load_json, validate, validate_data_repo_updated
+from releasewarrior.helpers import get_remaining_items, get_logger, sanitize_date_input
 from releasewarrior.wiki_data import get_tracking_release_data, write_and_commit, order_data, \
     log_release_status, no_filter
 from releasewarrior.wiki_data import generate_release_postmortem_data
@@ -141,6 +141,7 @@ def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
     data = order_data(data)
     write_and_commit(data, data_path, wiki_path, commit_msg, logger, config)
 
+
 # TODO assign default date to the "next wed"
 # TODO accept various date inputs
 @cli.command()
@@ -209,6 +210,25 @@ def postmortem(date, logger=LOGGER, config=CONFIG):
 @cli.command()
 @click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
 @click.argument('version')
+def cancel(product, version, logger=LOGGER, config=CONFIG):
+    """Similar to newbuild where it aborts current buildnum of given release but does not create
+    a new build.
+    """
+    release, data_path, wiki_path = get_release_info(product, version, logger, config)
+    validate(release, logger, config, must_exist=True, must_exist_in="inflight")
+    data = load_json(data_path)
+
+    logger.info("Most recent buildnum has been aborted. Release cancelled.")
+    commit_msg = "{} {} - cancelling release".format(product, version)
+    current_build_index = get_current_build_index(data)
+    data["inflight"][current_build_index]["aborted"] = True
+
+    write_and_commit(data, data_path, wiki_path, commit_msg, logger, config)
+
+
+@cli.command()
+@click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
+@click.argument('version')
 def sync(product, version, logger=LOGGER, config=CONFIG):
     """takes currently saved json data of given release from data repo, generates wiki, and commits
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
@@ -228,6 +248,9 @@ def status(verbose, logger=LOGGER, config=CONFIG):
     """shows upcoming prerequisites and inflight human tasks
     """
     ###
+    if not validate_data_repo_updated(logger, config):
+        sys.exit(1)
+
     # upcoming prerequisites
     upcoming_releases = get_releases(config, logger, inflight=False, filter=incomplete_filter)
     if verbose:
@@ -276,6 +299,3 @@ def status(verbose, logger=LOGGER, config=CONFIG):
         for release in complete_releases:
             log_release_status(release, logger)
     ###
-
-# TODO postmortem
-# TODO cancel
