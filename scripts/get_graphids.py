@@ -1,7 +1,7 @@
-#! /usr/env python3
+#!/usr/bin/env python
 
-import argparse
 import aiohttp
+import argparse
 import asyncio
 import async_timeout
 import posixpath
@@ -15,7 +15,7 @@ REPOS = ('releases/mozilla-beta', 'releases/mozilla-release',
          'releases/mozilla-esr52', 'mozilla-central')
 
 """ http://mozilla-version-control-tools.readthedocs.io/en/latest/hgmo/pushlog.html?highlight=json-pushes#json-pushes-command """  # noqa
-JSON_PUSHES = 'json-pushes?changeset={rev}'
+JSON_PUSHES = 'json-pushes?changeset={rev}&version=2&tipsonly=1&full=1'
 
 ACTION_INDEX = 'gecko.v2.{repo}.pushlog-id.{pushid}.actions'
 
@@ -31,8 +31,8 @@ async def get_changeset_data(revision, session):
 
                 index_repo = repo[repo.rfind('/') + 1:]
                 data = await response.json()
-                pushlog_id = list(data.keys())[0]
-                changeset = data[pushlog_id]['changesets'][-1]
+                pushlog_id = list(data['pushes'].keys())[0]
+                changeset = data['pushes'][pushlog_id]['changesets'][-1]
                 return (changeset, index_repo, pushlog_id)
 
 
