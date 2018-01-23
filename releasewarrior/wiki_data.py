@@ -86,13 +86,15 @@ def get_release_files(release, logging, config):
         os.path.join(release_path, wiki_file)
     ]
 
-def complete_filter(tasks, aborted):
-    return all(task["resolved"] for task in tasks) or aborted
+def complete_filter(tasks, issues, aborted):
+    return (all(task["resolved"] for task in tasks) or aborted) and \
+            all(issue["resolved"] for issue in issues)
 
-def incomplete_filter(tasks, aborted):
-    return not all(task["resolved"] for task in tasks) and not aborted
+def incomplete_filter(tasks, issues, aborted):
+    return (not all(task["resolved"] for task in tasks) and not aborted) or \
+            not all(issue["resolved"] for issue in issues)
 
-def no_filter(tasks, aborted):
+def no_filter(tasks, issues, aborted):
     return True
 
 def get_releases(config, logger, inflight=True, filter=no_filter):
@@ -105,11 +107,13 @@ def get_releases(config, logger, inflight=True, filter=no_filter):
                     data = json.load(data_f)
                     if inflight:
                         tasks = data["inflight"][get_current_build_index(data)]["human_tasks"]
+                        issues = data["inflight"][get_current_build_index(data)]["issues"]
                         aborted = data["inflight"][get_current_build_index(data)]["aborted"]
                     else:
                         tasks = data["preflight"]["human_tasks"]
+                        issues = []
                         aborted = False
-                    if filter(tasks, aborted):
+                    if filter(tasks, issues, aborted):
                         yield data
 
 
