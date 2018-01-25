@@ -123,7 +123,7 @@ def get_release_info(product, version, logger, config):
     return release, data_path, wiki_path
 
 
-def generate_corsica(corsica_path, config, logger):
+def generate_corsica(config, logger):
     all_inflight_releases = get_releases(config, logger)
     corsica_data = {
         "releases": {}
@@ -154,16 +154,17 @@ def generate_corsica(corsica_path, config, logger):
 
 def write_and_commit(data, data_path, wiki_path, commit_msg, logger, config, wiki_template=None):
     corsica_path = os.path.join(config["releasewarrior_data_repo"], config["corsica"])
-
     wiki = generate_wiki(data, wiki_template, logger, config)
-    data_path = write_data(data_path, data, logger, config)
-    wiki_path = write_wiki(wiki_path, wiki, logger, config)
-    corsica = generate_corsica(corsica_path, config, logger)
-    corsica_path = write_corsica(corsica_path, corsica, logger, config)
-    logger.debug(data_path)
-    logger.debug(wiki_path)
-    logger.debug(corsica_path)
-    commit([data_path, wiki_path, corsica_path], commit_msg, logger, config)
+    paths = []
+
+    paths.append(write_data(data_path, data, logger, config))
+    paths.append(write_wiki(wiki_path, wiki, logger, config))
+    if config['corsica_enabled']:
+        corsica = generate_corsica(config, logger)
+        paths.append(write_corsica(corsica_path, corsica, logger, config))
+    for p in paths:
+        logger.debug(p)
+    commit(paths, commit_msg, logger, config)
 
 
 def generate_newbuild_data(data, graphid, release, data_path, wiki_path, logger, config):
