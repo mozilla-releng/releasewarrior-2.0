@@ -126,7 +126,7 @@ def task(product, version, resolve, logger=LOGGER, config=CONFIG):
 @click.argument('version')
 @click.option('--resolve', multiple=True, help="inflight issue to resolve")
 def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
-    """Add or resolve a issue against current buildnum
+    """Add or resolve an issue against current buildnum
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     Without any options, you will be prompted to add an issue
     """
