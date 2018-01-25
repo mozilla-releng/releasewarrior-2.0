@@ -118,6 +118,7 @@ Start tracking an upcoming release. This is a required command before `newbuild`
 Usage:
 
 `release track $PRODUCT $VERSION --date YYYY-MM-DD`
+
 `release track $PRODUCT $VERSION  # --date defaults to today`
 
 What it does:
@@ -271,21 +272,43 @@ $ release issue firefox 57.0rc --resolve $issue_id
 
 ### postmortem
 
-TODO - not implemented
+Generate postmortem file for releaseduty weekly meeting.
+
+Usage:
+
+```
+release postmortem 2018-01-25
+```
+
+What it does:
+
+Creates a postmortem file based on completed releases and their unresolved
+issues. Archives release files that are completed using the same date will
+only append and archive releases as they are updated
+
+Example:
+
+```
+$ release postmortem 2018-01-25
+WARNING: No recently completed releases. Nothing to do!
+```
+
 
 ### sync
 
 Semi-manually updating releasewarrior
-
-The data is just a json file and changes are tracked by the repository's
-revision history, you can always manually update the data and have the tool
-re-create the wiki presentation.
 
 Usage:
 
 ```
 release sync $PRODUCT $VERSION
 ```
+
+What it does:
+
+The data is just a json file and changes are tracked by the repository's
+revision history, you can always manually update the data and have the tool
+re-create the wiki presentation.
 
 Example:
 
