@@ -272,7 +272,7 @@ $ release issue firefox 57.0rc --resolve $issue_id
 
 ### postmortem
 
-Generate postmortem file for releaseduty weekly meeting.
+Generate postmortem file for releaseduty weekly meeting
 
 Usage:
 
@@ -284,12 +284,12 @@ What it does:
 
 Creates a postmortem file based on completed releases and their unresolved
 issues. Archives release files that are completed using the same date will
-only append and archive releases as they are updated
+only append and archive releases as they are updated.
 
 Example:
 
 ```
-$ release postmortem 2018-01-25
+$ release postmortem YYYY-MM-DD
 WARNING: No recently completed releases. Nothing to do!
 ```
 
