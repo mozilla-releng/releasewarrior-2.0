@@ -277,7 +277,7 @@ Generate postmortem file for releaseduty weekly meeting
 Usage:
 
 ```
-release postmortem 2018-01-25
+release postmortem YYYY-MM-DD
 ```
 
 What it does:
@@ -289,7 +289,7 @@ only append and archive releases as they are updated.
 Example:
 
 ```
-$ release postmortem YYYY-MM-DD
+$ release postmortem 2018-01-25
 WARNING: No recently completed releases. Nothing to do!
 ```
 
