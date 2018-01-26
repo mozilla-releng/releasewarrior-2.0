@@ -38,3 +38,11 @@ def move(src, dest, logger, config):
     logger.debug("archiving {src} to {dest}", src, dest)
     repo = Repo(config['releasewarrior_data_repo'])
     repo.index.move([src, dest])
+
+
+def push(logger, config):
+    repo = Repo(config['releasewarrior_data_repo'])
+    upstream = find_upstream_repo(repo, logger, config)
+    logger.info("pushing changes to %s", list(upstream.urls)[0])
+    push_info = upstream.push(refspec='master:master')
+    logger.info("Summary of push: {}".format(push_info[0].summary))

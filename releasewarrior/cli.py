@@ -308,3 +308,9 @@ def status(verbose, logger=LOGGER, config=CONFIG):
         for release in complete_releases:
             log_release_status(release, logger)
     ###
+
+@cli.command()
+@click.option('--push', is_flag=True, help="Pushes the data repo to upstream")
+def data(push, logger=LOGGER, config=CONFIG):
+    if push:
+        git.push(logger, config)

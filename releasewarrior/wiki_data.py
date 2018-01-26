@@ -10,7 +10,7 @@ from releasewarrior.click_input import generate_inflight_task_from_input, is_fut
 from releasewarrior.click_input import generate_prereq_task_from_input
 from releasewarrior.click_input import generate_inflight_issue_from_input
 from releasewarrior.collections import Release
-from releasewarrior.git import commit
+from releasewarrior.git import commit, push
 from releasewarrior.helpers import get_branch, load_json, get_remaining_items
 
 
@@ -165,6 +165,8 @@ def write_and_commit(data, data_path, wiki_path, commit_msg, logger, config, wik
     for p in paths:
         logger.debug(p)
     commit(paths, commit_msg, logger, config)
+    if config.get("auto_push_data"):
+        push(logger, config)
 
 
 def generate_newbuild_data(data, graphid, release, data_path, wiki_path, logger, config):
