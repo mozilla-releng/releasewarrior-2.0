@@ -12,6 +12,11 @@ from releasewarrior.git import find_upstream_repo
 
 DEFAULT_CONFIG = os.path.join(
     os.path.abspath(os.path.join(os.path.realpath(__file__), '..', '..')),
+    "releasewarrior/configs/default_config.yaml"
+)
+
+CUSTOM_CONFIG = os.path.join(
+    os.path.abspath(os.path.join(os.path.realpath(__file__), '..', '..')),
     "releasewarrior/configs/config.yaml"
 )
 
@@ -48,9 +53,13 @@ def get_logger(verbose=False):
     return logger
 
 
-def get_config(path=DEFAULT_CONFIG):
-    with open(path) as fh:
+def get_config(path=CUSTOM_CONFIG):
+    # first get some default config items
+    with open(DEFAULT_CONFIG) as fh:
         config = yaml.load(fh)
+    # now append or replace with custom config items
+    with open(path) as fh:
+        config.update(yaml.load(fh))
     config['templates_dir'] = config.get('templates_dir', DEFAULT_TEMPLATES_DIR)
     return config
 
