@@ -14,8 +14,8 @@
 ## Build {{ build['buildnum'] }} {% if build['aborted'] %} :bomb: _aborted release. starting new build num_ :bomb:{% endif %} 
 
 ### Graphs
-{% for graphid in build['graphids'] %}
-[task group](https://tools.taskcluster.net/push-inspector/#/{{ graphid }})
+{% for graph_info in build['graphids'] %}
+[{{graph_info[0]}}](https://tools.taskcluster.net/push-inspector/#/{{ graph_info[1] }})
 {% endfor %}
 {% if not build["graphids"] %}
 task graph url: unknown

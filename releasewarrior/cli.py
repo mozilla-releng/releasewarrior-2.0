@@ -5,16 +5,35 @@ import sys
 import os
 
 from releasewarrior import git
-from releasewarrior.helpers import get_config, load_json, validate, validate_data_repo_updated
-from releasewarrior.helpers import get_remaining_items, get_logger, sanitize_date_input, \
-    validate_rw_repo
-from releasewarrior.wiki_data import get_tracking_release_data, write_and_commit, order_data, \
-    log_release_status, no_filter
-from releasewarrior.wiki_data import generate_release_postmortem_data
-from releasewarrior.wiki_data import generate_newbuild_data, get_current_build_index, get_releases
-from releasewarrior.wiki_data import incomplete_filter, complete_filter
-from releasewarrior.wiki_data import update_prereq_human_tasks, get_release_info
-from releasewarrior.wiki_data import update_inflight_human_tasks, update_inflight_issue
+from releasewarrior.helpers import (
+    get_config,
+    get_logger,
+    get_remaining_items,
+    load_json,
+    sanitize_date_input,
+    validate,
+    validate_data_repo_updated,
+    validate_phase,
+    validate_rw_repo,
+)
+from releasewarrior.wiki_data import (
+    complete_filter,
+    get_current_build_index,
+    generate_newbuild_data,
+    get_releases,
+    get_release_info,
+    generate_release_postmortem_data,
+    get_tracking_release_data,
+    incomplete_filter,
+    log_release_status,
+    no_filter,
+    order_data,
+    update_inflight_graphid,
+    update_inflight_human_tasks,
+    update_inflight_issue,
+    update_prereq_human_tasks,
+    write_and_commit,
+)
 
 LOGGER = get_logger(verbose=False)
 CONFIG = get_config()
@@ -80,8 +99,7 @@ def prereq(product, version, resolve, logger=LOGGER, config=CONFIG):
 @cli.command()
 @click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
 @click.argument('version')
-@click.option('--graphid', multiple=True)
-def newbuild(product, version, graphid, logger=LOGGER, config=CONFIG):
+def newbuild(product, version, logger=LOGGER, config=CONFIG):
     """Mark a release as submitted to shipit
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     If this is the first buildnum, move the release from upcoming dir to inflight
@@ -92,9 +110,8 @@ def newbuild(product, version, graphid, logger=LOGGER, config=CONFIG):
     validate(release, logger, config, must_exist=True)
     data = load_json(data_path)
 
-    graphid_msg = "Graphids: {}".format(graphid) if graphid else ""
-    commit_msg = "{} {} - new buildnum started. ".format(product, version, graphid_msg)
-    data, data_path, wiki_path = generate_newbuild_data(data, graphid, release, data_path,
+    commit_msg = "{} {} - new buildnum started.".format(product, version)
+    data, data_path, wiki_path = generate_newbuild_data(data, release, data_path,
                                                         wiki_path, logger, config)
 
     data = order_data(data)
@@ -148,6 +165,29 @@ def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
     write_and_commit(data, data_path, wiki_path, commit_msg, logger, config)
 
 
+@cli.command()
+@click.argument('graphid')
+@click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
+@click.argument('version')
+@click.option('--phase', type=click.Choice(['promote', 'promote_rc', 'push', 'ship', 'ship_rc']))
+def graphid(graphid, product, version, phase, logger=LOGGER, config=CONFIG):
+    """Add or resolve an issue against current buildnum
+    product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
+    Without any options, you will be prompted to add an issue
+    """
+    validate_rw_repo(logger, config)
+    release, data_path, wiki_path = get_release_info(product, version, logger, config)
+    validate(release, logger, config, must_exist=True, must_exist_in="inflight")
+    data = load_json(data_path)
+
+    validate_phase(product, version, phase, logger, config)
+    commit_msg = "{} {} - added {} graphid.".format(product, version, phase)
+    data = update_inflight_graphid(data, phase, graphid, logger)
+
+    data = order_data(data)
+    write_and_commit(data, data_path, wiki_path, commit_msg, logger, config)
+
+
 # TODO assign default date to the "next wed"
 # TODO accept various date inputs
 @cli.command()
@@ -186,7 +226,6 @@ def postmortem(date, logger=LOGGER, config=CONFIG):
         )
     os.makedirs(os.path.join(config['releasewarrior_data_repo'], config['postmortems']), exist_ok=True)
 
-
     # get existing postmortem data
     postmortem_data = {
         "date": date,
@@ -209,7 +248,7 @@ def postmortem(date, logger=LOGGER, config=CONFIG):
 
     commit_msg = "updates {} postmortem".format(date)
     postmortem_data["complete_releases"] = sorted(postmortem_data["complete_releases"],
-                                                    key=lambda x: x["date"])
+                                                  key=lambda x: x["date"])
     write_and_commit(postmortem_data, postmortem_data_path, postmortem_wiki_path,
                      commit_msg, logger, config, wiki_template=wiki_template)
 
@@ -308,6 +347,7 @@ def status(verbose, logger=LOGGER, config=CONFIG):
         for release in complete_releases:
             log_release_status(release, logger)
     ###
+
 
 @cli.command()
 @click.option('--push', is_flag=True, help="Pushes the data repo to upstream")
