@@ -171,9 +171,10 @@ def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
 @click.argument('version')
 @click.option('--phase', type=click.Choice(['promote', 'promote_rc', 'push', 'ship', 'ship_rc']))
 def graphid(graphid, product, version, phase, logger=LOGGER, config=CONFIG):
-    """Add or resolve an issue against current buildnum
+    """Add a graphid to a release.
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
-    Without any options, you will be prompted to add an issue
+    The phase must match the product.
+
     """
     validate_rw_repo(logger, config)
     release, data_path, wiki_path = get_release_info(product, version, logger, config)
