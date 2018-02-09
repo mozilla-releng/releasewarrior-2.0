@@ -31,6 +31,20 @@ DEFAULT_TEMPLATES_DIR = os.path.join(
 
 RW_REPO = os.path.abspath(os.path.join(os.path.realpath(__file__), '..', '..'))
 
+KNOWN_PRODUCT_PHASES = {
+    'devedition': {
+        'default': ('promote', 'push', 'ship'),
+    },
+    'fennec': {
+        'release-rc': ('promote', 'ship_rc', 'ship'),
+        'default': ('promote', 'ship'),
+    },
+    'firefox': {
+        'release-rc': ('promote_rc', 'ship_rc', 'push', 'ship'),
+        'default': ('promote', 'push', 'ship'),
+    },
+}
+
 
 def get_logger(verbose=False):
     log_level = logging.INFO
@@ -49,6 +63,12 @@ def get_logger(verbose=False):
     console = logging.StreamHandler()
     console.setFormatter(logging.Formatter('%(levelname)s: %(message)s'))
     logging.getLogger('').addHandler(console)
+
+    def fatal(*args, **kwargs):
+        logger.critical(*args, **kwargs)
+        sys.exit(-1)
+
+    logger.fatal = fatal
 
     return logger
 
@@ -110,11 +130,11 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
 
     passed = True
 
-    ### branch validation against product
+    # branch validation against product
     # not critical so simply prevent basic mistakes
     branch_validations = {
         "devedition": release.branch in ['devedition'],
-        "fennec": release.branch in ['beta', 'release'],
+        "fennec": release.branch in ['beta', 'release', 'release-rc'],
         "firefox": release.branch in ['beta', 'release', 'release-rc', 'esr'],
         "thunderbird": release.branch in ['beta', 'release']
     }
@@ -124,7 +144,7 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
         passed = False
     ###
 
-    ### ensure release data file exists where expected
+    # ensure release data file exists where expected
     upcoming_path = os.path.join(config['releasewarrior_data_repo'],
                                  config['releases']['upcoming'][release.product],
                                  "{}-{}-{}.json".format(release.product, release.branch, release.version))
@@ -159,16 +179,12 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
             logger.fatal("data file already exists in one of the following paths: %s, %s",
                          upcoming_path, inflight_path)
             passed = False
-    ###
 
-
-    ### data repo check
+    # data repo check
     if not validate_data_repo_updated(logger, config):
         passed = False
-    ###
 
-
-    ### ensure release directories exist
+    # ensure release directories exist
     for state_dir in config['releases']:
         for product in config['releases'][state_dir]:
             os.makedirs(
@@ -198,8 +214,23 @@ def validate_data_repo_updated(logger, config):
     return True
 
 
+def validate_phase(product, version, phase, logger, config):
+    branch = get_branch(version, product, logger)
+    allowed_phases = KNOWN_PRODUCT_PHASES[product].get(
+        branch,
+        KNOWN_PRODUCT_PHASES[product]['default']
+    )
+    if phase not in allowed_phases:
+        logger.fatal('Illegal phase {} for {} {}!'.format(phase, product, version))
+        return False
+    return True
+
+
 def validate_rw_repo(logger, config):
-    ### data repo state file
+    if os.environ.get("RW_DEV"):
+        logger.debug("Skipping rw repo validation because RW_DEV is set")
+        return
+    # data repo state file
     state_file = os.path.join(config['releasewarrior_data_repo'], 'state.yml')
     min_sha = None
     if os.path.isfile(state_file):
@@ -231,6 +262,7 @@ def validate_rw_repo(logger, config):
         logger.fatal('Local releasewarrior repo does not contain {} please pull'
                      'in newer content'.format(min_sha))
         sys.exit(1)
+
 
 def sanitize_date_input(date, logger):
     try:

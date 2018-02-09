@@ -86,16 +86,20 @@ def get_release_files(release, logging, config):
         os.path.join(release_path, wiki_file)
     ]
 
+
 def complete_filter(tasks, issues, aborted):
     return (all(task["resolved"] for task in tasks) or aborted) and \
             all(issue["resolved"] for issue in issues)
+
 
 def incomplete_filter(tasks, issues, aborted):
     return (not all(task["resolved"] for task in tasks) and not aborted) or \
             not all(issue["resolved"] for issue in issues)
 
+
 def no_filter(tasks, issues, aborted):
     return True
+
 
 def get_releases(config, logger, inflight=True, filter=no_filter):
     for release_path in config['releases']['inflight' if inflight else 'upcoming'].values():
@@ -168,12 +172,13 @@ def write_and_commit(data, data_path, wiki_path, commit_msg, logger, config, wik
         paths.append(write_corsica(corsica_path, corsica, logger, config))
     for p in paths:
         logger.debug(p)
-    commit(paths, commit_msg, logger, config)
-    if config.get("auto_push_data"):
-        push(logger, config)
+    if not os.environ.get("RW_DEV"):
+        commit(paths, commit_msg, logger, config)
+        if config.get("auto_push_data"):
+            push(logger, config)
 
 
-def generate_newbuild_data(data, graphid, release, data_path, wiki_path, logger, config):
+def generate_newbuild_data(data, release, data_path, wiki_path, logger, config):
     is_first_gtb = "upcoming" in data_path
     current_build_index = get_current_build_index(data)
     if is_first_gtb:
@@ -211,7 +216,6 @@ def generate_newbuild_data(data, graphid, release, data_path, wiki_path, logger,
         # add new buildnum based on previous to current release
         data["inflight"].append(newbuild)
     current_build_index = get_current_build_index(data)
-    data["inflight"][current_build_index]["graphids"] = [_id for _id in graphid]
 
     return data, data_path, wiki_path
 
@@ -303,6 +307,13 @@ def update_inflight_issue(data, resolve, logger):
     return data
 
 
+def update_inflight_graphid(data, phase, graphid, logger):
+    data = deepcopy(data)
+    current_build_index = get_current_build_index(data)
+    data["inflight"][current_build_index]["graphids"].append([phase, graphid])
+    return data
+
+
 def generate_release_postmortem_data(release):
     postmortem_release = {
         "version": release['version'],
@@ -334,9 +345,9 @@ def log_release_status(release, logger):
     logger.info("RELEASE: %s %s build%s %s",
                 release["product"], release["version"],
                 release["inflight"][current_build_index]["buildnum"], release["date"])
-    for index, graphid in enumerate(release["inflight"][current_build_index]["graphids"]):
-        logger.info("Graph %s: https://tools.taskcluster.net/task-group-inspector/#/%s",
-                    index + 1, graphid)
+    for graph_info in release["inflight"][current_build_index]["graphids"]:
+        logger.info("%s graph: https://tools.taskcluster.net/task-group-inspector/#/%s",
+                    graph_info[0], graph_info[1])
     logger.info("\tIncomplete human tasks:")
     for task in remaining_tasks:
         alias = ""
