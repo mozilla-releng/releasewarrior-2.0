@@ -310,7 +310,13 @@ def update_inflight_issue(data, resolve, logger):
 def update_inflight_graphid(data, phase, graphid, logger):
     data = deepcopy(data)
     current_build_index = get_current_build_index(data)
-    data["inflight"][current_build_index]["graphids"].append([phase, graphid])
+    graphids = data["inflight"][current_build_index]["graphids"]
+    existing_phases = [p for p, _ in graphids]
+    if phase in existing_phases:
+        i = existing_phases.index(phase)
+        graphids[i] = [phase, graphid]
+    else:
+        graphids.append([phase, graphid])
     return data
 
 
