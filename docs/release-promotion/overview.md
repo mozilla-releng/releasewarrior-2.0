@@ -2,7 +2,7 @@
 
 # Requirements
 
-* All steps followed in the [[ReleaseDuty Day 1 Checklist|ReleaseDuty Day 1 Checklist and FAQ]]
+* All steps followed from Day1 documentation
 * Ability to run the `release` command and find the task group inspector URLs for releases in flight.
 
 # Actions for Desktop related releases
@@ -14,7 +14,7 @@
 3. Publish the release
 4. Post-release steps
 
-Instructions vary slightly depending on the type of release, so please be careful when following the instructions in [[Release Promotion Tasks]]
+Instructions vary slightly depending on the type of release, so please be careful when following the instructions.
 
 ## Notes and Background
 
