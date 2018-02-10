@@ -12,16 +12,16 @@ where the coordination happens among the releaseduty squirrels.
 
 This folder gathers all releaseduty documentation under one single umbrella. The structure is as follows:
 
-[Overview](#Overview)
-[Release Duties](#Release Duties)
-[CHANGELOG](#TODO) - to track large changes to the workflow and tools of releaseduty
-[balrog](#TODO) - to track all Balrog related information and understanding
-[day1](#TODO) - day1 documentation for all releng folks starting/resuming their releaseduty cycle
-[development](#TODO) - documentation for various related pieces that are still under development (e.g. tcmigration or Ship It v2. stuff)
-[mergeduty](#TODO) - single point of truth for all that matters during mergeduty processes
-[misc-operations](#TODO) - various other pieces of documentation that come into handy while releaseduty
-[release-promotion](#TODO) - to track the bread and butter of releaseduty for all products and platforms
-[signing](#TODO) - to track any related signing duties that releaseduty must perform occasionally
+- [Overview](#Overview)
+- [Release Duties](#Release Duties)
+- [CHANGELOG](#TODO) - to track large changes to the workflow and tools of releaseduty
+- [balrog](#TODO) - to track all Balrog related information and understanding
+- [day1](#TODO) - day1 documentation for all releng folks starting/resuming their releaseduty cycle
+- [development](#TODO) - documentation for various related pieces that are still under development (e.g. tcmigration or Ship It v2. stuff)
+- [mergeduty](#TODO) - single point of truth for all that matters during mergeduty processes
+- [misc-operations](#TODO) - various other pieces of documentation that come into handy while releaseduty
+- [release-promotion](#TODO) - to track the bread and butter of releaseduty for all products and platforms
+- [signing](#TODO) - to track any related signing duties that releaseduty must perform occasionally
 
 ## Overview
 
