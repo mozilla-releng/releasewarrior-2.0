@@ -7,7 +7,7 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 ## During 59.0 >= 2018-01-24
 
 ### Added
-- we track all major changes in this newly added [CHANGELOG](https://github.com/mozilla-releng/releasewarrior-2.0/wiki/ReleaseDuty-Cycle-CHANGELOG/)
+- we track all major changes in this newly added CHANGELOG
 
 ### Changed
 - old release promotion based on [releasetasks](https://github.com/mozilla/releasetasks/) is dead. Everything is in-tree scheduled now. Changes are riding the trains. More on this [here](https://github.com/mozilla-releng/releasewarrior-2.0/wiki/Release-Promotion-Overview-TC) and [here](https://github.com/mozilla-releng/releasewarrior-2.0/wiki/Release-Promotion-Tasks-TC)
