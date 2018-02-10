@@ -1,11 +1,27 @@
 
 # ReleaseWarrior and ReleaseDuty
 
-ReleaseDuty is a duty cycle where an engineer is responsible for operational
-tasks related to releasing new versions of Firefox. 
+_ReleaseDuty_ is a duty cycle where an engineer is responsible for operational
+and monitoring tasks related to releasing the new versions of Mozilla's products.
 
-ReleaseWarrior is a tool to help the on-duty engineers perform those tasks,
-and to keep track of release progress and issues.
+_ReleaseWarrior_ is a tool to help the on-duty engineers perform those tasks,
+and to keep track of release progress and issues. It is the single source of truth
+where the coordination happens among the releaseduty squirrels.
+
+## Table of contents
+
+This folder gathers all releaseduty documentation under one single umbrella. The structure is as follows:
+
+[Overview](#Overview)
+[Release Duties](#Release Duties)
+├── [CHANGELOG](#TODO) - to track large changes to the workflow and tools of releaseduty
+├── [balrog](#TODO) - to track all Balrog related information and understanding
+├── [day1](#TODO) - day1 documentation for all releng folks starting/resuming their releaseduty cycle
+├── [development](#TODO) - documentation for various related pieces that are still under development (e.g. tcmigration or Ship It v2. stuff)
+├── [mergeduty](#TODO) - single point of truth for all that matters during mergeduty processes
+├── [misc-operations](#TODO) - various other pieces of documentation that come into handy while releaseduty
+├── [release-promotion](#TODO) - to track the bread and butter of releaseduty for all products and platforms
+└── [signing](#TODO) - to track any related signing duties that releaseduty must perform occasionally
 
 ## Overview
 
