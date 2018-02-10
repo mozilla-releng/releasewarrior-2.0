@@ -12,8 +12,6 @@ where the coordination happens among the releaseduty squirrels.
 
 This folder gathers all releaseduty documentation under one single umbrella. The structure is as follows:
 
-- [Overview](#Overview)
-- [Release Duties](#Release Duties)
 - [CHANGELOG](#TODO) - to track large changes to the workflow and tools of releaseduty
 - [balrog](#TODO) - to track all Balrog related information and understanding
 - [day1](#TODO) - day1 documentation for all releng folks starting/resuming their releaseduty cycle
