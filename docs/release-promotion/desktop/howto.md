@@ -6,6 +6,13 @@
 
 ## Push artifacts to releases directory
 
+### Context
+On the beta cycle, `Firefox` and `Devedition` are different products built based on the same revision in-tree. That means the functionality is the same but rather few branding options differ.
+Given the mergeduty calendar, the following happen in a new cycle:
+- we solely ship Devedition `X.b1` and `X.b2` for a given new beta `X` cycle. For the final push to `aurora` channel, we're pending *Relman* consent.
+- starting >= b3 we ship `Firefox` along with `Devedition`. For the final push to `beta` and `aurora` respectively, we're pending on *QA* consent and we're pushing them together as soon as the QA signs-off for `Firefox`.
+- *Disclaimer!* Once every two weeks, QA signs-off for Devedition, *after* we ship the release. As counter-clockwise as it may sound, this makes sense given the two products actually share the in-tree revision, hence the functionalities.
+
 ### Background
 
 `releases`, `mirrors` and `CDN` are different terms for the same concept - the CDN from which shipped releases are served.
@@ -18,7 +25,7 @@ In the new TC release promotion for Fx59+, pushing doesn't happen automatically 
 
 ### When - releases
 
-* Release Management will send an email to the release-signoff mailing list, with a subject line of the form: `[desktop] Please push ${version} to ${channel}` 
+* Release Management will send an email to the release-signoff mailing list, with a subject line of the form: `[desktop] Please push ${version} to ${channel}`
 
 Examples:
 - `[desktop] Please push Firefox 57.0.1 (build#2) to the release-cdntest channel`
@@ -50,19 +57,15 @@ cd /builds/releaserunner3/
 source bin/activate
 # paste the export line from above, you should have found at least
 # a promote taskid.
-#   export DECISION_TASK_ID=...
 #   export PROMOTE_TASK_ID=...
 ACTION_FLAVOR=push_firefox  # For devedition, use push_devedition
 python tools/buildfarm/release/trigger_action.py \
     ${PROMOTE_TASK_ID+--action-task-id ${PROMOTE_TASK_ID}} \
     --release-runner-config /builds/releaserunner3/release-runner.yml \
     --action-flavor ${ACTION_FLAVOR}
-# Unset ACTION_FLAVOR to minimize the possibility of rerunning with different graph ids
+# Unset env vars to minimize the possibility of rerunning with different graph ids
 unset ACTION_FLAVOR
-# Unset the other variables as well
-unset DECISION_TASK_ID
 unset PROMOTE_TASK_ID
-unset PUSH_TASK_ID
 # This will output the task definition and ask if you want to proceed.
 ```
   * The `taskId` of the action task will be the `taskGroupId` of the next graph.
@@ -118,9 +121,8 @@ python tools/buildfarm/release/trigger_action.py \
     ${PROMOTE_TASK_ID+--previous-graph-ids ${PROMOTE_TASK_ID}} \
     --release-runner-config /builds/releaserunner3/release-runner.yml \
     --action-flavor ${ACTION_FLAVOR}
-# Unset ACTION_FLAVOR to minimize the possibility of rerunning with different graph ids
+# Unset env vars to minimize the possibility of rerunning with different graph ids
 unset ACTION_FLAVOR
-# Unset the other variables as well
 unset DECISION_TASK_ID
 unset PROMOTE_TASK_ID
 unset PUSH_TASK_ID
