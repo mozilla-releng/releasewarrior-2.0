@@ -13,6 +13,9 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 - old release promotion based on [releasetasks](https://github.com/mozilla/releasetasks/) is dead. Everything is in-tree scheduled now. Changes are riding the trains. More on this [here](https://github.com/mozilla-releng/releasewarrior-2.0/wiki/Release-Promotion-Overview-TC) and [here](https://github.com/mozilla-releng/releasewarrior-2.0/wiki/Release-Promotion-Tasks-TC)
 - all releaseduty related documentation has been moved out of the wiki under [warrior's](https://github.com/mozilla-releng/releasewarrior-2.0) `docs` subfolder.
 
+### Changed
+- in-tree release notifications going away in favor of native taskcluster notifications. pulse-notify is to be retired whenever we kill esr52
+
 ## During 58.0 >= 2017-11-15
 
 ### Added
