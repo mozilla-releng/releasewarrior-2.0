@@ -7,9 +7,9 @@
 ## Push artifacts to releases directory
 
 ### Context
-On the beta cycle,t `Firefox` and `Devedition` are different products built based on the same revision in-tree. That means the functionality is the same but rather few branding options differ.
+On the beta cycle, `Firefox` and `Devedition` are different products built based on the same revision in-tree. That means the functionality is the same but rather few branding options differ.
 Given the mergeduty calendar, the following happen in a new cycle:
-- we solely ship Devedition X.b1 and X.b2 for a given new beta X cycle. For the final push to `aurora` channel, we're pending *Relman* consent.
+- we solely ship Devedition `X.b1` and `X.b2` for a given new beta `X` cycle. For the final push to `aurora` channel, we're pending *Relman* consent.
 - starting >= b3 we ship `Firefox` along with `Devedition`. For the final push to `beta` and `aurora` respectively, we're pending on *QA* consent and we're pushing them together as soon as the QA signs-off for `Firefox`.
 - *Disclaimer!* Once every two weeks, QA signs-off for Devedition, *after* we ship the release. As counter-clockwise as it may sound, this makes sense given the two products actually share the in-tree revision, hence the functionalities.
 
