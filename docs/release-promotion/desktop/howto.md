@@ -18,7 +18,7 @@ In the new TC release promotion for Fx59+, pushing doesn't happen automatically 
 
 ### When - releases
 
-* Release Management will send an email to the release-signoff mailing list, with a subject line of the form: `[desktop] Please push ${version} to ${channel}` 
+* Release Management will send an email to the release-signoff mailing list, with a subject line of the form: `[desktop] Please push ${version} to ${channel}`
 
 Examples:
 - `[desktop] Please push Firefox 57.0.1 (build#2) to the release-cdntest channel`
@@ -50,19 +50,15 @@ cd /builds/releaserunner3/
 source bin/activate
 # paste the export line from above, you should have found at least
 # a promote taskid.
-#   export DECISION_TASK_ID=...
 #   export PROMOTE_TASK_ID=...
 ACTION_FLAVOR=push_firefox  # For devedition, use push_devedition
 python tools/buildfarm/release/trigger_action.py \
     ${PROMOTE_TASK_ID+--action-task-id ${PROMOTE_TASK_ID}} \
     --release-runner-config /builds/releaserunner3/release-runner.yml \
     --action-flavor ${ACTION_FLAVOR}
-# Unset ACTION_FLAVOR to minimize the possibility of rerunning with different graph ids
+# Unset env vars to minimize the possibility of rerunning with different graph ids
 unset ACTION_FLAVOR
-# Unset the other variables as well
-unset DECISION_TASK_ID
 unset PROMOTE_TASK_ID
-unset PUSH_TASK_ID
 # This will output the task definition and ask if you want to proceed.
 ```
   * The `taskId` of the action task will be the `taskGroupId` of the next graph.
@@ -118,9 +114,8 @@ python tools/buildfarm/release/trigger_action.py \
     ${PROMOTE_TASK_ID+--previous-graph-ids ${PROMOTE_TASK_ID}} \
     --release-runner-config /builds/releaserunner3/release-runner.yml \
     --action-flavor ${ACTION_FLAVOR}
-# Unset ACTION_FLAVOR to minimize the possibility of rerunning with different graph ids
+# Unset env vars to minimize the possibility of rerunning with different graph ids
 unset ACTION_FLAVOR
-# Unset the other variables as well
 unset DECISION_TASK_ID
 unset PROMOTE_TASK_ID
 unset PUSH_TASK_ID

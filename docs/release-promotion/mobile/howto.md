@@ -26,7 +26,7 @@ Hi all,
 Here are the results for the Fennec 58 Beta 5 build 2.
 
 Testing status:GREEN / DONE
-*1. Overall build status after testing:* GREEN/OK - No blockers or major 
+*1. Overall build status after testing:* GREEN/OK - No blockers or major
 bugs found
 
 *2. Recommendation from QE*:  ship to partner's markets
@@ -65,18 +65,18 @@ python tools/buildfarm/release/trigger_action.py \
     ${PROMOTE_TASK_ID+--action-task-id ${PROMOTE_TASK_ID}} \
     --release-runner-config /builds/releaserunner3/release-runner.yml \
     --action-flavor ship_fennec
-# Unset ACTION_FLAVOR to minimize the possibility of rerunning with different graph ids
-unset ACTION_FLAVOR
+# Unset PROMOTE_TASK_ID to minimize the possibility of rerunning with different graph ids
+unset PROMOTE_TASK_ID
 ```
 
-This will show you a task definition and ask if you want to submit it (y/n). If you're ready to ship, choose `y`. The ship action taskId will be near the bottom of the output; this taskId is also used as the task graph ID for the ship graph. 
+This will show you a task definition and ask if you want to submit it (y/n). If you're ready to ship, choose `y`. The ship action taskId will be near the bottom of the output; this taskId is also used as the task graph ID for the ship graph.
 
 For example, the last output from `trigger_action.py` will look something like this:
 ```O - Result:
 {u'status': {u'workerType': u'gecko-3-decision', u'taskGroupId': u'bjVsVQdfSQWjdq9NTBYySA', u'runs': [{u'scheduled': u'2017-11-21T15:40:38.710Z', u'reasonCreated': u'scheduled', u'state': u'pending', u'runId': 0}], u'expires': u'2018-11-21T15:40:09.109Z', u'retriesLeft': 5, u'state': u'pending', u'schedulerId': u'gecko-level-3', u'deadline': u'2017-11-22T15:40:08.109Z', u'taskId': u'OG1t0QchSj209mV9_3tCHA', u'provisionerId': u'aws-provisioner-v1'}}
 ```
 
-We see `u'taskId': u'OG1t0QchSj209mV9_3tCHA'` and know that there should be a task graph with that ID, too. 
+We see `u'taskId': u'OG1t0QchSj209mV9_3tCHA'` and know that there should be a task graph with that ID, too.
 
 ```sh
 taskcluster group list OG1t0QchSj209mV9_3tCHA --all
@@ -86,7 +86,7 @@ You can also see the new 'Action: Release Promotion' task on [tools.taskcluster.
 
 ### Resolve push-apk-breakpoint task
 
-In the new ship graph, there will be a task with 'push-apk-breakpoint' in the label. To push the `apk` to Google Play, we must resolve this task. 
+In the new ship graph, there will be a task with 'push-apk-breakpoint' in the label. To push the `apk` to Google Play, we must resolve this task.
 
 1. Find the Task ID of the `push-apk-breakpoint` task using either [tools.taskcluster.net](https://tools.taskcluster.net/groups) or the taskcluster command-line:
 ```sh
