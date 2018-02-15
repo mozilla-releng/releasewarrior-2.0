@@ -39,14 +39,7 @@ bugs found
 
 ### Finding the Action Task ID
 
-* Find the `hg revision` of the release in [Ship It](http://ship-it.mozilla.org/), and copy it.
-
-* Run get_graphids.py from releasewarrior-2.0's scripts directory.
-
-```sh
-export REV=.. # Revision from above
-python ./scripts/get_graphids.py --output export --revision ${REV}
-```
+* [Find the promote graphid](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/misc/find-graphids.md#finding-graphids) for this release.
 
 ### Creating the release promotion graph
 

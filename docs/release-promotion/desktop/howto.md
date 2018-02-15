@@ -39,14 +39,7 @@ Note: If they do not explicitly ask for `release-cdntest` it is okay to assume i
 
 ### How
 
-* Find the `hg revision` of the release in [Ship It](http://ship-it.mozilla.org/), and copy it.
-
-* Run get_graphids.py from releasewarrior-2.0's scripts directory.
-
-```sh
-export REV=.. # Revision from above
-python ./scripts/get_graphids.py --output export --revision ${REV}
-```
+* [Find the promote graphid](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/misc/find-graphids.md#finding-graphids) for this release.
 
 * For now, we have to ssh to bm85 to generate the push graph.
 
@@ -92,14 +85,7 @@ Examples
 
 ### How
 
-* Find the `hg revision` of the release in [Ship It](http://ship-it.mozilla.org/), and copy it.
-
-* Run get_graphids.py from releasewarrior-2.0's scripts directory.
-
-```sh
-export REV=.. # Revision from above
-python ./scripts/get_graphids.py --output export --revision ${REV}
-```
+* [Find the promote and push graphids](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/misc/find-graphids.md#finding-graphids) for this release.
 
 * Then:
 

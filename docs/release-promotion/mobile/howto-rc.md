@@ -37,10 +37,7 @@ bugs found
 
 ## ship-rc
 
-### Finding the Action Task ID
-
-* Ideally this is already in Releasewarrior, under the `promote` graphid.
-* Otherwise, you can either use `get_graphids.py`, or find the appropriate label `promote_fennec` in Treeherder.
+* [Find the graphids](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/misc/find-graphids.md#finding-graphids) for this release.
 
 ### Creating the RC ship graph
 
@@ -96,8 +93,7 @@ taskcluster task complete <TASKID>
 
 ### Finding the Action Task IDs
 
-* Ideally this is already in Releasewarrior, under the `promote` and `ship-rc` graphids.
-* Otherwise, find the appropriate label `promote_fennec` and `ship_fennec_rc` in Treeherder. The rc graph won't show up in `get_graphids.py` currently.
+* [Find the promote and ship-rc graphids](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/misc/find-graphids.md#finding-graphids) for this release.
 
 ### Creating the ship graph
 
