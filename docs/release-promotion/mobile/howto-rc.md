@@ -158,7 +158,3 @@ INFO: committing changes with message: fennec 60.0 - updated inflight tasks. Res
 ```
 
 Remember to run `git push` in the `releasewarrior-data` repository, if needed.
-
-
-***
-Last checked: 2017-12-19 by sfraser
