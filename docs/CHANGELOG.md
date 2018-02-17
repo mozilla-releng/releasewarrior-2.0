@@ -41,3 +41,16 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 
 ### Removed
 - dropped support for [tctalker](https://github.com/mozilla/tctalker) and solely rely on [taskcluster-cli](https://github.com/taskcluster/taskcluster-cli). More on its installation [here](https://github.com/taskcluster/taskcluster-cli#installation)
+
+## During 56.0 >= 2017-08-09
+
+### Added
+- releaseduty now checks on status of central nightlies when not undertaking other duties
+- releaseduty now handles signing of arbitrary .apk's as requested by MoCo teams (Klar/Focus, Rocket)
+
+### Changed
+- release-drivers mailing list is no longer used for signoffs/gtb's, please subscribe to release-signoffs@
+- QE will now send an explicit GO for DevEdition Beta's to be pushed live, usually in the same e-mail as the GO for Beta
+
+### Removed
+- Fennec single locales no longer shipped
