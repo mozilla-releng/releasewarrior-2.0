@@ -6,22 +6,22 @@
 
 ## Push artifacts to releases directory
 
-### Context
-On the beta cycle, `Firefox` and `Devedition` are different products built based on the same revision in-tree. That means the functionality is the same but rather few branding options differ.
-Given the mergeduty calendar, the following happen in a new cycle:
-- we solely ship Devedition `X.b1` and `X.b2` for a given new beta `X` cycle. For the final push to `aurora` channel, we're pending *Relman* consent.
-- starting >= b3 we ship `Firefox` along with `Devedition`. For the final push to `beta` and `aurora` respectively, we're pending on *QA* consent and we're pushing them together as soon as the QA signs-off for `Firefox`.
-- *Disclaimer!* Once every two weeks, QA signs-off for Devedition, *after* we ship the release. As counter-clockwise as it may sound, this makes sense given the two products actually share the in-tree revision, hence the functionalities.
+### Context - Beta and DevEdition
+In the beta cycle, `Firefox` and `Devedition` are different products built based on the same in-tree revision. Their functionality is the same but branding options differ.
+For version `X`, the following happens in a cycle:
+- We only ship Devedition `X.b1` and `X.b2` for the beta cycle. For the final push to the `aurora` channel, we wait for *Relman* consent.
+- Starting with b3 we ship `Firefox` along with `Devedition`. For the final push to `beta` and `aurora` respectively, we wait for *QA* consent and we're pushing them together as soon as the QA signs-off for `Firefox`.
+- **Disclaimer!** Once every two weeks, QA signs-off for Devedition *after* we ship the release. As counter-clockwise as it may sound, this makes sense given the two products actually share the in-tree revision, hence the functionalities.
 
 ### Background
 
 `releases`, `mirrors` and `CDN` are different terms for the same concept - the CDN from which shipped releases are served.
 
-In the new TC release promotion for Fx59+, pushing doesn't happen automatically in ship-it (yet). We can [address this](https://trello.com/c/vOP7fml4/282-update-releaserunner3-to-automatically-run-the-push-flavor-rather-than-promote-for-certain-release-types). Until then, all pushing will be manually triggered.
+In the new taskcluster release promotion for Fx59+, pushing doesn't happen automatically in ship-it (yet). We can [address this](https://trello.com/c/vOP7fml4/282-update-releaserunner3-to-automatically-run-the-push-flavor-rather-than-promote-for-certain-release-types). Until then, all pushing will be manually triggered.
 
 ### When - b2+ betas
 
-- For beta's we want to push to releases directories as soon as the builds are ready. Relng can trigger the `push` action as soon as the `promote` action task finishes (you do not need to wait for all of the tasks in the promote phase to complete). In the future we can have this [happen automatically](https://trello.com/c/vOP7fml4/282-update-releaserunner3-to-automatically-run-the-push-flavor-rather-than-promote-for-certain-release-types). (We are also in [discussion with relman](https://bugzilla.mozilla.org/show_bug.cgi?id=1433284) about future plans around this step)
+- For beta we want to push to releases directories as soon as the builds are ready. Releng can trigger the `push` action as soon as the `promote` action task finishes (you do not need to wait for all of the tasks in the promote phase to complete). In the future we can have this [happen automatically](https://trello.com/c/vOP7fml4/282-update-releaserunner3-to-automatically-run-the-push-flavor-rather-than-promote-for-certain-release-types). (We are also in [discussion with relman](https://bugzilla.mozilla.org/show_bug.cgi?id=1433284) about future plans around this step)
 
 ### When - releases
 
@@ -55,10 +55,11 @@ ssh buildbot-master85.bb.releng.scl3.mozilla.com
 sudo su - cltbld
 cd /builds/releaserunner3/
 source bin/activate
-# paste the export line from above, you should have found at least
-# a promote taskid.
+# paste the export line from get_graphids.py, you should have
+# found at least a promote taskid.
 #   export PROMOTE_TASK_ID=...
 ACTION_FLAVOR=push_firefox  # For devedition, use push_devedition
+# This will output the task definition and ask if you want to proceed.
 python tools/buildfarm/release/trigger_action.py \
     ${PROMOTE_TASK_ID+--action-task-id ${PROMOTE_TASK_ID}} \
     --release-runner-config /builds/releaserunner3/release-runner.yml \
@@ -66,7 +67,6 @@ python tools/buildfarm/release/trigger_action.py \
 # Unset env vars to minimize the possibility of rerunning with different graph ids
 unset ACTION_FLAVOR
 unset PROMOTE_TASK_ID
-# This will output the task definition and ask if you want to proceed.
 ```
   * The `taskId` of the action task will be the `taskGroupId` of the next graph.
 
@@ -109,12 +109,13 @@ ssh buildbot-master85.bb.releng.scl3.mozilla.com
 sudo su - cltbld
 cd /builds/releaserunner3/
 source bin/activate
-# paste the export line from above, you should have found a
-# decision taskid, and a promote taskid, and a push taskid.
+# paste the export line from get_graphids.py, you should have
+# found a decision taskid, and a promote taskid, and a push taskid.
 #   export DECISION_TASK_ID=...
 #   export PROMOTE_TASK_ID=...
 #   export PUSH_TASK_ID=...
 ACTION_FLAVOR=ship_firefox  # or ship_devedition
+# This will output the task definition and ask if you want to proceed.
 python tools/buildfarm/release/trigger_action.py \
     ${PUSH_TASK_ID+--action-task-id ${PUSH_TASK_ID}} \
     ${DECISION_TASK_ID+--decision-task-id ${DECISION_TASK_ID}} \
@@ -126,7 +127,6 @@ unset ACTION_FLAVOR
 unset DECISION_TASK_ID
 unset PROMOTE_TASK_ID
 unset PUSH_TASK_ID
-# This will output the task definition and ask if you want to proceed.
 ```
   * The `taskId` of the action task will be the `taskGroupId` of the next graph.
 
