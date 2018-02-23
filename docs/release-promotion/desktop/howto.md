@@ -39,7 +39,7 @@ Note: If they do not explicitly ask for `release-cdntest` it is okay to assume i
 
 ### How
 
-* [Find the promote graphid](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/misc/find-graphids.md#finding-graphids) for this release.
+* [Find the promote graphid](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/common/find-graphids.md#finding-graphids) for this release.
 
 * For now, we have to ssh to bm85 to generate the push graph.
 
@@ -85,7 +85,7 @@ Examples
 
 ### How
 
-* [Find the promote and push graphids](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/misc/find-graphids.md#finding-graphids) for this release.
+* [Find the promote and push graphids](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/common/find-graphids.md#finding-graphids) for this release.
 
 * Then:
 

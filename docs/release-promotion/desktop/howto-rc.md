@@ -22,7 +22,7 @@
 
 ### How
 
-* [Find the promote-rc graphid](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/misc/find-graphids.md#finding-graphids) for this release.
+* [Find the promote-rc graphid](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/common/find-graphids.md#finding-graphids) for this release.
 
 * For now, we have to ssh to bm85 to generate the ship-rc graph.
 
@@ -56,7 +56,7 @@ unset PROMOTE_TASK_ID
 
 ### How
 
-* [Find the promote-rc graphid](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/misc/find-graphids.md#finding-graphids) for this release.  We can skip the ship-rc graphid.
+* [Find the promote-rc graphid](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/common/find-graphids.md#finding-graphids) for this release.  We can skip the ship-rc graphid.
 
 * For now, we have to ssh to bm85 to generate the push graph.
 
@@ -101,7 +101,7 @@ Examples
 
 ### How
 
-* [Find the promote-rc and push graphids](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/misc/find-graphids.md#finding-graphids) for this release.
+* [Find the promote-rc and push graphids](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/common/find-graphids.md#finding-graphids) for this release.
 
 * Then:
 
