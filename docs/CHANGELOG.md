@@ -15,6 +15,7 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 - all releaseduty related documentation has been moved out of the wiki under [warrior's](https://github.com/mozilla-releng/releasewarrior-2.0) `docs` subfolder.
 - use `release graphid` to enter graphids, rather than editing the .json manually.
 - in-tree release notifications going away in favor of native taskcluster notifications. pulse-notify is to be retired whenever we kill esr52
+- Balrog toplevel submission and release scheduling now happens in balrog scriptworker for Fx60+.
 
 ## During 58.0 >= 2017-11-15
 
