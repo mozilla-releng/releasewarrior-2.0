@@ -34,7 +34,7 @@ The releng process usually operates like this:
 
 For history of this procedure:
 
-Originally, the m-c-m-b was done a week after m-b-m-r. Starting at Firefox 57, Release Management wanted to ship DevEdition b1 week before the planned mozilla-beta merge day. This meant Releng had to merge both repos at the same time.
+Originally, the m-c->m-b was done a week after m-b->m-r. Starting at Firefox 57, Release Management wanted to ship DevEdition b1 week before the planned mozilla-beta merge day. This meant Releng had to merge both repos at the same time.
 
 ## Requirements
 
@@ -171,7 +171,18 @@ python mozharness-central/scripts/merge_day/gecko_migration.py -c merge_day/bump
 
 Ask relman, e.g. ryanvm, to create [a relbranch like this one](https://hg.mozilla.org/releases/mozilla-beta/shortlog/FIREFOX_56b13_RELBRANCH).
 
-### It's done!
+### Run the l10n bumper
+
+1. run l10n-bumper against beta
+
+```sh
+ssh buildbot-master01.bb.releng.use1.mozilla.com
+sudo su - cltbld
+cd /builds/l10n-bumper
+python2.7 mozharness/scripts/l10n_bumper.py -c mozharness/configs/l10n_bumper/mozilla-beta.py --ignore-closed-tree
+```
+
+### reply to relman migrations are complete
 
 1. Reply to the migration request with the template:
 
@@ -233,7 +244,7 @@ reply to relman email request that:
 
 ### Update wiki versions
 
-:warning: this script was broken at one point. You may need to update the wiki pages manually.
+:warning: this script was broken at one point. If script fails, update the wiki pages manually by bumping the gecko version in below urls
 
 1. Updating is done automatically with the proper scripts at hand:
 ```sh
@@ -271,6 +282,8 @@ NEW_ESR_VERSION=52  # Only if a new ESR comes up (for instance 52.0esr)
 NB: it is expected that the two stub products have a win and win64 location which both point to the same location. We don't have a win64 stub installer, instead the mislabeled 32bit stub selects the correct full installer at runtime.
 
 ### Trim bouncer's Check Now list
+
+:warning: this may not be required now that we removed sentry. Confirm with nthomas [More details](https://github.com/mozilla-releng/releasewarrior-2.0/pull/74#discussion_r171249691)
 
 1. Once per release cycle we should stop checking old releases to see if they're present
 1. Visit the [list of check now enabled products](https://bounceradmin.mozilla.com/admin/mirror/product/?all=&checknow__exact=1)
