@@ -1,4 +1,4 @@
-# Add a What's New Page to a Firefox RC.
+# Add a What's New Page to a Firefox RC
 
 ## Requirements
 
