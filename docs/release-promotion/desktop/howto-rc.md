@@ -9,14 +9,15 @@
 ## How
 
 * Download the existing Release Blob (for example: Firefox-59.0-build1)
-** Go to https://aus4-admin.mozilla.org/releases
-** Search for the release blob you need
-** Click "Download"
+  * Go to https://aus4-admin.mozilla.org/releases
+  * Search for the release blob you need
+  * Click "Download"
 * Make the following changes to it:
-** Change "schema_version" to 9
-** Remove "detailsUrl" from the top level of the blob
-** Add an "updateLine" section that looks something like the following:
+  * Change "schema_version" to 9
+  * Remove "detailsUrl" from the top level of the blob
+  * Add an "updateLine" section that looks something like the following:
 
+```
   "updateLine": [
     {
       "for": {},
@@ -36,15 +37,16 @@
       }
     }
   ]
+```
 
 The block above says that all responses constructed with this blob should include detailsURL and type (because the first "for" block is empty), while only requests matching locales and versions from the second "for" block should get "actions" and "openURL" in their response. The list of locales and WNP URL should be whatever you received from Product before you began this process.
 
 Now that the new Release blob is ready you can upload it to Balrog and update the Rules by doing the following:
 * Add the Release to Balrog
-** Go to https://aus4-admin.mozilla.org/releases
-** Search for the Release blob again
-** Click "Update"
-** Fill out the form, selecting your new, locally modified blob, and click "Save Changes"
+  * Go to https://aus4-admin.mozilla.org/releases
+  * Search for the Release blob again
+  * Click "Update"
+  * Fill out the form, selecting your new, locally modified blob, and click "Save Changes"
 
 Once this is done the What's New Page should be active on both the release-localtest and release-cdntest channels.
 
