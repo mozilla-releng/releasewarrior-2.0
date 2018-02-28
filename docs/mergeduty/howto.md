@@ -1,87 +1,123 @@
 # MergeDuty
 
 Most code changes to Firefox and Fennec land in the [mozilla-central](https://hg.mozilla.org/mozilla-central) repository, and 'nightly' releases are built from that repo. 
-DevEdition, Beta and Release Candidate releases are built from the [mozilla-beta](https://hg.mozilla.org/releases/mozilla-beta/) repository, Extended Support Releases from the relevant ESR repo, such as [mozilla-esr52](https://hg.mozilla.org/releases/mozilla-esr52/), and main releases are created from [mozilla-release](https://hg.mozilla.org/releases/mozilla-release/).
+DevEdition and Beta are built from the [mozilla-beta](https://hg.mozilla.org/releases/mozilla-beta/) repository, Extended Support Releases from the relevant ESR repo, such as [mozilla-esr52](https://hg.mozilla.org/releases/mozilla-esr52/), and Release and Release Candidates are built from [mozilla-release](https://hg.mozilla.org/releases/mozilla-release/).
 
 How are those repositories kept in sync? That's MergeDuty. You will be merging repositories to create new beta, release candidates, releases and extended support releases.
 
-# Overview
-MergeDuty consists of multiple separate days of work. Each day you must perform several sequential tasks. The days are spread out over nearly three weeks.
+## Overview of Procedure
 
-The process usually operates like this:
-* A few days before the merge, do the prep work
-* mozilla-beta merges to mozilla-release
-* mozilla-esr gets version bumped
-* mozilla-central merges to mozilla-beta, perhaps several times during the release cycle.
-* Devedition go-to-build
-* mozilla-central merges to mozilla-beta for the last time
-* Firefox Beta go-to-build
+MergeDuty consists of multiple separate days of work. Each day you must perform several sequential tasks. The days are spread out over nearly three weeks, with 3 major days of activity.
+
+The releng process usually operates like this:
+* A week before the merge, do the prep work
+  * Verify you have access to what you need
+  * Create the buildbot-config version bump patches that will land on Merge day
+  * Make sure that all the dry-run migrations run cleanly
+  * Sanity check you have no blocking migration bugs
+* On Merge day
+  * ask vcs to disable hg.m.o l10n hooks
+  * bump mozilla-beta and mozilla-release buildbot gecko versions
+  * mozilla-beta merges to mozilla-release
+  * mozilla-central merges to mozilla-beta (relman may merge after this until we bump mozilla-central version)
+  * mozilla-esr gets version bumped
+  * Ask relman to create a mozilla-beta relbranch for Fennec
+* A week after Merge day, bump mozilla-central and update bouncer
+  * Ask relman to do final mozilla-central->mozilla-beta merge
+  * bump mozilla-central buildbot gecko versions
+  * bump the version and tag mozilla-central repo itself
+  * Trigger new nightlies
+  * update bouncer aliases
+  * Trim bouncer's Check Now list
+  * bump wiki versions
+
+
+For history of this procedure:
+
+Originally, the m-c->m-b was done a week after m-b->m-r. Starting at Firefox 57, Release Management wanted to ship DevEdition b1 week before the planned mozilla-beta merge day. This meant Releng had to merge both repos at the same time.
 
 ## Requirements
 
-1. A [[dedicated AWS instance|AWS Merge Instance]] is useful for merging repositories, but not required.
-1. Ensure `~/.hgrc` includes:
-```ini
-[extensions]
-transplant=
-mq=
-rebase=
-graphlog=
-```
-1. If not using the AWS instance, have your computer wired to a stable Internet connection (several gecko clones and huge pushes are planned).
-1. File a merge day bug, if it's not done already. [Example](https://bugzilla.mozilla.org/show_bug.cgi?id=1123369).
+1. For migrations: access and setup of [the merge remote instance](merge-and-staging-instance.md#access-and-setup-existing-merge-instance). While possible to do locally, the remote instance is strongly recommended.
+1. For updating bouncer aliases: Access to Bouncer
+1. Access to Treestatus
+1. A tracking migration bug
 
 # Tasks
 
-## Prep day #1
+## Prep day - 1 week prior to Merge day
 
-1. Clean up any old merge day clones and working directories.
+### File tracking migration bug
 
-2. Make sure you have a fresh copy of [buildbot-configs](https://hg.mozilla.org/build/buildbot-configs/)
+File a tracking migration bug if there isn't one. e.g. [example bug](https://bugzilla.mozilla.org/show_bug.cgi?id=1412962)
+
+### Access and setup the merge remote instance
+
+Ensure you have access and have setup [the merge remote instance](merge-and-staging-instance.md#access-and-setup-existing-merge-instance).
+
+### Test access to Bouncer
+
+Ensure you have access to Bouncer. You may need an account. Ask nthomas for more details if you have never done this before. TODO add instructions for connecting.
+
+### Create buildbot-config patches
+
+1. Make sure you have a fresh and up to date copy of [buildbot-configs](https://hg.mozilla.org/build/buildbot-configs/)
+1. On the merge day bug, create two patches to bump [gecko_versions.json](https://dxr.mozilla.org/build-central/source/buildbot-configs/mozilla/gecko_versions.json). Get them reviewed but **don't land them yet**. Note that reviewboard can't land on buildbot-configs, you will need to push changes manually.
+   * patch 1: bump the version for **mozilla-release** and **mozilla-beta**. [Example](https://bugzilla.mozilla.org/show_bug.cgi?id=1412962#c14).
+   * patch 2: bump the version for **mozilla-central**. [Example](https://bugzilla.mozilla.org/show_bug.cgi?id=1412962#c15).
+
+### Do migration no-op trial runs
+
+Doing a no-op trial run of each migration has two benefits
+
+1. you ensure that the migrations themselves work prior to Merge day
+2. you check out the necessary repos for migration which saves time before Merge day
+
+NOTE: doing multiple gecko_migration runs is safe. Each run the script will purge hg outgoing csets and working dir so you start fresh
+
+#### connect to remote instance and get a copy of mozharness
 ```sh
-hg clone ssh://hg.mozilla.org/build/buildbot-configs/
-```
-OR if you already have a clone
-```sh
-cd buildbot-configs
-hg pull && hg update
-```
-
-3. On the merge day bug, create two patches to bump [gecko_versions.json](https://dxr.mozilla.org/build-central/source/buildbot-configs/mozilla/gecko_versions.json). Get them reviewed but **don't land them yet**. Note that reviewboard can't land on buildbot-configs, you will need to push changes manually.
-   * patch 1: bump the version for **mozilla-release** and **mozilla-beta**. The mozilla-release version will serve Firefox's release candidate. [Example](https://bugzilla.mozilla.org/show_bug.cgi?id=1412962#c14).
-   * patch 2: bump mozilla-central. [Example](https://bugzilla.mozilla.org/show_bug.cgi?id=1412962#c15).
-
-4. Do a no-op trial run of the mozilla-beta -> mozilla-release migration:
-```sh
-mkdir -p merge_day
-cd merge_day
+# connect to remote instance.
+cd merge_day_${RELEASE_VERSION_FOR_CYCLE}
 wget https://hg.mozilla.org/build/tools/raw-file/default/buildfarm/utils/archiver_client.py
 python archiver_client.py mozharness --destination mozharness-central --repo mozilla-central --rev default --debug  # mozharness-central must be used against every branch
-python mozharness-central/scripts/merge_day/gecko_migration.py -c merge_day/beta_to_release.py
  ```
 
-5. The script should have created changes, and we can make a diff:
-```sh
-hg -R build/mozilla-release diff
-```
+#### mozilla-beta->mozilla-release migration no-op trial run
 
-6. Do a no-op trial run of the central->beta merge
 ```sh
-mkdir -p merge_day_c2b  # A different directory is recommended to avoid conflicts.
-cd merge_day_c2b
-wget https://hg.mozilla.org/build/tools/raw-file/default/buildfarm/utils/archiver_client.py
-python archiver_client.py mozharness --destination mozharness-central --repo mozilla-central --rev default --debug  # mozharness-central must be used against every branch
+python mozharness-central/scripts/merge_day/gecko_migration.py -c merge_day/beta_to_release.py
+hg -R build/mozilla-release diff  # have someone sanity check output with you
+ ```
+
+#### mozilla-central->mozilla-beta migration no-op trial run
+
+```sh
 python mozharness-central/scripts/merge_day/gecko_migration.py -c merge_day/central_to_beta.py
-```
+hg -R build/mozilla-beta diff  # have someone sanity check output with you
+ ```
 
-7. This should also have generated changes:
+#### esr version bump no-op trial run
+
 ```sh
-hg -R build/mozilla-release diff
-```
+python mozharness-central/scripts/merge_day/gecko_migration.py -c merge_day/bump_esr.py
+hg -R build/mozilla-esr{$version} diff  # have someone sanity check output with you
+ ```
+
 
 ## Release Merge Day
 
-### Re-configs part 1
+When: Wait for go from relman to release-signoff@mozilla.com. For date, see [Release Scheduling calendar](https://calendar.google.com/calendar/embed?src=bW96aWxsYS5jb21fZGJxODRhbnI5aTh0Y25taGFiYXRzdHY1Y29AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) or check with relman
+
+### Disable migration blocking hg.m.o hooks
+
+There are ftl check hooks on hg.m.o that prevent users from pushing to certain files. File a Dev Services bug or ask in #vcs, specifying when you would like to disable/re-enable the hook like this one:
+
+[Bug 1441782 - disable hg ftl (l10n) check hook during merge day, Thurs Feb 1st for mozilla-beta and mozilla-release repos](https://bugzilla.mozilla.org/show_bug.cgi?id=1441782)
+
+### Buildbot Re-config part 1
+
+when: this can happen before relman request migration. e.g. the same day but in the morning
 
 1. Look at the merge day bug and see if patches need to land at this stage.
 1. Land "patch 1" (the mozilla-release/mozilla-beta version bump) to `default` branch of buildbot-configs and wait for tests to run and confirm they pass in `#releng`
@@ -89,14 +125,13 @@ hg -R build/mozilla-release diff
    * Wait for the reconfig to happen via cron.
    * Ask buildduty to manually trigger it.
    * Run it yourself, see [below](#appendix-perform-a-manual-reconfig) for instructions
-1. Wait for the go-to-merge email in release-drivers
 
 ### Merge beta to release
 
 1. [Close mozilla-beta](https://mozilla-releng.net/treestatus/show/mozilla-beta). Check "Remember this change to undo later". Please enter a good message as the reason for the closure, such as "Mergeduty - closing beta for VERSION RC week"
-1. Run the [no-op trial run](#prep-day-#1) one more time, and show the diff to another person on releaseduty.
+1. Run the m-b->m-r [no-op trial run]() one more time, and show the diff to another person on releaseduty.
 1. The diff for `release` should be fairly similar to [this](https://hg.mozilla.org/releases/mozilla-release/rev/70e32e6bf15e), with updated branding as well as the version change.
-1. Push your changes:
+1. Push your changes generated by no-op trial run:
 ```sh
 python mozharness-central/scripts/merge_day/gecko_migration.py \
   -c selfserve/production.py -c merge_day/beta_to_release.py \
@@ -108,18 +143,9 @@ python mozharness-central/scripts/merge_day/gecko_migration.py \
 
 ### Merge central to beta
 
-1. Make sure you're up-to-date with tip of `central`
-```sh
-# go to merge_day directory, created on day 1. This is likely a different directory to the beta->release one.
-python mozharness-central/scripts/merge_day/gecko_migration.py -c merge_day/central_to_beta.py
-```
-1. The script should have created a diff:
-```sh
-hg -R build/mozilla-beta diff
-```
-1. Show the diff to another releaseduty colleague for review
+1. Run the m-c->m-b [no-op trial run]() one more time, and show the diff to another person on releaseduty.
 1. The diff for `beta` should be fairly similar to [this](https://hg.mozilla.org/releases/mozilla-beta/rev/2191d7f87e2e)
-1. Push your changes:
+1. Push your changes generated by the no-op trial run:
 ```sh
 python mozharness-central/scripts/merge_day/gecko_migration.py \
   -c selfserve/production.py -c merge_day/central_to_beta.py \
@@ -128,73 +154,97 @@ python mozharness-central/scripts/merge_day/gecko_migration.py \
 1. Upon pushing, `central` should get a version bump consisting of a `commit` like [this](https://hg.mozilla.org/mozilla-central/rev/52285ea5e54c) and a `tag` like [this](https://hg.mozilla.org/mozilla-central/rev/d6c0df73518b)
 1. Verify changesets are visible on [hg pushlog](https://hg.mozilla.org/releases/mozilla-beta/pushloghtml) and [Treeherder]( https://treeherder.mozilla.org/#/jobs?repo=mozilla-beta). It may take a couple of minutes to appear.
 
-### Bump ESR version, if required.
+### Bump ESR version
 
-Note: you may have 1 or 2 ESRs to bump.
+Note: you may have 1 or 2 ESRs to bump. If you are not sure, ask.
 
 1. Steps are similar to a merge:
+1. Run the bump-esr [no-op trial run]() one more time, and show the diff to another person on releaseduty.
+1. Push your changes generated by the no-op trial run:
 ```sh
-# go to merge_day directory, created on day 1
-ESR_VERSION=52
-python mozharness-central/scripts/merge_day/gecko_migration.py -c merge_day/bump_esr.py
-hg -R build/mozilla-esr$ESR_VERSION diff
 python mozharness-central/scripts/merge_day/gecko_migration.py -c merge_day/bump_esr.py \
   --commit-changes --push
 ```
 1. Verify new changesets popped on https://hg.mozilla.org/releases/mozilla-esr`$ESR_VERSION`/pushloghtml
 
-### It's done!
+### Relbranch in m-b for Fennec
 
-1. Reply to the migration request with the template:
+Ask relman, e.g. ryanvm, to create [a relbranch like this one](https://hg.mozilla.org/releases/mozilla-beta/shortlog/FIREFOX_56b13_RELBRANCH).
 
-**TODO: Email template stale, mention central->beta**
-```
-This is now complete:
-* mozilla-beta is merged to mozilla-release, new version is XX.Y
-* l10n mozilla-beta repos are merged to mozilla-release
-* esr is now XX.Y.Z
-* beta will stay closed until next Monday
-```
-
-## mozilla-central -> mozilla-beta merges after the first
-
-Perform a normal 'hg merge', or ask the sheriffs to do it.
-
-## Stabilizing Branches Merge Day
-
-### Re-configuration part 2
-
-1. Do the same things as part 1, except you should land "patch 2" instead.
-
-### Merge central to beta
-
-This should be a normal 'hg merge', or you can ask the sheriffs to do the merge.
-
-### Tag central and bump versions
-
-A new tag is needed to specify the end of the nightly cycle, for instance: [FIREFOX_NIGHTLY_57_END](https://hg.mozilla.org/mozilla-central/rev/1ca411f5e97b). 
-
-Then you have to clobber and bump versions in m-c, just [like the following](https://hg.mozilla.org/mozilla-central/rev/835a92b19e3d).
-
-### Run the l10n bumper - **TODO: still required?**
+### Run the l10n bumper
 
 1. run l10n-bumper against beta
-```
+
+```sh
 ssh buildbot-master01.bb.releng.use1.mozilla.com
 sudo su - cltbld
 cd /builds/l10n-bumper
 python2.7 mozharness/scripts/l10n_bumper.py -c mozharness/configs/l10n_bumper/mozilla-beta.py --ignore-closed-tree
 ```
-1. Ping l10n folks in `#releng` (usually `Pike`) and send them a heads-up that RelEng side of migration is completed
 
-### Trigger new nightlies  - **TODO: move to first merge day?**
+### reply to relman migrations are complete
+
+1. Reply to the migration request with the template:
+
+```
+This is now complete:
+* mozilla-beta is merged to mozilla-release, new version is XX.Y
+* mozilla-central is merged to mozilla-beta, new version is XX.Y
+* mozilla-central will continue to merge to mozilla-beta over the week until mozilla-central is version bumped
+* esr is now XX.Y.Z
+* beta will stay closed until next week
+```
+
+
+## Bump and tag mozilla-central - 1 week after Merge day
+
+When: Wait for go from relman to release-signoff@mozilla.com. For date, see [Release Scheduling calendar](https://calendar.google.com/calendar/embed?src=bW96aWxsYS5jb21fZGJxODRhbnI5aTh0Y25taGFiYXRzdHY1Y29AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) or check with relman
+
+### Buildbot re-config part 2
+
+Do the same things as buildbot-configs patch 1 from Merge day, except you should land "patch 2" instead.
+
+### Merge central to beta one last time
+
+You can ask relman, e.g. ryanvm, to do this as gecko_migrations.py logic will reset mozilla-beta version numbers, etc which is not what we want.
+
+### Tag central and bump versions
+
+What happens: A new tag is needed to specify the end of the nightly cycle, for instance: [FIREFOX_NIGHTLY_57_END](https://hg.mozilla.org/mozilla-central/rev/1ca411f5e97b). Then you have to clobber and bump versions in m-c, just [like the following](https://hg.mozilla.org/mozilla-central/rev/835a92b19e3d).
+
+How: This is now done via the remote instance and gecko_migrations.py similar to bumping esr:
+
+
+1. connect to the remote instance and cd to the current merge_day work dir as earlier
+```sh
+python mozharness-central/scripts/merge_day/gecko_migration.py -c merge_day/bump_central.py
+hg -R build/mozilla-central diff  # have someone sanity check output with you
+ ```
+1. Push your changes generated by the no-op trial run:
+```sh
+python mozharness-central/scripts/merge_day/gecko_migration.py -c merge_day/bump_central.py \
+  --commit-changes --push
+```
+1. Verify new changesets popped on https://hg.mozilla.org/mozilla-central/pushloghtml
+
+
+### Trigger new nightlies
 
 1. Trigger nightlies for central. This can be done by:
     1. trigger [nightly-desktop/mozilla-central](https://tools.taskcluster.net/hooks/#project-releng/nightly-desktop%252fmozilla-central) hook
     1. trigger [nightly-fennec/mozilla-central](https://tools.taskcluster.net/hooks/#project-releng/nightly-fennec%252fmozilla-central) hook
-1. Tell sheriffs this migration is done either by popping a short message in #sheriffs or ping the `<handle>|sheriffduty` person from #releng.
 
-### Update wikis  - **TODO: move to first merge day?**
+
+### reply to relman central bump completed
+
+reply to relman email request that:
+
+* mozilla-central has been tagged and version bumped
+* new nightlies have been trigged
+
+### Update wiki versions
+
+:warning: this script was broken at one point. If script fails, update the wiki pages manually by bumping the gecko version in below urls
 
 1. Updating is done automatically with the proper scripts at hand:
 ```sh
@@ -215,22 +265,10 @@ NEW_ESR_VERSION=52  # Only if a new ESR comes up (for instance 52.0esr)
     * [The next merge date](https://wiki.mozilla.org/index.php?title=Template:FIREFOX_MERGE_DATE)
     * [The current cycle](https://wiki.mozilla.org/index.php?title=Template:CURRENT_CYCLE)
 
-### Send merge completion email - **TODO: When should this be sent? After the first merge?**
 
-Reply to the "please merge m-c => m-b" email. **Please make sure you CC** `thunderbird-drivers@mozilla.org` and `sheriffs@mozilla.org`.  The content should be like:
-```
-gecko versions are now as follows:
-    m-c = 56
-    m-b = 55
-beta is still closed. Sheriffs may re-open when CI looks good
-central nightly builds have been triggered.
-Gecko version in bouncer for nightlies will be updated tomorrow
-Entries in the wiki have been also updated.
-```
+### Bump bouncer versions
 
-### Bump bouncer versions **TODO: When? After the first merge?**
-
-1. When we have good nightlies from `mozilla-central` with the new version, update the [bouncer](https://bounceradmin.mozilla.com) locations to reflect the new version for following aliases:
+1. When we have good nightlies from `mozilla-central` bump with the new version, update the [bouncer](https://bounceradmin.mozilla.com) locations to reflect the new version for following aliases:
     1. [firefox-nightly-latest](https://bounceradmin.mozilla.com/admin/mirror/location/?product__id__exact=2005)
     1. [firefox-nightly-latest-ssl](https://bounceradmin.mozilla.com/admin/mirror/location/?product__id__exact=6508)
     1. [firefox-nightly-latest-l10n](https://bounceradmin.mozilla.com/admin/mirror/location/?product__id__exact=6506)
@@ -245,76 +283,10 @@ NB: it is expected that the two stub products have a win and win64 location whic
 
 ### Trim bouncer's Check Now list
 
+:warning: this may not be required now that we removed sentry. Confirm with nthomas [More details](https://github.com/mozilla-releng/releasewarrior-2.0/pull/74#discussion_r171249691)
+
 1. Once per release cycle we should stop checking old releases to see if they're present
 1. Visit the [list of check now enabled products](https://bounceradmin.mozilla.com/admin/mirror/product/?all=&checknow__exact=1)
 1. you should leave all current and upcoming releases enabled, as well as the updates for watershed releases. Typically this is about 100 products
 1. Select all the old releases not covered above, and use the 'Remove Check Now on selected products' option in the Action dropdown
 
-
-## Appendix: Perform a manual reconfig
-
-A note on reconfigs. If you land any changes to [buildbotcustom](http://hg.mozilla.org/build/buildbotcustom/) or [buildbot-configs](https://hg.mozilla.org/build/buildbot-configs/) repos and want them in production, you'd need a reconfig.
-In order to do that, there are a couple of steps needed:
-
-1. Push your changes to `default` branch (can be to either of the two repos if to both if you need to change both)
-1. Dump and complete the contents of this file under `~/merge_duty/reconfig.source.sh` with your own credentials
-```sh
-# Needed if updating wiki - note the wiki does *not* use your LDAP credentials...
-export WIKI_USERNAME='Joe Doe'
-export WIKI_PASSWORD='********'
-```
-No need to define Bugzilla integration anymore. Ever since Bugzilla turned on the 2FA, the auth has been troublous so we're not using it anymore for reconfigs. Hence the use of `-b` when calling the script, below.
-1. GPG encrypt the file to `reconfig.source.sh.gpg`, so you are the only user to be able to read your credentials.
-1. Securely delete the plain text file: `shred --iterations=7 --remove 'reconfig.source.sh'`
-1. Run reconfig. This will:
-   * clone locally and merge `default` to `production` for [buildbotcustom](http://hg.mozilla.org/build/buildbotcustom/)
-   * clone and merge `default` to `production` for [buildbot-configs](https://hg.mozilla.org/build/buildbot-configs/)
-   * perform a forced reconfig
-   * update wikiwith details about date/time of the reconfig
-
-
-```sh
-now="$(date +'%d-%m-%Y')"
-cd ~/merge_duty
-# create a temporary directory where all the files and clones are downloaded
-# (optional if not having it already)
-hg clone http://hg.mozilla.org/build/tools/
-cd tools/buildfarm/maintenance/
-bash end_to_end_reconfig.sh -b -w <(gpg -d ~/merge_duty/reconfig.source.sh.gpg) -r "$now"   # A folder with the current date will be created
-```
-:warning: You may be prompted for your gpg key to decrypt the file, but end_to_end_reconfig.sh won't wait. Ensure your password is cached.
-
-
-# Changes from 57 onwards
-
-## Appendix: What to do if RelMan asks 1 release to be on 2 trains at the same time
-
-Firefox 57 was atypical: Release Management wanted it to be on both mozilla-central and mozilla-beta. The goal was to ship DevEdition 1 week before the planned merge day. This meant Releng had to:
-1. Merge m-b => m-r (regular merge per the documentation above)
-1. Merge m-c => m-b but leave m-c as is (more details below).
-1. Tag m-c to say the beta cycle has started
-1. Ask sheriffs to create a relbranch in m-b, so the last Fennec beta (56.0b13) could ship in the meantime.
-1. Once RelMan wants to bump Nightly's version number, bump and tag central.
-
-*:information_source: Each command line can be found in the logs of a passed job. Please refer to them. Tags and commit messages are provided in the following examples.*
-
-### Merge m-c => m-b but leave m-c as is.
-
-Some steps in `gecko_migration.py` need to be commented out:
-* [Bump version and touch clobber files](https://searchfox.org/mozilla-central/rev/31606bbabc50b08895d843b9f5f3da938ccdfbbf/testing/mozharness/scripts/merge_day/gecko_migration.py#329-339)
-* [hg tag the origin repo](https://searchfox.org/mozilla-central/rev/31606bbabc50b08895d843b9f5f3da938ccdfbbf/testing/mozharness/scripts/merge_day/gecko_migration.py#466-469)
-
-Then run `gecko_migration.py` as usual.
-
-### Tag m-c
-
-You have to create a [tag like FIREFOX_BETA_57_BASE](https://hg.mozilla.org/mozilla-central/rev/22ed219fb63a).
-
-# Relbranch in m-b for Fennec
-
-Ask sheriffs to create [a relbranch like this one](https://hg.mozilla.org/releases/mozilla-beta/shortlog/FIREFOX_56b13_RELBRANCH). RelMan can specify the relbranch on ship-it and builds starts automatically. However, we had to verify locales we still using the right beta repos ([Bug 1397721](https://bugzil.la/1397721)).
-Moreover, the bump task in release promotion will fail. You have to [bump it manually](https://hg.mozilla.org/releases/mozilla-beta/rev/418902381c4b) and [tag it manually](https://hg.mozilla.org/releases/mozilla-beta/rev/ef07d617a488) too.
-
-# Bump and tag central
-
-A new tag is needed to specify the end of the nightly cycle, for instance: [FIREFOX_NIGHTLY_57_END](https://hg.mozilla.org/mozilla-central/rev/1ca411f5e97b). Then you have to clobber and bump versions in m-c, just [like the following](https://hg.mozilla.org/mozilla-central/rev/835a92b19e3d).
