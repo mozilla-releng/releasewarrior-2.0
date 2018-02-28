@@ -16,6 +16,7 @@ The releng process usually operates like this:
   * Make sure that all the dry-run migrations run cleanly
   * Sanity check you have no blocking migration bugs
 * On Merge day
+  * ask vcs to disable hg.m.o l10n hooks
   * bump mozilla-beta and mozilla-release buildbot gecko versions
   * mozilla-beta merges to mozilla-release
   * mozilla-central merges to mozilla-beta (relman may merge after this until we bump mozilla-central version)
@@ -107,6 +108,12 @@ hg -R build/mozilla-esr{$version} diff  # have someone sanity check output with 
 ## Release Merge Day
 
 When: Wait for go from relman to release-signoff@mozilla.com. For date, see [Release Scheduling calendar](https://calendar.google.com/calendar/embed?src=bW96aWxsYS5jb21fZGJxODRhbnI5aTh0Y25taGFiYXRzdHY1Y29AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) or check with relman
+
+### Disable migration blocking hg.m.o hooks
+
+There are ftl check hooks on hg.m.o that prevent users from pushing to certain files. File a Dev Services bug or ask in #vcs, specifying when you would like to disable/re-enable the hook like this one:
+
+[Bug 1441782 - disable hg ftl (l10n) check hook during merge day, Thurs Feb 1st for mozilla-beta and mozilla-release repos](https://bugzilla.mozilla.org/show_bug.cgi?id=1441782)
 
 ### Buildbot Re-config part 1
 
