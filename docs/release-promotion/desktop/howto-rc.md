@@ -1,4 +1,56 @@
-# RC Firefox releases
+# Add a What's New Page to a Firefox RC.
+
+## Requirements
+
+* Access to production Balrog
+* A confirmed list of locales that should receive the WNP from Product
+* A confirmed URL of the WNP from Product
+
+## How
+
+* Download the existing Release Blob (for example: Firefox-59.0-build1)
+** Go to https://aus4-admin.mozilla.org/releases
+** Search for the release blob you need
+** Click "Download"
+* Make the following changes to it:
+** Change "schema_version" to 9
+** Remove "detailsUrl" from the top level of the blob
+** Add an "updateLine" section that looks something like the following:
+
+  "updateLine": [
+    {
+      "for": {},
+      "fields": {
+        "detailsURL": "https://www.mozilla.org/%LOCALE%/firefox/59.0/releasenotes/",
+        "type": "minor"
+      }
+    },
+    {
+      "for": {
+        "locales": ["ast", "bg", "en-US", ...],
+        "versions": ["<59.0"]
+      },
+      "fields": {
+        "actions": "showURL",
+        "openURL": "https://www.mozilla.org/%LOCALE%/firefox/59.0/whatsnew/?oldversion=%OLD_VERSION"
+      }
+    }
+  ]
+
+The block above says that all responses constructed with this blob should include detailsURL and type (because the first "for" block is empty), while only requests matching locales and versions from the second "for" block should get "actions" and "openURL" in their response. The list of locales and WNP URL should be whatever you received from Product before you began this process.
+
+Now that the new Release blob is ready you can upload it to Balrog and update the Rules by doing the following:
+* Add the Release to Balrog
+** Go to https://aus4-admin.mozilla.org/releases
+** Search for the Release blob again
+** Click "Update"
+** Fill out the form, selecting your new, locally modified blob, and click "Save Changes"
+
+Once this is done the What's New Page should be active on both the release-localtest and release-cdntest channels.
+
+If there is no "Update" button present, this means the Release is already on a live channel, and you cannot modify it without Signoff. You can either Schedule an Update or upload it under a name in this situation, but both of these are out of scope of this howto.
+
+# Ship RC Firefox releases
 
 ## Requirements
 
