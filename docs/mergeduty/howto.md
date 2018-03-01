@@ -1,6 +1,6 @@
 # MergeDuty
 
-Most code changes to Firefox and Fennec land in the [mozilla-central](https://hg.mozilla.org/mozilla-central) repository, and 'nightly' releases are built from that repo. 
+Most code changes to Firefox and Fennec land in the [mozilla-central](https://hg.mozilla.org/mozilla-central) repository, and 'nightly' releases are built from that repo.
 DevEdition and Beta are built from the [mozilla-beta](https://hg.mozilla.org/releases/mozilla-beta/) repository, Extended Support Releases from the relevant ESR repo, such as [mozilla-esr52](https://hg.mozilla.org/releases/mozilla-esr52/), and Release and Release Candidates are built from [mozilla-release](https://hg.mozilla.org/releases/mozilla-release/).
 
 How are those repositories kept in sync? That's MergeDuty. You will be merging repositories to create new beta, release candidates, releases and extended support releases.
@@ -124,7 +124,7 @@ when: this can happen before relman request migration. e.g. the same day but in 
 1. The reconfiguration is triggered by a cron job every hour exactly on the hour (`0 * * * *` in crontab). Your options are:
    * Wait for the reconfig to happen via cron.
    * Ask buildduty to manually trigger it.
-   * Run it yourself, see [below](#appendix-perform-a-manual-reconfig) for instructions
+   * Run it yourself, see [how-to-manually-perform-reconfig](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/misc-operations/manually-perform-bb-reconfig-generate-partials.md) for instructions
 
 ### Merge beta to release
 
