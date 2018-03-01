@@ -48,9 +48,9 @@ Now that the new Release blob is ready you can upload it to Balrog and update th
   * Click "Update"
   * Fill out the form, selecting your new, locally modified blob, and click "Save Changes"
 
-Once this is done the What's New Page should be active on both the release-localtest and release-cdntest channels.
-
 If there is no "Update" button present, this means the Release is already on a live channel, and you cannot modify it without Signoff. You can either Schedule an Update or upload it under a name in this situation, but both of these are out of scope of this howto.
+
+Once this is done the What's New Page should be active on both the release-localtest and release-cdntest channels.
 
 # Ship RC Firefox releases
 
