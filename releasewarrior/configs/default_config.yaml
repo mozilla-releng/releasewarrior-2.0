@@ -35,6 +35,7 @@ templates:
     fennec:
       beta: fennec/beta.json.tmpl
       release: fennec/release.json.tmpl
+      release-rc: fennec/release-rc.json.tmpl
     thunderbird:
       beta: thunderbird/beta.json.tmpl
       release: thunderbird/release.json.tmpl
