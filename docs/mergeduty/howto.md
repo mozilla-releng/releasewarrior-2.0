@@ -160,7 +160,7 @@ python mozharness-central/scripts/merge_day/gecko_migration.py \
   -c selfserve/production.py -c merge_day/central_to_beta.py \
   --create-virtualenv --commit-changes --push
 ```
-1. Upon pushing, `central` should get a version bump consisting of a `commit` like [this](https://hg.mozilla.org/mozilla-central/rev/52285ea5e54c) and a `tag` like [this](https://hg.mozilla.org/mozilla-central/rev/d6c0df73518b)
+1. Upon pushing, `central` should get  `tag` like [this](https://hg.mozilla.org/mozilla-central/rev/d6c0df73518b)
 1. Verify changesets are visible on [hg pushlog](https://hg.mozilla.org/releases/mozilla-beta/pushloghtml) and [Treeherder]( https://treeherder.mozilla.org/#/jobs?repo=mozilla-beta). It may take a couple of minutes to appear.
 
 ### Bump ESR version
