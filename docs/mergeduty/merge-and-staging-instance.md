@@ -17,7 +17,9 @@ note: There is also a Dockerfile attached to <a href="https://bugzilla.mozilla.o
 $ # copy the public DNS from AWS console and connect through vpn+jumphost using the `ubuntu` user : e.g. ubuntu@ec2-54-83-67-250.compute-1.amazonaws.com
 $ # verify you can ssh. Then copy your mozilla ssh *public* key to the remote merge instance
 $ scp -i aws-staging-mergeday.pem ~/.ssh/${YOUR_MOZILLA_SSH_PUB} ubuntu@${DNS_OF_MERGE_INSTANCE}:~/.ssh/${USER}_rsa.pub
-$ ssh -i aws-staging-mergeday.pem ubuntu@${DNS_OF_MERGE_INSTANCE}
+$ # now ssh again but this time, ensure your ssh-agent has your key loaded and forward the agent
+$ # this way the migration automation won't bail partway asking for your passphrase when communicating with hg.m.o
+$ ssh -A -i aws-staging-mergeday.pem ubuntu@${DNS_OF_MERGE_INSTANCE}
 $ chmod 600 ~/.ssh/${USER}_rsa.pub
 $ vim ~/.ssh/config # comment out previous users and add you. e.g.
 $ cat ~/.ssh/config
