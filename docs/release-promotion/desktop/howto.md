@@ -65,7 +65,7 @@ unset PROMOTE_TASK_ID
 
 * Update releasewarrior:
     ```sh
-    release task ${product} ${version} --resolve publish
+    release task ${product} ${version} --resolve mirrors
     cd ../releasewarrior-data && git push
     ```
 
