@@ -7,33 +7,33 @@ Currently, two products may need manually signing:
 ## Requirements
 Google Play refuses non-optimized APKs. The signature changes the structure of the APK archive, which breaks the Zip optimization.
 
-1. Install the latest Android SDK to get the build tools. 
+1. Install the latest Android SDK to get the build tools.
    * MacOSX: `brew cask install android-sdk` (requires `brew tap caskroom/cask`)
    * Ubuntu: `apt install android-sdk`
    * Other: [Install Android Studio](https://developer.android.com/studio/index.html#Other)
 
 ## First Steps
 1. `ssh signing4.srv.releng.scl3.mozilla.com`
-1. Change to the `cltsign` user: 
+1. Change to the `cltsign` user:
    ```sh
    sudo -i
    su - cltsign
-   ``` 
+   ```
    TODO: `sudo -u cltsign` should be enabled.
 
-## To sign an APK 
+## To sign an APK
 You will need to repeat this for each APK, feel free to optimise by downloading all at once, just be careful of filenames when copy/pasting commands.
 
 1. Download unsigned APK(s).
    * Right-click the attachment in bugzilla and click 'Copy Link Location'
-   * `wget -O unsigned.apk <pasted url>` 
+   * `wget -O unsigned.apk <pasted url>`
 1. Set environment variables:
-   * For Focus/Klar: 
+   * For Focus/Klar:
      ```sh
      keystore='/builds/signing/rel-key-signing-server/secrets/focus-jar'
      alias='focus'
      ```
-   * For Rocket: 
+   * For Rocket:
      ```sh
      keystore='/builds/signing/rel-key-signing-server/secrets/rocket-jar'
      alias='rocket'
@@ -57,7 +57,7 @@ You will need to repeat this for each APK, feel free to optimise by downloading 
 1. Optimize the APKs for Google Play, and verify. For each APK:
    ```sh
    zipalign -v 4 signed.apk signed-aligned.apk
-   zipalign -c -v 4 signed-aligned.apk`
+   zipalign -c -v 4 signed-aligned.apk
    ```
 1. Attach the signed and aligned APKs to the bug using the 'attach file' feature in bugzilla.
 
