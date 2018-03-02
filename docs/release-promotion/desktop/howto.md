@@ -19,7 +19,11 @@ For version `X`, the following happens in a cycle:
 
 In the new taskcluster release promotion for Fx59+, pushing doesn't happen automatically in ship-it (yet). We can [address this](https://trello.com/c/vOP7fml4/282-update-releaserunner3-to-automatically-run-the-push-flavor-rather-than-promote-for-certain-release-types). Until then, all pushing will be manually triggered.
 
-### When - b2+ betas
+### When - b1 betas/devedition
+
+- For b1, we do not push to the releases directory until after some QA has happened. No formal e-mail is sent for this - so check with RelMan for specific timing.
+
+### When - b2+ betas/devedition
 
 - For beta we want to push to releases directories as soon as the builds are ready. Releng can trigger the `push` action as soon as the `promote` action task finishes (you do not need to wait for all of the tasks in the promote phase to complete). In the future we can have this [happen automatically](https://trello.com/c/vOP7fml4/282-update-releaserunner3-to-automatically-run-the-push-flavor-rather-than-promote-for-certain-release-types). (We are also in [discussion with relman](https://bugzilla.mozilla.org/show_bug.cgi?id=1433284) about future plans around this step)
 
