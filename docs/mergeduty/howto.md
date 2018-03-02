@@ -147,7 +147,8 @@ python mozharness-central/scripts/merge_day/gecko_migration.py \
   --create-virtualenv --commit-changes --push
 ```
 :warning: If an issue comes up during this phase, you may not be able to run this command (or the no-op one) correctly. You may need to publicly backout some tags/changesets to get back in a known state.
-1. Upon pushing, `beta` should get a version bump consisting of a `commit` like [this](https://hg.mozilla.org/releases/mozilla-beta/rev/52cefa439a7d) and a `tag` like [this](https://hg.mozilla.org/releases/mozilla-beta/rev/907a3a5c6fed)
+1. Upon successful run, `mozilla-release` should get a version bump and branding changes consisting of a `commit` like [this](https://hg.mozilla.org/releases/mozilla-release/rev/cbb9688c2eeb) and a `tag` like [this](https://hg.mozilla.org/releases/mozilla-release/rev/173d292663a1)
+1. In the same time `mozilla-beta` should get a tag like [this](https://hg.mozilla.org/releases/mozilla-beta/rev/0ed280054c9b)
 1. Verify changesets are visible on [hg pushlog](https://hg.mozilla.org/releases/mozilla-release/pushloghtml) and [Treeherder]( https://treeherder.mozilla.org/#/jobs?repo=mozilla-release). It may take a couple of minutes to appear.
 
 ### Merge central to beta
@@ -160,7 +161,8 @@ python mozharness-central/scripts/merge_day/gecko_migration.py \
   -c selfserve/production.py -c merge_day/central_to_beta.py \
   --create-virtualenv --commit-changes --push
 ```
-1. Upon pushing, `central` should get  `tag` like [this](https://hg.mozilla.org/mozilla-central/rev/d6c0df73518b)
+1. Upon successful run, `mozilla-beta` should get a version bump and branding changes consisting of a `commit` like [this](https://hg.mozilla.org/releases/mozilla-beta/rev/15334014dc67) and a `tag` like [this](https://hg.mozilla.org/releases/mozilla-beta/rev/fb732e4aebfc)
+1. In the same time `mozilla-central` should get a tag like [this](https://hg.mozilla.org/mozilla-central/rev/426ef843d356)
 1. Verify changesets are visible on [hg pushlog](https://hg.mozilla.org/releases/mozilla-beta/pushloghtml) and [Treeherder]( https://treeherder.mozilla.org/#/jobs?repo=mozilla-beta). It may take a couple of minutes to appear.
 
 ### Bump ESR version
