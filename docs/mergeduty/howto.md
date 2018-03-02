@@ -59,12 +59,12 @@ Ensure you have access and have setup [the merge remote instance](merge-and-stag
 
 Ensure you have access to Bouncer. You may need an account. Ask rail/mtabara/nthomas for more details if you have never done this before.
 
-* Create a SOCKS proxy on port `10000` using SSH via one of the masters:
+1. Create a SOCKS proxy on port `10000` using SSH via one of the masters:
 ```
 ssh -ND 10000  buildbot-master82.bb.releng.scl3.mozilla.com
 ```
-* Setup Firefox (Firefox -> Preferences -> Network Proxy -> Settings) to use it like in [this screenshot](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/mergeduty/bouncer_setup_firefox.png)
-* Navigate to [Bouncer](https://bounceradmin.mozilla.com/) to make sure you can login
+1. Setup Firefox (`Firefox` -> `Preferences` -> `Network Proxy` -> `Settings`) to use it like in [this screenshot](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/mergeduty/bouncer_setup_firefox.png)
+1. Navigate to [Bouncer](https://bounceradmin.mozilla.com/) to make sure you can login
 
 
 
@@ -120,9 +120,9 @@ When: Wait for go from relman to release-signoff@mozilla.com. For date, see [Rel
 
 ### Disable migration blocking hg.m.o hooks
 
-There are ftl check hooks on hg.m.o that prevent users from pushing to certain files. File a Dev Services bug or ask in #vcs, specifying when you would like to disable/re-enable the hook like this one:
+There are ftl check hooks on [hg.m.o](http://hg.mozilla.org/) that prevent users from pushing to certain files. File a Dev Services bug or ask in #vcs, specifying when you would like to disable/re-enable the hook like this one. Example bug for this is [bug 1441782](https://bugzilla.mozilla.org/show_bug.cgi?id=1441782)
 
-[Bug 1441782 - disable hg ftl (l10n) check hook during merge day, Thurs Feb 1st for mozilla-beta and mozilla-release repos](https://bugzilla.mozilla.org/show_bug.cgi?id=1441782)
+**Make sure you ask for the hooks to be disabled for both `mozilla-beta` and `mozilla-release`**.
 
 ### Buildbot Re-config part 1
 
@@ -191,7 +191,12 @@ cd /builds/l10n-bumper
 python2.7 mozharness/scripts/l10n_bumper.py -c mozharness/configs/l10n_bumper/mozilla-beta.py --ignore-closed-tree
 ```
 
-### reply to relman migrations are complete
+### Re-enable hg.m.o hooks post-merging
+
+Make sure you drop a comment in the bug to ask for re-enabling the hooks for `mozilla-beta` and `mozilla-release` again.
+
+
+### Reply to relman migrations are complete
 
 1. Reply to the migration request with the template:
 
