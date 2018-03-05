@@ -12,19 +12,16 @@ MergeDuty consists of multiple separate days of work. Each day you must perform 
 The releng process usually operates like this:
 * A week before the merge, do the prep work
   * Verify you have access to what you need
-  * Create the buildbot-config version bump patches that will land on Merge day
   * Make sure that all the dry-run migrations run cleanly
   * Sanity check you have no blocking migration bugs
 * On Merge day
   * ask vcs to disable hg.m.o l10n hooks
-  * bump mozilla-beta and mozilla-release buildbot gecko versions
   * mozilla-beta merges to mozilla-release
   * mozilla-central merges to mozilla-beta (relman may merge after this until we bump mozilla-central version)
   * mozilla-esr gets version bumped
   * Ask relman to create a mozilla-beta relbranch for Fennec
 * A week after Merge day, bump mozilla-central and update bouncer
   * Ask relman to do final mozilla-central->mozilla-beta merge
-  * bump mozilla-central buildbot gecko versions
   * bump the version and tag mozilla-central repo itself
   * Trigger new nightlies
   * update bouncer aliases
@@ -66,14 +63,6 @@ ssh -ND 10000  buildbot-master82.bb.releng.scl3.mozilla.com
 1. Setup Firefox (`Firefox` -> `Preferences` -> `Network Proxy` -> `Settings`) to use it like in [this screenshot](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/mergeduty/bouncer_setup_firefox.png)
 1. Navigate to [Bouncer](https://bounceradmin.mozilla.com/) to make sure you can login
 
-
-
-### Create buildbot-config patches
-
-1. Make sure you have a fresh and up to date copy of [buildbot-configs](https://hg.mozilla.org/build/buildbot-configs/)
-1. On the merge day bug, create two patches to bump [gecko_versions.json](https://dxr.mozilla.org/build-central/source/buildbot-configs/mozilla/gecko_versions.json). Get them reviewed but **don't land them yet**. Note that reviewboard can't land on buildbot-configs, you will need to push changes manually.
-   * patch 1: bump the version for **mozilla-release** and **mozilla-beta**. [Example](https://bugzilla.mozilla.org/show_bug.cgi?id=1412962#c14).
-   * patch 2: bump the version for **mozilla-central**. [Example](https://bugzilla.mozilla.org/show_bug.cgi?id=1412962#c15).
 
 ### Do migration no-op trial runs
 
@@ -123,17 +112,6 @@ When: Wait for go from relman to release-signoff@mozilla.com. For date, see [Rel
 There are ftl check hooks on [hg.m.o](http://hg.mozilla.org/) that prevent users from pushing to certain files. File a Dev Services bug or ask in #vcs, specifying when you would like to disable/re-enable the hook like this one. Example bug for this is [bug 1441782](https://bugzilla.mozilla.org/show_bug.cgi?id=1441782)
 
 **Make sure you ask for the hooks to be disabled for both `mozilla-beta` and `mozilla-release`**.
-
-### Buildbot Re-config part 1
-
-when: this can happen before relman request migration. e.g. the same day but in the morning
-
-1. Look at the merge day bug and see if patches need to land at this stage.
-1. Land "patch 1" (the mozilla-release/mozilla-beta version bump) to `default` branch of buildbot-configs and wait for tests to run and confirm they pass in `#releng`
-1. The reconfiguration is triggered by a cron job every hour exactly on the hour (`0 * * * *` in crontab). Your options are:
-   * Wait for the reconfig to happen via cron.
-   * Ask buildduty to manually trigger it.
-   * Run it yourself, see [how-to-manually-perform-reconfig](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/misc-operations/manually-perform-bb-reconfig-generate-partials.md) for instructions
 
 ### Merge beta to release
 
@@ -215,10 +193,6 @@ This is now complete:
 ## Bump and tag mozilla-central - 1 week after Merge day
 
 When: Wait for go from relman to release-signoff@mozilla.com. For date, see [Release Scheduling calendar](https://calendar.google.com/calendar/embed?src=bW96aWxsYS5jb21fZGJxODRhbnI5aTh0Y25taGFiYXRzdHY1Y29AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) or check with relman
-
-### Buildbot re-config part 2
-
-Do the same things as buildbot-configs patch 1 from Merge day, except you should land "patch 2" instead.
 
 ### Merge central to beta one last time
 
