@@ -46,7 +46,7 @@ Originally, the m-c->m-b was done a week after m-b->m-r. Starting at Firefox 57,
 
 ### File tracking migration bug
 
-File a tracking migration bug if there isn't one. (e.g. [bug 1412962](https://bugzilla.mozilla.org/show_bug.cgi?id=1412962)
+File a tracking migration bug if there isn't one. (e.g. [bug 1412962](https://bugzilla.mozilla.org/show_bug.cgi?id=1412962))
 
 ### Access and setup the merge remote instance
 
@@ -152,6 +152,7 @@ python mozharness-central/scripts/merge_day/gecko_migration.py \
 1. Upon successful run, `mozilla-beta` should get a version bump and branding changes consisting of a `commit` like [this](https://hg.mozilla.org/releases/mozilla-beta/rev/15334014dc67) and a `tag` like [this](https://hg.mozilla.org/releases/mozilla-beta/rev/fb732e4aebfc)
 1. In the same time `mozilla-central` should get a tag like [this](https://hg.mozilla.org/mozilla-central/rev/426ef843d356)
 1. Verify changesets are visible on [hg pushlog](https://hg.mozilla.org/releases/mozilla-beta/pushloghtml) and [Treeherder]( https://treeherder.mozilla.org/#/jobs?repo=mozilla-beta). It may take a couple of minutes to appear.
+
 :warning: The decision task of the resulting pushlog in the `mozilla-beta` might fail in the first place with a timeout. A rerun might solve the problem which can be caused by an unlucky slow instance.
 
 ### Bump ESR version
