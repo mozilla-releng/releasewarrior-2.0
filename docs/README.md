@@ -12,14 +12,15 @@ where the coordination happens among the releaseduty squirrels.
 
 This folder gathers all releaseduty documentation under one single umbrella. The structure is as follows:
 
-- [CHANGELOG](#TODO) - to track large changes to the workflow and tools of releaseduty
-- [balrog](#TODO) - to track all Balrog related information and understanding
-- [day1](#TODO) - day1 documentation for all releng folks starting/resuming their releaseduty cycle
-- [development](#TODO) - documentation for various related pieces that are still under development (e.g. tcmigration or Ship It v2. stuff)
-- [mergeduty](#TODO) - single point of truth for all that matters during mergeduty processes
-- [misc-operations](#TODO) - various other pieces of documentation that come into handy while releaseduty
-- [release-promotion](#TODO) - to track the bread and butter of releaseduty for all products and platforms
-- [signing](#TODO) - to track any related signing duties that releaseduty must perform occasionally
+- [CHANGELOG](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/CHANGELOG.md) - to track large changes to the workflow and tools of releaseduty
+- [balrog](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/balrog) - to track all Balrog related information and understanding
+- [day1](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/day1) - day1 documentation for all releng folks starting/resuming their releaseduty cycle
+- [development](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/development) - documentation for various related pieces that are still under development (e.g. tcmigration or Ship It v2. stuff)
+- [historic-one-time-operations](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/historic-one-time-operations) - various operations that weren't performed on a regular basis
+- [mergeduty](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/mergeduty) - single point of truth for all that matters during mergeduty processes
+- [misc-operations](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/misc-operations) - various other pieces of documentation that come into handy while releaseduty
+- [release-promotion](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/release-promotion) - to track the bread and butter of releaseduty for all products and platforms
+- [signing](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/signing) - to track any related signing duties that releaseduty must perform occasionally
 
 ## Overview
 
@@ -37,6 +38,7 @@ release might have.
 * Fixing and improving the release automation, including both tools and processes
 * Maintaining a logbook of issues and progress using releasewarrior.
 * Arranging event post-mortems, if required.
+* keep the [Changelog](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/CHANGELOG.md) up-to-date with changes in releaseduty workflow
 
 The individual accountable for a release is known as the 'release owner',
 and this is usually a specific member of Release Management.
