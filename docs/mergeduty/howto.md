@@ -60,7 +60,8 @@ Ensure you have access to Bouncer. You may need an account. Ask rail/mtabara/nth
 ```
 ssh -ND 10000  buildbot-master82.bb.releng.scl3.mozilla.com
 ```
-1. Setup Firefox (`Firefox` -> `Preferences` -> `Network Proxy` -> `Settings`) to use it like in [this screenshot](/docs/mergeduty/media/bouncer_setup_firefox.png?raw=true)
+1. Setup Firefox (`Firefox` -> `Preferences` -> `Network Proxy` -> `Settings`) to use it like this:
+![this](/docs/mergeduty/media/bouncer_setup_firefox.png?raw=true)
 1. Navigate to [Bouncer](https://bounceradmin.mozilla.com/) to make sure you can login
 
 
