@@ -30,6 +30,7 @@
     },
     {
       "for": {
+        "channels": ["release", "release-localtest", "release-cdntest"],
         "locales": ["ast", "bg", "en-US", ...],
         "versions": ["<59.0"]
       },
