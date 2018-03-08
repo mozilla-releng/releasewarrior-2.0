@@ -213,6 +213,8 @@ def generate_newbuild_data(data, release, data_path, wiki_path, logger, config):
         newbuild["issues"] = [issue for issue in get_remaining_items(newbuild["issues"])]
         # increment buildnum
         newbuild["buildnum"] = newbuild["buildnum"] + 1
+        # ignore old graphids
+        newbuild["graphids"] = []
         # add new buildnum based on previous to current release
         data["inflight"].append(newbuild)
     current_build_index = get_current_build_index(data)
