@@ -15,6 +15,8 @@
 * Make the following changes to it:
   * Change "schema_version" to 9
   * Remove "detailsUrl" from the top level of the blob
+  * Remove "platformVersion" from the top level of the blob, and every locale section
+  ** This will no longer be necessary once https://bugzilla.mozilla.org/show_bug.cgi?id=1431789 is fixed.
   * Add an "updateLine" section that looks something like the following:
 
 ```
