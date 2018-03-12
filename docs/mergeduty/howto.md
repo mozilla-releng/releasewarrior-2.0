@@ -25,7 +25,6 @@ The releng process usually operates like this:
   * bump the version and tag mozilla-central repo itself
   * Trigger new nightlies
   * update bouncer aliases
-  * Trim bouncer's Check Now list
   * bump wiki versions
 
 
