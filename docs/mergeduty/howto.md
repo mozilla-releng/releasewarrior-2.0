@@ -174,7 +174,7 @@ python mozharness-central/scripts/merge_day/gecko_migration.py -c merge_day/bump
 
 ### Relbranch in m-b for Fennec
 
-Ask relman, e.g. ryanvm, to create [a relbranch like this one](https://hg.mozilla.org/releases/mozilla-beta/shortlog/FIREFOX_56b13_RELBRANCH).
+Ask RelMan, (e.g. [RyanVM](https://mozillians.org/en-US/u/RyanVM/)), to create [a relbranch like this one](https://hg.mozilla.org/releases/mozilla-beta/shortlog/FIREFOX_56b13_RELBRANCH).
 
 ### Run the l10n bumper
 
@@ -211,14 +211,13 @@ This is now complete:
 When: Wait for go from relman to release-signoff@mozilla.com. For date, see [Release Scheduling calendar](https://calendar.google.com/calendar/embed?src=bW96aWxsYS5jb21fZGJxODRhbnI5aTh0Y25taGFiYXRzdHY1Y29AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) or check with relman
 
 ### Merge central to beta one last time
-
-You can ask relman, e.g. ryanvm, to do this as gecko_migrations.py logic will reset mozilla-beta version numbers, etc which is not what we want.
+Ask RelMan, (e.g. [RyanVM](https://mozillians.org/en-US/u/RyanVM/)), to do this as our automation [gecko_migrations.py](https://hg.mozilla.org/mozilla-central/file/tip/testing/mozharness/scripts/merge_day/gecko_migration.py) script will reset mozilla-beta version numbers which is not what we want.
 
 ### Tag central and bump versions
 
 What happens: A new tag is needed to specify the end of the nightly cycle, for instance: [FIREFOX_NIGHTLY_57_END](https://hg.mozilla.org/mozilla-central/rev/1ca411f5e97b). Then you have to clobber and bump versions in m-c, just [like the following](https://hg.mozilla.org/mozilla-central/rev/835a92b19e3d).
 
-How: This is now done via the remote instance and gecko_migrations.py similar to bumping esr:
+How: This is now done via the remote instance and **gecko_migrations.py** similar to bumping **esr**:
 
 
 1. connect to the remote instance and cd to the current merge_day work dir as earlier
