@@ -28,7 +28,7 @@ with open('Firefox-59.0-build5.json', 'w') as fp:
 ```
 
   * This will no longer be necessary once [bug 1431789](https://bugzilla.mozilla.org/show_bug.cgi?id=1431789) is fixed.
-  * Add an "updateLine" section that looks something like the following:
+  * Add an `updateLine` section that looks something like the following:
 
 ```
   "updateLine": [
@@ -56,7 +56,7 @@ with open('Firefox-59.0-build5.json', 'w') as fp:
 The block above says that all responses constructed with this blob should include `detailsURL` and `type` (because the first `for` block is empty), while only requests matching `locales` and `versions` from the second `for` block should get `actions` and `openURL` in their response.
 The list of locales and WNP URL should be whatever you received from Product before you began this process.
 
-**A word on the locales** The final number of locales that are to be present within a certain WNP depends on each release. There's a certain cut-off date for each release, by which localized contents can be submitted. Once passed the cut-off date
+**A word on the** `locales` The final number of locales that are to be present within a certain WNP depends on each release. There's a certain cut-off date for each release, by which localized contents can be submitted. Once passed the cut-off date
 the list of locales that have that content, are written in stone for that particular release; all others are being ignored in serving the WNP. Hence, the number of locales available changes per release, as the page changes. More context of this [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1438633#c17).
 
 Now that the new Release blob is ready you can upload it to Balrog and update the Rules by doing the following:
