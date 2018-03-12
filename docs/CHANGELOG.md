@@ -9,7 +9,7 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 ### Added
 - we track all major changes in this newly added CHANGELOG
 - separate RC docs for both Fennec and Firefox
-- new-style WNP setup, as documented on https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/desktop/howto-rc.md#add-a-whats-new-page-to-a-firefox-rc
+- new-style WNP setup, [as documented](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/desktop/howto-rc.md#add-a-whats-new-page-to-a-firefox-rc).
 
 ### Changed
 - old release promotion based on [releasetasks](https://github.com/mozilla/releasetasks/) is dead. Everything is in-tree scheduled now. Changes are riding the trains. More on this [here](https://github.com/mozilla-releng/releasewarrior-2.0/wiki/Release-Promotion-Overview-TC) and [here](https://github.com/mozilla-releng/releasewarrior-2.0/wiki/Release-Promotion-Tasks-TC)
