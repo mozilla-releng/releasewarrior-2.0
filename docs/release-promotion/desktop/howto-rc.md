@@ -11,11 +11,11 @@
 * Download the existing Release Blob (e.g. `Firefox-59.0-build1`)
   * Go to https://aus4-admin.mozilla.org/releases
   * Search for the release blob you need
-  * Click "Download"
+  * Click `Download`
 * Make the following changes to it:
-  * Change "schema_version" to `9`
-  * Remove "detailsUrl" from the top level of the blob
-  * Remove "platformVersion" from the top level of the blob, and every locale section
+  * Change `schema_version` to `9`
+  * Remove `detailsUrl` from the top level of the blob
+  * Remove `platformVersion` from the top level of the blob, and every locale section
     * Be careful to not leaving trailing commas - this is not valid JSON!
       * Tip: You can use `:g/platformVersion/d` in [Vi](https://www.vim.org/) to trim all lines containing this string
       * Tip: Removing the `platformVersion` above leaves the json with trailing commas in too many places to be fixed manually. To automate this fix, load the entire json as a dictionary in Python and dump it as JSON afterwards
@@ -26,7 +26,8 @@ import json
 with open('Firefox-59.0-build5.json', 'w') as fp:
     data = json.dump(data, fp, sort_keys=True, indent=4)
 ```
-    * This will no longer be necessary once [bug 1431789](https://bugzilla.mozilla.org/show_bug.cgi?id=1431789) is fixed.
+
+  * This will no longer be necessary once [bug 1431789](https://bugzilla.mozilla.org/show_bug.cgi?id=1431789) is fixed.
   * Add an "updateLine" section that looks something like the following:
 
 ```
@@ -52,20 +53,20 @@ with open('Firefox-59.0-build5.json', 'w') as fp:
   ]
 ```
 
-The block above says that all responses constructed with this blob should include `detailsURL` and `type` (because the first "for" block is empty), while only requests matching `locales` and `versions` from the second "for" block should get `actions` and `openURL` in their response.
+The block above says that all responses constructed with this blob should include `detailsURL` and `type` (because the first `for` block is empty), while only requests matching `locales` and `versions` from the second `for` block should get `actions` and `openURL` in their response.
 The list of locales and WNP URL should be whatever you received from Product before you began this process.
 
 **A word on the locales** The final number of locales that are to be present within a certain WNP depends on each release. There's a certain cut-off date for each release, by which localized contents can be submitted. Once passed the cut-off date
-the list of locales that have that content, are written in stone for that particular release; all others are being ignored in serving the WNP. Hence, the number of locales available changes per release, as the page changes. More context of this [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1438633#c17)
+the list of locales that have that content, are written in stone for that particular release; all others are being ignored in serving the WNP. Hence, the number of locales available changes per release, as the page changes. More context of this [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1438633#c17).
 
 Now that the new Release blob is ready you can upload it to Balrog and update the Rules by doing the following:
 * Add the Release to Balrog
   * Go to https://aus4-admin.mozilla.org/releases
   * Search for the Release blob again
-  * Click "Update"
-  * Fill out the form, selecting your new, locally modified blob, and click "Save Changes"
+  * Click `Update`
+  * Fill out the form, selecting your new, locally modified blob, and click `Save Changes`
 
-If there is no "Update" button present, this means the Release is already on a live channel, and you cannot modify it without Signoff. You can either Schedule an Update or upload it under a name in this situation, but both of these are out of scope of this howto.
+If there is no `Update` button present, this means the Release is already on a live channel, and you cannot modify it without Signoff. You can either Schedule an Update or upload it under a name in this situation, but both of these are out of scope of this howto.
 
 Once this is done the What's New Page should be active on both the release-localtest and release-cdntest channels.
 
