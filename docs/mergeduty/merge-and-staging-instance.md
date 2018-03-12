@@ -10,7 +10,7 @@ note: There is also a Dockerfile attached to <a href="https://bugzilla.mozilla.o
 
 ### Access and setup existing merge instance
 
-1. the instance may be stopped. Use the aws web console and search for Mozilla release staging/merge instance (currently i-0a18b39a0efc11658). Start the instance from the UI actions
+1. the instance may be stopped. Use the aws web console and search for Mozilla release staging/merge instance (currently `i-0a18b39a0efc11658`). Start the instance from the UI actions
 2. Decrypt the pem key (keys/aws-staging-mergeday.pem.gpg) from the usual location so you can ssh to the host, setup ssh forwarding and hg so you can push to hg.m.o, and clear up unneeded disk space. See below
 
 ```bash
