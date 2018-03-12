@@ -205,21 +205,20 @@ This is now complete:
 * beta will stay closed until next week
 ```
 
-
 ## Bump and tag mozilla-central - 1 week after Merge day
 
 **When**: Wait for go from relman to release-signoff@mozilla.com. For date, see [Release Scheduling calendar](https://calendar.google.com/calendar/embed?src=bW96aWxsYS5jb21fZGJxODRhbnI5aTh0Y25taGFiYXRzdHY1Y29AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) or check with relman
 
 ### Merge central to beta one last time
-Ask RelMan, (e.g. [RyanVM](https://mozillians.org/en-US/u/RyanVM/)), to do this as our automation [gecko_migrations.py](https://hg.mozilla.org/mozilla-central/file/tip/testing/mozharness/scripts/merge_day/gecko_migration.py) script will reset mozilla-beta version numbers which is not what we want.
+Ask RelMan, (e.g. [RyanVM](https://mozillians.org/en-US/u/RyanVM/)), to do this as our automation [gecko_migrations.py](https://hg.mozilla.org/mozilla-central/file/tip/testing/mozharness/scripts/merge_day/gecko_migration.py) script will reset `mozilla-beta` version numbers which is **not** what we want.
 
 ### Tag central and bump versions
 
-What happens: A new tag is needed to specify the end of the nightly cycle, for instance: [FIREFOX_NIGHTLY_57_END](https://hg.mozilla.org/mozilla-central/rev/1ca411f5e97b). Then you have to clobber and bump versions in m-c, just [like the following](https://hg.mozilla.org/mozilla-central/rev/835a92b19e3d).
+**What happens**: A new tag is needed to specify the end of the nightly cycle. Then clobber and bump versions in `mozilla-central` as instructions depict.
 
 **How**: This is now done via the [remote instance](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/mergeduty/merge-and-staging-instance.md) and **gecko_migrations.py** similar to bumping **esr**:
 
-1. connect to the remote instance and `cd` to the current `merge_day` work dir as did for the first part of the mergeduty
+1. connect to the [remote instance](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/mergeduty/merge-and-staging-instance.md) and `cd` to the current `merge_day` work dir as did for the first part of the mergeduty
 1. Run the tag/bump for m-c and show the diff to another person on releaseduty.
 ```sh
 python mozharness-central/scripts/merge_day/gecko_migration.py -c merge_day/bump_central.py
@@ -237,9 +236,7 @@ python mozharness-central/scripts/merge_day/gecko_migration.py -c merge_day/bump
 
 :warning: If an **auth** issue comes up during this phase, most likely you need to switch from `https` to `ssh`, something like `default-push = ssh://${repo}`.
 
-1. Verify new changesets popped on
-
-1. Upon successful run, `mozilla-central` should get a version bump consisting of a `commit` like [this](ihttps://hg.mozilla.org/mozilla-central/rev/d6957f004e9c) and a `tag` like [this](https://hg.mozilla.org/mozilla-central/rev/a1171de0b81e)
+1. Upon successful run, `mozilla-central` should get a version bump consisting of a `commit` like [this](https://hg.mozilla.org/mozilla-central/rev/d6957f004e9c) and a `tag` like [this](https://hg.mozilla.org/mozilla-central/rev/a1171de0b81e)
 1. Verify changesets are visible on [hg pushlog](https://hg.mozilla.org/mozilla-central/pushloghtml) and [Treeherder](https://treeherder.mozilla.org/#/jobs?repo=mozilla-central). It may take a couple of minutes to appear.
 
 ### Trigger new nightlies
