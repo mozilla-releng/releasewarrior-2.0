@@ -113,7 +113,7 @@ python tools/buildfarm/release/trigger_action.py \
     ${RC_TASK_ID+--action-task-id ${RC_TASK_ID}} \
     ${PROMOTE_TASK_ID+--previous-graph-ids ${PROMOTE_TASK_ID}} \
     --release-runner-config /builds/releaserunner3/release-runner.yml \
-    --action-flavor ship_fennec_rc
+    --action-flavor ship_fennec
 # Unset PROMOTE_TASK_ID and RC_TASK_ID to minimize the possibility of rerunning with different graph ids
 unset PROMOTE_TASK_ID
 unset RC_TASK_ID
