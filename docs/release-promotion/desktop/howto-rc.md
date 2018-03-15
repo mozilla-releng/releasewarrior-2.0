@@ -120,6 +120,7 @@ unset PROMOTE_TASK_ID
 
 * Update releasewarrior:
     ```sh
+    release graphid --phase ship_rc ${taskId} ${product} ${version}
     release task ${product} ${version} --resolve ship-rc
     cd ../releasewarrior-data && git push
     ```
@@ -154,7 +155,8 @@ unset PROMOTE_TASK_ID
 
 * Update releasewarrior:
     ```sh
-    release task ${product} ${version} --resolve publish
+    release graphid --phase push ${taskId} ${product} ${version}
+    release task ${product} ${version} --resolve mirrors
     cd ../releasewarrior-data && git push
     ```
 
@@ -207,6 +209,7 @@ unset PUSH_TASK_ID
 * Announce to release-signoff that the release is live
 * Update releasewarrior:
     ```sh
+    release graphid --phase ship ${taskId} ${product} ${version}
     release task ${product} ${version} --resolve publish
     cd ../releasewarrior-data && git push
     ```
