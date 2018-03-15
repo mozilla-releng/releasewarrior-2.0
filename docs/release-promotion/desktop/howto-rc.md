@@ -17,10 +17,10 @@ What's New Page setup should be done shortly after updates are available on the 
   * Go to https://aus4-admin.mozilla.org/releases
   * Search for the release blob you need
   * Click `Download`
-  * Copy it to a -No-WNP version (you'll need this later). Eg: Firefox-59.0-build1-No-WNP.json.
-* Make the following changes to the -No-WNP version:
-  * Append "-No-WNP" to the `name` field.
-* Make the following changes to the original file:
+  * Copy it to a `-No-WNP` version (you'll need this later). Eg: `Firefox-59.0-build1-No-WNP.json`.
+* Make the following changes to the `-No-WNP` version:
+  * Append `-No-WNP` to the `name` field.
+* Make the following changes to the original file (eg: `Firefox-59.0-build1-No-WNP.json`:
   * Change `schema_version` to `9`
   * Remove `detailsUrl` from the top level of the blob
   * Remove `platformVersion` from the top level of the blob, and every locale section
@@ -68,13 +68,13 @@ The list of locales and WNP URL should be whatever you received from Product bef
 the list of locales that have that content, are written in stone for that particular release; all others are being ignored in serving the WNP. Hence, the number of locales available changes per release, as the page changes. More context of this [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1438633#c17).
 
 Now that you have the new Release blobs in hand you can upload them to Balrog and update the Rules by doing the following:
-* Add the -No-WNP Release to Balrog:
+* Add the `-No-WNP` Release to Balrog:
   * Go to https://aus4-admin.mozilla.org/releases
   * Click "Add a new Release"
-  * Fill out the form, selecting the "-No-WNP" blob that you created, and click `Save Changes`
+  * Fill out the form, selecting the `-No-WNP` blob that you created, and click `Save Changes`
 * Add the WNP Release to Balrog
   * Go to https://aus4-admin.mozilla.org/releases
-  * Search for the Release blob again
+  * Search for the original Release blob again (eg: `Firefox-59.0-build1`)
   * Click `Update`
   * Fill out the form, selecting your new, locally modified blob, and click `Save Changes`
 
@@ -96,9 +96,9 @@ Shortly before we ship a major release, we need to remove the What's New Page fr
 
 * Change the Firefox release rule to point at the -No-WNP blob.
   * Go to https://aus4-admin.mozilla.org/rules?product=Firefox&channel=release
-  * Find the "firefox-release" Rule.
+  * Find the `firefox-release` Rule.
   * Click `Schedule an Update`
-  * Change "Mapping" to the "-No-WNP" variant. Eg: if the Mapping is currently `Firefox-59.0-build5`, change it to `Firefox-59.0-build5-No-WNP`.
+  * Change "Mapping" to the `-No-WN`" variant. Eg: if the Mapping is currently `Firefox-59.0-build5`, change it to `Firefox-59.0-build5-No-WNP`.
   * Click `Schedule Changes`
   * Signoff on the Scheduled Change, and ask RelMan to do the same.
 
