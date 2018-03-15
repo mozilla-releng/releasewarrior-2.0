@@ -1,18 +1,26 @@
 # Add a What's New Page to a Firefox RC
 
+## When
+
+What's New Page setup should be done shortly after updates are available on the release-localtest channel.
+
 ## Requirements
 
 * Access to production Balrog
 * A confirmed list of locales that should receive the WNP from Product
 * A confirmed URL of the WNP from Product
 
-## How
+## wnp
+### How
 
 * Download the existing Release Blob (e.g. `Firefox-59.0-build1`)
   * Go to https://aus4-admin.mozilla.org/releases
   * Search for the release blob you need
   * Click `Download`
-* Make the following changes to it:
+  * Copy it to a `-No-WNP` version (you'll need this later). Eg: `Firefox-59.0-build1-No-WNP.json`.
+* Make the following changes to the `-No-WNP` version:
+  * Append `-No-WNP` to the `name` field.
+* Make the following changes to the original file (eg: `Firefox-59.0-build1-No-WNP.json`:
   * Change `schema_version` to `9`
   * Remove `detailsUrl` from the top level of the blob
   * Remove `platformVersion` from the top level of the blob, and every locale section
@@ -20,10 +28,10 @@
       * Tip: You can use `:g/platformVersion/d` in [Vi](https://www.vim.org/) to trim all lines containing this string
       * Tip: Removing the `platformVersion` above leaves the json with trailing commas in too many places to be fixed manually. To automate this fix, load the entire json as a dictionary in Python and dump it as JSON afterwards
 ```py
-# e.g. for Firefox-59.0-build5
+# e.g. for Firefox-59.0-build1
 data = ... (import dict from the original blob)
 import json
-with open('Firefox-59.0-build5.json', 'w') as fp:
+with open('Firefox-59.0-build1.json', 'w') as fp:
     data = json.dump(data, fp, sort_keys=True, indent=4)
 ```
 
@@ -59,16 +67,40 @@ The list of locales and WNP URL should be whatever you received from Product bef
 **A word on the** `locales` The final number of locales that are to be present within a certain WNP depends on each release. There's a certain cut-off date for each release, by which localized contents can be submitted. Once passed the cut-off date
 the list of locales that have that content, are written in stone for that particular release; all others are being ignored in serving the WNP. Hence, the number of locales available changes per release, as the page changes. More context of this [here](https://bugzilla.mozilla.org/show_bug.cgi?id=1438633#c17).
 
-Now that the new Release blob is ready you can upload it to Balrog and update the Rules by doing the following:
-* Add the Release to Balrog
+Now that you have the new Release blobs in hand you can upload them to Balrog and update the Rules by doing the following:
+* Add the `-No-WNP` Release to Balrog:
   * Go to https://aus4-admin.mozilla.org/releases
-  * Search for the Release blob again
+  * Click "Add a new Release"
+  * Fill out the form, selecting the `-No-WNP` blob that you created, and click `Save Changes`
+* Add the WNP Release to Balrog
+  * Go to https://aus4-admin.mozilla.org/releases
+  * Search for the original Release blob again (eg: `Firefox-59.0-build1`)
   * Click `Update`
   * Fill out the form, selecting your new, locally modified blob, and click `Save Changes`
 
-If there is no `Update` button present, this means the Release is already on a live channel, and you cannot modify it without Signoff. You can either Schedule an Update or upload it under a name in this situation, but both of these are out of scope of this howto.
+If there is no `Update` button present, this means the Release is already on a live channel, and you cannot modify it without Signoff. You can either Schedule an Update or upload it under a different name in this situation, but both of these are out of scope of this howto.
 
 Once this is done the What's New Page should be active on both the release-localtest and release-cdntest channels.
+
+# Remove previous release's What's New Page
+
+## When
+
+Shortly before we ship a major release, we need to remove the What's New Page from the previous release, to avoid users getting an old WNP while the new release is throttled, and then the latest release's WNP a day later.
+
+## Requirements
+* Access to production Balrog
+
+## remove-wnp
+### How
+
+* Change the Firefox release rule to point at the -No-WNP blob.
+  * Go to https://aus4-admin.mozilla.org/rules?product=Firefox&channel=release
+  * Find the `firefox-release` Rule.
+  * Click `Schedule an Update`
+  * Change "Mapping" to the `-No-WN`" variant. Eg: if the Mapping is currently `Firefox-59.0-build5`, change it to `Firefox-59.0-build5-No-WNP`.
+  * Click `Schedule Changes`
+  * Signoff on the Scheduled Change, and ask RelMan to do the same.
 
 # Ship RC Firefox releases
 
@@ -158,7 +190,7 @@ unset PROMOTE_TASK_ID
     cd ../releasewarrior-data && git push
     ```
 
-## Ship the release
+## ship
 
 ### Background
 
