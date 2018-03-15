@@ -20,7 +20,7 @@ What's New Page setup should be done shortly after updates are available on the 
   * Copy it to a `-No-WNP` version (you'll need this later). Eg: `Firefox-59.0-build1-No-WNP.json`.
 * Make the following changes to the `-No-WNP` version:
   * Append `-No-WNP` to the `name` field.
-* Make the following changes to the original file (eg: `Firefox-59.0-build1-No-WNP.json`:
+* Make the following changes to the original file (eg: `Firefox-59.0-build1.json`:
   * Add a new item to the `updateLine` list that looks something like the following:
 
 ```
