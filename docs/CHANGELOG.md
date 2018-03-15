@@ -4,15 +4,23 @@ This page best serves the people that have previously been into the releaseduty 
 
 _**As releaseduty squirrels are the ones with the best context when it comes to releases, they are the ones to edit this page and amend it accordingly. Keep in mind that changes should be in compliance with the other pieces of documentation.**_
 
+## During 60.0 >= 2018-03-13
+
+### Added
+- TODO
+### Changed
+- TODO
+
 ## During 59.0 >= 2018-01-24
 
 ### Added
 - we track all major changes in this newly added CHANGELOG
 - separate RC docs for both Fennec and Firefox
 - new-style WNP setup, [as documented](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/desktop/howto-rc.md#add-a-whats-new-page-to-a-firefox-rc).
+- we now have suspport for snaps in `release` channel
 
 ### Changed
-- old release promotion based on [releasetasks](https://github.com/mozilla/releasetasks/) is dead. Everything is in-tree scheduled now. Changes are riding the trains. More on this [here](https://github.com/mozilla-releng/releasewarrior-2.0/wiki/Release-Promotion-Overview-TC) and [here](https://github.com/mozilla-releng/releasewarrior-2.0/wiki/Release-Promotion-Tasks-TC)
+- old release promotion based on [releasetasks](https://github.com/mozilla/releasetasks/) is dead. Everything is in-tree scheduled now. Changes are riding the trains.
 - all releaseduty related documentation has been moved out of the wiki under [warrior's](https://github.com/mozilla-releng/releasewarrior-2.0) `docs` subfolder.
 - use `release graphid` to enter graphids, rather than editing the .json manually.
 - in-tree release notifications going away in favor of native taskcluster notifications. pulse-notify is to be retired whenever we kill esr52
