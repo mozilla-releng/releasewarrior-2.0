@@ -7,9 +7,12 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 ## During 60.0 >= 2018-03-13
 
 ### Added
-- TODO
+- added `esr52-latest*` bouncer aliases
 ### Changed
-- TODO
+- re-added source tarball for >=60.0b6
+- updated scriptworkers to share more client code
+### Fixed
+- fixed beta+fennec bouncer aliases
 
 ## During 59.0 >= 2018-01-24
 
