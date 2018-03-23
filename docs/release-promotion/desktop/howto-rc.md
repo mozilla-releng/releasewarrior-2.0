@@ -20,33 +20,11 @@ What's New Page setup should be done shortly after updates are available on the 
   * Copy it to a `-No-WNP` version (you'll need this later). Eg: `Firefox-59.0-build1-No-WNP.json`.
 * Make the following changes to the `-No-WNP` version:
   * Append `-No-WNP` to the `name` field.
-* Make the following changes to the original file (eg: `Firefox-59.0-build1-No-WNP.json`:
-  * Change `schema_version` to `9`
-  * Remove `detailsUrl` from the top level of the blob
-  * Remove `platformVersion` from the top level of the blob, and every locale section
-    * Be careful to not leaving trailing commas - this is not valid JSON!
-      * Tip: You can use `:g/platformVersion/d` in [Vi](https://www.vim.org/) to trim all lines containing this string
-      * Tip: Removing the `platformVersion` above leaves the json with trailing commas in too many places to be fixed manually. To automate this fix, load the entire json as a dictionary in Python and dump it as JSON afterwards
-```py
-# e.g. for Firefox-59.0-build1
-data = ... (import dict from the original blob)
-import json
-with open('Firefox-59.0-build1.json', 'w') as fp:
-    data = json.dump(data, fp, sort_keys=True, indent=4)
-```
-
-  * This will no longer be necessary once [bug 1431789](https://bugzilla.mozilla.org/show_bug.cgi?id=1431789) is fixed.
-  * Add an `updateLine` section that looks something like the following:
+* Make the following changes to the original file (eg: `Firefox-59.0-build1.json`):
+  * Add a new item to the `updateLine` list that looks something like the following:
 
 ```
   "updateLine": [
-    {
-      "for": {},
-      "fields": {
-        "detailsURL": "https://www.mozilla.org/%LOCALE%/firefox/59.0/releasenotes/",
-        "type": "minor"
-      }
-    },
     {
       "for": {
         "channels": ["release", "release-localtest", "release-cdntest"],
