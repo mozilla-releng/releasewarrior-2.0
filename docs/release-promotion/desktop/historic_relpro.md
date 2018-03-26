@@ -137,10 +137,14 @@ $ python releasetasks_graph_gen.py --release-runner-config=../../../release-runn
 * Desktop Firefox ESRs
     * wait for sign off from release-signoff with email like: `[desktop] Please push ${version} to {cdntest,releases,mirrors}` where version is like: `38.0esr` or `38.2.0esr`, and channel is like: `esr-cdntest` or `cdntest` or `mirrors` or `releases`
         * note: if they do not explicitly ask for `esr-cdntest` it is okay to assume if you are confident but please reply with something like `pushed and please use explicit name when requesting next time: esr-cdntest channel :)`
-* ESR releases depend on two taskcluster graphs. pushing to releases happens in graph 2 and will start once graph 2 is submitted.
-    * to generate and submit graph 2 of the release:
-        * step 1) get a taskid from a any task in graph 1. this is used by graph 2 for obtaining release version, branch, etc.
-        * step 2) call releasetasks_graph_gen.py and pass, among other things, the taskid obtained in step 1:
+    * ESR x.y.Z (ie chemspills/regression fixes) releases can use the jobs in the promote main graph.
+        * get taskid from task with name `firefox mozilla-esr52 push to releases human decision task` from the task graph
+        * This task is blocking `[beetmover] firefox mozilla-esr52 push to releases`
+        * To resolve the human decision task run the following: `taskcluster task complete $TASK_ID`
+    * ESR x.y.0 releases (ie scheduled) depend on two taskcluster graphs, because the push+shipping tasks will usually timeout in the original graph between building and release day. Pushing to releases happens in a graph 2 and will start once graph 2 is submitted.
+        * to generate and submit graph 2 of the release:
+            * step 1) get a taskid from a any task in graph 1. this is used by graph 2 for obtaining release version, branch, etc.
+            * step 2) call releasetasks_graph_gen.py and pass, among other things, the taskid obtained in step 1:
 ```bash
 $ ssh `whoami`@buildbot-master85.bb.releng.scl3.mozilla.com  # host we release-runner and you generate/submit new release promotion graphs
 $ sudo su - cltbld
