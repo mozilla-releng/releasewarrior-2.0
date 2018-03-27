@@ -4,6 +4,11 @@ This page best serves the people that have previously been into the releaseduty 
 
 _**As releaseduty squirrels are the ones with the best context when it comes to releases, they are the ones to edit this page and amend it accordingly. Keep in mind that changes should be in compliance with the other pieces of documentation.**_
 
+## During 61.0 >= ????
+
+### Changed
+- update verify only blocks on required platforms to start (eg: win32 update verify only blocks on win32 beetmover and balrog)
+
 ## During 60.0 >= 2018-03-13
 
 ### Added
@@ -11,6 +16,7 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 ### Changed
 - re-added source tarball for >=60.0b6
 - updated scriptworkers to share more client code
+- update verify now fails on any differences, and creates a summary log for >=60.0b8
 ### Fixed
 - fixed beta+fennec bouncer aliases
 
