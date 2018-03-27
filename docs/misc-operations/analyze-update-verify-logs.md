@@ -4,7 +4,7 @@ When update verify tasks fail it is your responsibility as releaseduty to analyz
 
 # How? 
 
-Update verify tasks that have failed should have a "diff-summary.log" in their artifacts. This file shows you all of the differences found for each update tested. In the diffs, `source` is an older version Firefox that a MAR file from the current release has been applied to, and `target` is the full installer for the current release.
+Update verify tasks that have failed should have a `diff-summary.log` in their artifacts. This file shows you all of the differences found for each update tested. In the diffs, `source` is an older version Firefox that a MAR file from the current release has been applied to, and `target` is the full installer for the current release.
 
 Here's an example of a very alarming difference:
 ```
@@ -13,9 +13,9 @@ Found diffs for complete update from https://aus5.mozilla.org/update/3/Firefox/5
 Files source/bin/xul.dll and target/bin/xul.dll differ
 ```
 
-In the above log, `xul.dll' is shown to be different between an applied MAR and a full installer. If we were to ship a release with a difference like this, partial MARs would fail to apply for many users in the _next_ release. Usually a case like this represents an issue in the build system or release automation, and requires a rebuild. If you're not sure how to proceed, ask for help.
+In the above log, `xul.dll` is shown to be different between an applied MAR and a full installer. If we were to ship a release with a difference like this, partial MARs would fail to apply for many users in the _next_ release. Usually a case like this represents an issue in the build system or release automation, and requires a rebuild. If you're not sure how to proceed, ask for help.
 
-If no diff-summary.log is attached to the Task something more serious went wrong. You will need to have a look at live.log to investigate.
+If no `diff-summary.log` is attached to the Task something more serious went wrong. You will need to have a look at live.log to investigate.
 
 # Known differences
 
@@ -47,6 +47,6 @@ diff -r source/Firefox.app/Contents/Resources/defaults/pref/channel-prefs.js tar
 < //@line 6 "/builds/worker/workspace/build/src/browser/app/profile/channel-prefs.js"^M
 ```
 
-channel-prefs.js contains comments that have the full path to a file in the build directory. If the build directory changes between a previous version and the latest version, this will show up as a difference in update verify. Being a comment change, this is totally ignorable.
+`channel-prefs.js` contains comments that have the full path to a file in the build directory. If the build directory changes between a previous version and the latest version, this will show up as a difference in update verify. Being a comment change, this is totally ignorable.
 
-Newer versions of Firefox have removed this comment from channel-prefs.js, so this difference should go away entirely after the next round of watersheds.
+Newer versions of Firefox have removed this comment from `channel-prefs.js`, so this difference should go away entirely after the next round of watersheds.
