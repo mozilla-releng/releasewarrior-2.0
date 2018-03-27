@@ -125,7 +125,7 @@ unset PUSH_TASK_ID
 * Update releasewarrior:
     ```sh
     release graphid --phase ship ${taskId} ${product} ${version}
-    release task ${product} ${version} --resolve publish
+    release task ${product} ${version} --resolve ship
     cd ../releasewarrior-data && git push
     ```
 
