@@ -4,7 +4,7 @@ When update verify tasks fail it is your responsibility as releaseduty to analyz
 
 # How? 
 
-Update verify tasks that have failed should have a `diff-summary.log` in their artifacts. This file shows you all of the differences found for each update tested. In the diffs, `source` is an older version Firefox that a MAR file from the current release has been applied to, and `target` is the full installer for the current release.
+Update verify tasks that have failed usually have a `diff-summary.log` in their artifacts. This file shows you all of the differences found for each update tested. In the diffs, `source` is an older version Firefox that a MAR file from the current release has been applied to, and `target` is the full installer for the current release.
 
 Here's an example of a very alarming difference:
 ```
