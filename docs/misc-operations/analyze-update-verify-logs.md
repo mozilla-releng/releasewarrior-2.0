@@ -19,7 +19,7 @@ If no `diff-summary.log` is attached to the Task something more serious went wro
 
 # Known differences
 
-There are a few known cases where diffs are expected, and ignorable.
+There are two known cases where diffs are expected, and ignorable.
 
 ## Beta channel/ACCEPTED_MAR_CHANNEL_IDS during secondary update verify in RCs
 

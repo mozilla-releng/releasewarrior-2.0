@@ -16,7 +16,7 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 ### Changed
 - re-added source tarball for >=60.0b6
 - updated scriptworkers to share more client code
-- update verify now fails on any differences, and creates a summary log for >=60.0b8
+- update verify now fails on any differences, and creates a summary log for >=60.0b8. additional documentation on [how to interpret failures](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/misc-operations/analyze-update-verify-logs.md) are available.
 ### Fixed
 - fixed beta+fennec bouncer aliases
 
