@@ -234,21 +234,46 @@ def get_tracking_release_data(release, gtb_date, logger, config):
     return data
 
 
+def normalize_human_task_id(human_tasks, task_id):
+    '''Turn a human task id argument into a usable list index.
+
+    Arguments:
+    human_tasks: a list of dicts of the human tasks. Expects the dicts to have
+        an 'alias' key
+    task_id: a string of the human task id argument.
+
+    Returns:
+    An int of the task index.
+    Raises:
+    ValueError if it cannot be translated to a valid index.
+    '''
+    try:
+        human_task_id = int(task_id) - 1
+        # Bounds checking - is our index in the list?
+        if not 0 < human_task_id < len(human_tasks):
+            human_task_id = None
+    except ValueError:
+        # Bounds checking handled by enumerate.
+        human_task_id = next((index for index, task in enumerate(
+            human_tasks) if task['alias'] == task_id), None)
+
+    if human_task_id is None:
+        raise ValueError('Invalid task id')
+    return human_task_id
+
+
 def update_inflight_human_tasks(data, resolve, logger):
     data = deepcopy(data)
     current_build_index = get_current_build_index(data)
     if resolve:
-        for human_task_id in resolve:
-            # attempt to use id as alias
-            for index, task in enumerate(data["inflight"][current_build_index]["human_tasks"]):
-                if human_task_id == task['alias']:
-                    data["inflight"][current_build_index]["human_tasks"][index]["resolved"] = True
-                    break
-            else:
-                # use id as index
-                # 0 based index so -1
-                human_task_id = int(human_task_id) - 1
-                data["inflight"][current_build_index]["human_tasks"][human_task_id]["resolved"] = True
+        for raw_task_id in resolve:
+            try:
+                human_task_id = normalize_human_task_id(
+                    data["inflight"][current_build_index]["human_tasks"], raw_task_id)
+            except ValueError:
+                logger.error("Unknown task id: %s", raw_task_id)
+                continue
+            data["inflight"][current_build_index]["human_tasks"][human_task_id]["resolved"] = True
     else:
         logger.info("Current existing inflight tasks:")
         for index, task in enumerate(data["inflight"][current_build_index]["human_tasks"]):
