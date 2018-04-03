@@ -19,7 +19,7 @@ If no `diff-summary.log` is attached to the Task something more serious went wro
 
 # Known differences
 
-There are two known cases where diffs are expected, and ignorable.
+There are a few known cases where diffs are expected, and ignorable.
 
 ## Beta channel/ACCEPTED_MAR_CHANNEL_IDS during secondary update verify in RCs
 
@@ -38,6 +38,20 @@ diff -r source/firefox/update-settings.ini target/firefox/update-settings.ini
 ```
 
 The differences shown tell us that when a user is running Beta and applies an RC MAR file, they end up with the same Firefox that a fresh RC install does, except they maintain their Beta update channel and ACCEPTED_MAR_CHANNEL_IDS. This is expected and OK (if we didn't have this diff, it would mean that we switched Beta users to the release channel!).
+
+## channel-prefs.js differences for some Firefox Beta tests
+
+```
+Found diffs for complete update from https://aus5.mozilla.org/update/3/Firefox/58.0/20180118215408/Linux_x86_64-gcc3/de/beta-localtest/default/default/default/update.xml?force=1
+diff -r source/firefox/defaults/pref/channel-prefs.js target/firefox/defaults/pref/channel-prefs.js
+5,6c5
+< //@line 6 "/builds/worker/workspace/build/src/browser/app/profile/channel-prefs.js"
+< pref("app.update.channel", "release");
+---
+> pref("app.update.channel", "beta");
+```
+
+Similar to the previous section, these show up when we're testing that an RC that was shipped to Beta can update to the current Beta. This is expected and OK.
 
 ## channel-prefs.js comment changes
 
