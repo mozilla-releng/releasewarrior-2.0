@@ -3,7 +3,7 @@
 
 QA will test a potential Fennec release and let us know the results. If the tests all pass, we will have to push the `apk` to Google Play.
 
-To do this we create a new task graph to perform all the release promotion steps. This new graph will pause just before the `push-apk` step in order to allow a human to make the final choice.
+To do this we create a new task graph to perform all the release promotion steps. 
 
 ## Prerequisites
 
@@ -76,20 +76,6 @@ taskcluster group list OG1t0QchSj209mV9_3tCHA --all
 ```
 
 You can also see the new 'Action: Release Promotion' task on [tools.taskcluster.net](https://tools.taskcluster.net/groups)
-
-### Resolve push-apk-breakpoint task
-
-In the new ship graph, there will be a task with 'push-apk-breakpoint' in the label. To push the `apk` to Google Play, we must resolve this task.
-
-1. Find the Task ID of the `push-apk-breakpoint` task using either [tools.taskcluster.net](https://tools.taskcluster.net/groups) or the taskcluster command-line:
-```sh
-taskcluster group list "${TASKGROUPID}" --all
-```
-1. Complete the push-apk task
-```sh
-taskcluster task complete <TASKID>
-```
-1. The rest of the ship graph should now run, and eventually complete. One of the tasks is a notification, so no email is required to be manually sent.
 
 ## Update Releasewarrior
 
