@@ -25,7 +25,8 @@ In the new taskcluster release promotion for Fx59+, pushing doesn't happen autom
 
 ### When - b2+ betas/devedition
 
-- For beta we want to push to releases directories as soon as the builds are ready. Releng can trigger the `push` action as soon as the `promote` action task finishes (you do not need to wait for all of the tasks in the promote phase to complete). In the future we can have this [happen automatically](https://trello.com/c/vOP7fml4/282-update-releaserunner3-to-automatically-run-the-push-flavor-rather-than-promote-for-certain-release-types). (We are also in [discussion with relman](https://bugzilla.mozilla.org/show_bug.cgi?id=1433284) about future plans around this step)
+- For beta we want to push to releases directories as soon as the builds are ready. You can tell the builds are ready because one of the final steps is sending an email from Taskcluster, with a subject line similar to `firefox 60.0b10 build1/mozilla-beta is in the candidates directory`
+- Releng can trigger the `push` action as soon as the `promote` action task finishes (you do not need to wait for all of the tasks in the promote phase to complete). In the future we can have this [happen automatically](https://trello.com/c/vOP7fml4/282-update-releaserunner3-to-automatically-run-the-push-flavor-rather-than-promote-for-certain-release-types). (We are also in [discussion with relman](https://bugzilla.mozilla.org/show_bug.cgi?id=1433284) about future plans around this step)
 
 ### When - releases
 
