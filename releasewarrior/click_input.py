@@ -28,6 +28,8 @@ def generate_prereq_task_from_input(gtb_date=None):
 def generate_inflight_issue_from_input():
     who = click.prompt('Who', type=str, default=getpass.getuser())
     bug = click.prompt('Bug number if exists', type=str, default="none")
+    # Turn pasted bugzilla url into a bug number
+    bug = bug.split('=')[-1]
     description = click.prompt('Description of issue', type=str)
     return Issue(who, bug, description, resolved=False, future_threat=True)
 
