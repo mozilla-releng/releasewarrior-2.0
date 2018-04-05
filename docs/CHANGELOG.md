@@ -13,6 +13,7 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 
 ### Added
 - added `esr52-latest*` bouncer aliases
+- KEY file to releases directory in [bug 1446816](https://bugzilla.mozilla.org/show_bug.cgi?id=1446816) for >=60.0b11
 ### Changed
 - re-added source tarball for >=60.0b6
 - updated scriptworkers to share more client code
