@@ -45,6 +45,10 @@ The release-signoff mailing list will receive a message alerting us to a new bui
     ```sh
     release newbuild --graphid ${graphid} ${product} ${version} 
     ```
+1. Tell releasewarrior about the promotion graph id:
+    ```sh
+    release graphid --phase promote ${graphid} ${product} ${version} 
+    ```
 1. Change to the `releasewarrior-data` repository and push changes
     ```sh
     cd ../releasewarrior-data # Assuming both are cloned into the same parent
