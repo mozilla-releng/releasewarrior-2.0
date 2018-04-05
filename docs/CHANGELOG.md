@@ -6,6 +6,9 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 
 ## During 61.0 >= ????
 
+### Added
+- rerun action task in Treeherder - hopefully will help avoid duplicate reruns
+
 ### Changed
 - update verify only blocks on required platforms to start (eg: win32 update verify only blocks on win32 beetmover and balrog)
 
