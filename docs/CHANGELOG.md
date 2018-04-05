@@ -20,6 +20,7 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 - split snap repackage and push task in [bug 1447263](https://bugzilla.mozilla.org/show_bug.cgi?id=1447263)
 ### Fixed
 - fixed beta+fennec bouncer aliases
+- push-apk-breakpoint removed in [bug 1432817](https://bugzilla.mozilla.org/show_bug.cgi?id=1432817)
 
 ## During 59.0 >= 2018-01-24
 
