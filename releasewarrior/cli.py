@@ -79,7 +79,7 @@ def track(product, version, gtb_date, logger=LOGGER, config=CONFIG):
 @click.argument('version')
 @click.option('--resolve', multiple=True, help="prerequisite human task id or alias to resolve.")
 def prereq(product, version, resolve, logger=LOGGER, config=CONFIG):
-    """Add or resolve a prerequisite (pre gtb)
+    """Add or resolve a prerequisite (pre gtb).
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     Without any options, you will be prompted to add a prerequisite human task
     """
@@ -100,7 +100,7 @@ def prereq(product, version, resolve, logger=LOGGER, config=CONFIG):
 @click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
 @click.argument('version')
 def newbuild(product, version, logger=LOGGER, config=CONFIG):
-    """Mark a release as submitted to shipit
+    """Mark a release as submitted to shipit.
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     If this is the first buildnum, move the release from upcoming dir to inflight
     Otherwise, increment the buildnum of the already current inflight release
@@ -124,7 +124,7 @@ def newbuild(product, version, logger=LOGGER, config=CONFIG):
 @click.argument('version')
 @click.option('--resolve', multiple=True, help="inflight human task id or alias to resolve.")
 def task(product, version, resolve, logger=LOGGER, config=CONFIG):
-    """Add or resolve a human task within current buildnum
+    """Add/resolve a human task for current build.
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     Without any options, you will be prompted to add a task
     """
@@ -148,7 +148,7 @@ def task(product, version, resolve, logger=LOGGER, config=CONFIG):
 @click.argument('version')
 @click.option('--resolve', multiple=True, help="inflight issue to resolve")
 def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
-    """Add or resolve an issue against current buildnum
+    """Add/resolve an issue in current buildnum.
     product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     Without any options, you will be prompted to add an issue
     """
@@ -194,7 +194,8 @@ def graphid(graphid, product, version, phase, logger=LOGGER, config=CONFIG):
 @cli.command()
 @click.argument('date')
 def postmortem(date, logger=LOGGER, config=CONFIG):
-    """creates a postmortem file based on completed releases and their unresolved issues.
+    """Create a postmortem for completed releases.
+    creates a postmortem file based on completed releases and their unresolved issues.
     archives release files that are completed
     using the same date will only append and archive releases as they are updated
 
@@ -258,7 +259,8 @@ def postmortem(date, logger=LOGGER, config=CONFIG):
 @click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
 @click.argument('version')
 def cancel(product, version, logger=LOGGER, config=CONFIG):
-    """Similar to newbuild where it aborts current buildnum of given release but does not create
+    """Abort the current buildnum.
+    Similar to newbuild where it aborts current buildnum of given release but does not create
     a new build.
     """
     validate_rw_repo(logger, config)
@@ -278,8 +280,9 @@ def cancel(product, version, logger=LOGGER, config=CONFIG):
 @click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
 @click.argument('version')
 def sync(product, version, logger=LOGGER, config=CONFIG):
-    """takes currently saved json data of given release from data repo, generates wiki, and commits
-    product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
+    """Sync manual changes to json.
+    Takes currently saved json data of given release from data repo, generates the wiki and commits.
+    Product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     """
     validate_rw_repo(logger, config)
     release, data_path, wiki_path = get_release_info(product, version, logger, config)
@@ -294,7 +297,7 @@ def sync(product, version, logger=LOGGER, config=CONFIG):
 @cli.command()
 @click.option('--verbose', is_flag=True, help="shows all tracked releases as well as completed releases")
 def status(verbose, logger=LOGGER, config=CONFIG):
-    """shows upcoming prerequisites and inflight human tasks
+    """Shows prerequisites and inflight human tasks.
     """
     ###
     if not validate_data_repo_updated(logger, config):
@@ -353,5 +356,6 @@ def status(verbose, logger=LOGGER, config=CONFIG):
 @cli.command()
 @click.option('--push', is_flag=True, help="Pushes the data repo to upstream")
 def data(push, logger=LOGGER, config=CONFIG):
+    """Pushes teh data repo to upstream."""
     if push:
         git.push(logger, config)
