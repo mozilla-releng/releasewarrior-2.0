@@ -17,6 +17,11 @@
 {% for graph_info in build['graphids'] %}
 * [{{graph_info[0]}}](https://tools.taskcluster.net/push-inspector/#/{{ graph_info[1] }}) {{graph_info[1]}}
 {% endfor %}
+```
+{% for graph_info in build['graphids'] %}
+export {{graph_info[0]|upper}}_TASK_ID={{ graph_info[1] }}
+{% endfor %}
+```
 {% if not build["graphids"] %}
 task graph url: unknown
 {% endif %}
