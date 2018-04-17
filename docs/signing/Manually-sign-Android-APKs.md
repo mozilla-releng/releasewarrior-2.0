@@ -9,6 +9,7 @@ Google Play refuses non-optimized APKs. The signature changes the structure of t
 
 1. Install the latest Android SDK to get the build tools.
    * MacOSX: `brew cask install android-sdk` (requires `brew tap caskroom/cask`)
+     * then run `sdkmanager --list` and install build-tools, e.g. `sdkmanager 'build-tools;27.0.3'`. It'll show up in e.g. `/usr/local/share/android-sdk/build-tools/27.0.3/zipalign`
    * Ubuntu: `apt install android-sdk`
    * Other: [Install Android Studio](https://developer.android.com/studio/index.html#Other)
 
@@ -16,10 +17,8 @@ Google Play refuses non-optimized APKs. The signature changes the structure of t
 1. `ssh signing4.srv.releng.scl3.mozilla.com`
 1. Change to the `cltsign` user:
    ```sh
-   sudo -i
-   su - cltsign
+   sudo su - cltsign
    ```
-   TODO: `sudo -u cltsign` should be enabled.
 
 ## To sign an APK
 You will need to repeat this for each APK, feel free to optimise by downloading all at once, just be careful of filenames when copy/pasting commands.
@@ -83,5 +82,7 @@ deleting: META-INF/MANIFEST.MF
 
 Then you can resume signing.
 
+## Future
 
+We already have a github repo with taskcluster release builds. It's not trivial, but it's possible we could add CoT and auto-sign these release builds.
 
