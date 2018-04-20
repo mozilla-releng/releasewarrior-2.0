@@ -24,7 +24,8 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 - updated scriptworkers to share more client code
 - update verify now fails on any differences, and creates a summary log for >=60.0b8. additional documentation on [how to interpret failures](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/misc-operations/analyze-update-verify-logs.md) are available.
 - split snap repackage and push task in [bug 1447263](https://bugzilla.mozilla.org/show_bug.cgi?id=1447263)
-- updated rr3 to possibly add partner configs; should be disabled for prod for now
+- updated rr3 add partner configs for fx60+
+- tc partner repacks!
 
 ### Fixed
 - fixed beta+fennec bouncer aliases
