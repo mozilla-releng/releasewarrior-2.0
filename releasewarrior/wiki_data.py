@@ -160,13 +160,38 @@ def generate_corsica(config, logger):
     return template.render(**corsica_data)
 
 
+def extract_product_from_json(filepath):
+    data = load_json(filepath)
+    return "{} {}".format(data.get('product', ''), data.get('version', ''))
+
+
+def update_markdown_index(logger, config):
+    repo_path = config["releasewarrior_data_repo"]
+    prefixes = ['inflight', 'upcoming']
+    md_files = dict()
+    for prefix in prefixes:
+        md_files[prefix] = dict()
+        for directory, _, files in os.walk(os.path.join(repo_path, prefix)):
+            for filename in [os.path.join(directory, f) for f in files if f.endswith('.md')]:
+                product = extract_product_from_json(filename.replace('.md', '.json'))
+                md_files[prefix][product] = filename.replace(repo_path, '')
+    env = Environment(loader=FileSystemLoader(config['templates_dir']),
+                      undefined=StrictUndefined, trim_blocks=True)
+
+    template = env.get_template('markdown/readme.md.tmpl')
+    return template.render(md_files=md_files)
+
+
 def write_and_commit(data, data_path, wiki_path, commit_msg, logger, config, wiki_template=None):
     corsica_path = os.path.join(config["releasewarrior_data_repo"], config["corsica"])
     wiki = generate_wiki(data, wiki_template, logger, config)
+    new_readme = update_markdown_index(logger, config)
     paths = []
 
     paths.append(write_data(data_path, data, logger, config))
     paths.append(write_wiki(wiki_path, wiki, logger, config))
+    paths.append(write_wiki(os.path.join(
+        config['releasewarrior_data_repo'], 'README.md'), new_readme, logger, config))
     if config['corsica_enabled']:
         corsica = generate_corsica(config, logger)
         paths.append(write_corsica(corsica_path, corsica, logger, config))
