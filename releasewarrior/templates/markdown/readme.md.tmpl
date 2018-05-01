@@ -5,11 +5,11 @@ Releasewarrior 2.0 Data
 
 Please modify this data with [Releasewarrior](https://github.com/mozilla-releng/releasewarrior-2.0)
 
-{% for status in md_files %}
-**{{ status|title }}**
+{% for status in md_files|dictsort %}
+**{{ status[0]|title }}**
 
-{% for product in md_files[status] %}
-* [{{ product|title }}]({{ md_files[status][product] }})
+{% for product in status[1]|dictsort %}
+* [{{ product[0]|title }}]({{ product[1] }})
 
 {% endfor %}
 {% endfor %}
