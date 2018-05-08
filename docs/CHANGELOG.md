@@ -4,10 +4,7 @@ This page best serves the people that have previously been into the releaseduty 
 
 _**As releaseduty squirrels are the ones with the best context when it comes to releases, they are the ones to edit this page and amend it accordingly. Keep in mind that changes should be in compliance with the other pieces of documentation.**_
 
-## During 61.0 >= ????
-
-### Added
-- rerun action task in Treeherder - hopefully will help avoid duplicate reruns
+## During 61.0 >= 2018-05-09
 
 ### Changed
 - update verify only blocks on required platforms to start (eg: win32 update verify only blocks on win32 beetmover and balrog)
@@ -16,6 +13,9 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 
 ### Added
 - added `esr52-latest*` bouncer aliases
+- added `firefox-esr-next-*` bouncer aliases
+- added esr60 support
+- rerun action task in Treeherder - hopefully will help avoid duplicate reruns
 - KEY file to releases directory in [bug 1446816](https://bugzilla.mozilla.org/show_bug.cgi?id=1446816) for >=60.0b11
 - added addonscript for langpack pushing to amo
 
@@ -26,6 +26,7 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 - split snap repackage and push task in [bug 1447263](https://bugzilla.mozilla.org/show_bug.cgi?id=1447263)
 - updated rr3 add partner configs for fx60+
 - tc partner repacks!
+- split esr52 and esr60 templates
 
 ### Fixed
 - fixed beta+fennec bouncer aliases
