@@ -107,7 +107,7 @@ def get_branch(version, product, logger):
     elif bool(re.match("^(\d+\.\d(\.\d+)?)$", version)):
         if product == "firefox" and bool(re.match("^(\d+\.\d+)$", version)):
             passed = False
-            logger.fatal("This release doesn't look like a dot release. Was it meant to be a release-candidate?")
+            logger.critical("This release doesn't look like a dot release. Was it meant to be a release-candidate?")
             logger.fatal("Include rc at the end of the `%s` for release-candidates", version)
         else:
             branch = "release"
@@ -275,6 +275,19 @@ def sanitize_date_input(date, logger):
     # Don't do this if the year was explicitly set.
     if dt < datetime.now() and str(dt.year) not in date:
         logger.info("Adjusting %s, assuming it's meant to be next year.", dt)
-        dt = dt.replace(year=dt.year+1)
+        dt = dt.replace(year=dt.year + 1)
 
     return dt.strftime('%Y-%m-%d')
+
+
+def validate_graphid(graphid):
+    """Validate a graphid's syntax.
+
+    Uses the regular expression for 'taskGroupId' from
+    https://docs.taskcluster.net/reference/platform/taskcluster-queue/docs/task-schema#task-definition
+    """
+    import re
+    taskgraphid_pattern = r'^[A-Za-z0-9_-]{8}[Q-T][A-Za-z0-9_-][CGKOSWaeimquy26-][A-Za-z0-9_-]{10}[AQgw]$'
+    if re.fullmatch(taskgraphid_pattern, graphid):
+        return True
+    return False
