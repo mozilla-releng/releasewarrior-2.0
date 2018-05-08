@@ -116,7 +116,8 @@ def get_branch(version, product, logger):
         if product == "devedition":
             branch = "devedition"
     elif bool(re.match("^(\d+\.\d(\.\d+)?esr)$", version)):
-        branch = "esr"
+        parts = version.split('.')
+        branch = "esr{}".format(parts[0])
     else:
         passed = False
         logger.fatal("Couldn't determine branch based on version. See examples in version help")
@@ -135,7 +136,7 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
     branch_validations = {
         "devedition": release.branch in ['devedition'],
         "fennec": release.branch in ['beta', 'release', 'release-rc'],
-        "firefox": release.branch in ['beta', 'release', 'release-rc', 'esr'],
+        "firefox": release.branch in ['beta', 'release', 'release-rc', 'esr52', 'esr60'],
         "thunderbird": release.branch in ['beta', 'release']
     }
     if not branch_validations[release.product]:
