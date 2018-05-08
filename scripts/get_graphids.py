@@ -12,7 +12,7 @@ from taskcluster.async import Queue
 HG_URL = 'https://hg.mozilla.org/'
 
 REPOS = ('releases/mozilla-beta', 'releases/mozilla-release',
-         'releases/mozilla-esr52', 'mozilla-central')
+         'releases/mozilla-esr52', 'releases/mozilla-esr60', 'mozilla-central')
 
 """ http://mozilla-version-control-tools.readthedocs.io/en/latest/hgmo/pushlog.html?highlight=json-pushes#json-pushes-command """  # noqa
 JSON_PUSHES = 'json-pushes?changeset={rev}&version=2&tipsonly=1&full=1'

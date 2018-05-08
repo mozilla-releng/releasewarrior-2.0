@@ -29,7 +29,8 @@ templates:
       beta: firefox/beta.json.tmpl
       release-rc: firefox/release-rc.json.tmpl
       release: firefox/release.json.tmpl
-      esr: firefox/esr.json.tmpl
+      esr52: firefox/esr52.json.tmpl
+      esr60: firefox/esr60.json.tmpl
     devedition:
       devedition: firefox/devedition.json.tmpl
     fennec:
