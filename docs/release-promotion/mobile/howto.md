@@ -3,7 +3,7 @@
 
 QA will test a potential Fennec release and let us know the results. If the tests all pass, we will have to push the `apk` to Google Play.
 
-To do this we create a new task graph to perform all the release promotion steps. 
+To do this we create a new task graph to perform all the release promotion steps.
 
 ## Prerequisites
 
@@ -85,7 +85,7 @@ You can also see the new 'Action: Release Promotion' task on [tools.taskcluster.
 INFO: RELEASE IN FLIGHT: fennec 58.0b5 build2 2017-11-20
 INFO: Graph 1: https://tools.taskcluster.net/task-group-inspector/#/NnPn1IvtQqq9ur84LyqhWg
 INFO: 	Incomplete human tasks:
-INFO: 		* ID 3 (alias: pushapk) - run pushapk
+INFO: 		* ID 3 (alias: ship) - Push APK to Play store
 INFO: 		* ID 4 (alias: publish) - published release tasks
 INFO: 	Unresolved issues:
 ```
