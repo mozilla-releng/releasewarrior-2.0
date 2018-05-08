@@ -11,7 +11,7 @@ from releasewarrior.click_input import generate_prereq_task_from_input
 from releasewarrior.click_input import generate_inflight_issue_from_input
 from releasewarrior.collections import Release
 from releasewarrior.git import commit, push
-from releasewarrior.helpers import get_branch, load_json, get_remaining_items
+from releasewarrior.helpers import get_branch, load_json, get_remaining_items, validate_graphid
 
 
 def order_data(data):
@@ -364,6 +364,13 @@ def update_inflight_graphid(data, phase, graphid, logger):
     current_build_index = get_current_build_index(data)
     # If we've been given a url, copy/pasted from the 'new build' email, fix that.
     graphid = graphid.split('/')[-1]
+    # Double-click to select text on Mac includes the starting u' but not the
+    # final '
+    if graphid.startswith("u'"):
+        graphid = graphid[2:]
+
+    if not validate_graphid(graphid):
+        logger.fatal("GraphID %s is invalid.", graphid)
     graphids = data["inflight"][current_build_index]["graphids"]
     existing_phases = [p for p, _ in graphids]
     if phase in existing_phases:
