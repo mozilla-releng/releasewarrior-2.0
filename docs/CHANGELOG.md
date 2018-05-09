@@ -6,8 +6,12 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 
 ## During 61.0 >= 2018-05-09
 
+### Added
+- added partner off-cycle support + docs
+
 ### Changed
 - update verify only blocks on required platforms to start (eg: win32 update verify only blocks on win32 beetmover and balrog)
+- python 2.7.15 rollout to a portion of our infra
 
 ## During 60.0 >= 2018-03-13
 
