@@ -12,6 +12,7 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 ### Changed
 - update verify only blocks on required platforms to start (eg: win32 update verify only blocks on win32 beetmover and balrog)
 - python 2.7.15 rollout to a portion of our infra
+- python 3.6.5 rollout completed to our scriptworkers
 
 ## During 60.0 >= 2018-03-13
 
