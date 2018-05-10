@@ -105,7 +105,7 @@ def get_branch(version, product, logger):
     if bool(re.match("^\d+\.0rc$", version)):
         branch = "release-rc"
     elif bool(re.match("^(\d+\.\d(\.\d+)?)$", version)):
-        if product == "firefox" and bool(re.match("^(\d+\.\d+)$", version)):
+        if product in ["firefox", "fennec"] and bool(re.match("^(\d+\.\d+)$", version)):
             passed = False
             logger.critical("This release doesn't look like a dot release. Was it meant to be a release-candidate?")
             logger.fatal("Include rc at the end of the `%s` for release-candidates", version)
