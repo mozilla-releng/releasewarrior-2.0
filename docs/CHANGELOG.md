@@ -17,6 +17,7 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 ## During 60.0 >= 2018-03-13
 
 ### Added
+- releaseduty now responsible for periodic file update approvals in phabricator. Change [this line](https://dxr.mozilla.org/mozilla-central/source/taskcluster/ci/repo-update/kind.yml#34) to update those responsible.
 - added `esr52-latest*` bouncer aliases
 - added `firefox-esr-next-*` bouncer aliases
 - added esr60 support
