@@ -111,10 +111,13 @@ Now if you go to your URL bar, you can type `task TASKID` or `taskgroup TASKGROU
 
 After your tour of releaseduty, it's customary to spend 1-2 weeks fixing release automation issues. Check the  [Release Automation Improvements trello board](https://trello.com/b/BqnBcfXX/release-automation-improvements) trello board for ideas of what to work on and to add new items as you discover them.
 
+Ensure the next duty cycle have signed up to any phabricator reviews, such as the periodic file updates reviews.
+
 ## Miscellaneous
 
 - Bugzilla issues regarding specific releases/WNP are filed under [Release Engineering:Releases](https://bugzilla.mozilla.org/enter_bug.cgi?product=Release%20Engineering&component=Releases)
 - Issues regarding automation are filed under [Release Engineering:Release Automation](https://bugzilla.mozilla.org/enter_bug.cgi?product=Release%20Engineering&component=Release%20Automation)
+- The CHANGELOG in the releasewarrior-data repository contains a summary of larger changes made during the duty cycle.
 - Historically, we've used this [etherpad](https://public.etherpad-mozilla.org/p/releaseduty_handoff) to handoff any information from one squirrely to another when cycle. It's optional but feel free to reuse this
 
 ## Teams
