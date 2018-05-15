@@ -40,7 +40,7 @@ async def get_action_tasks(session, pushlog_id, index_repo):
     async with async_timeout.timeout(100):
         index_string = ACTION_INDEX.format(pushid=pushlog_id, repo=index_repo)
         index = Index(session=session)
-        data = await index.listTasks(index_string, dict(limit=100))
+        data = await index.listTasks(index_string)
         tasks = [t['taskId'] for t in data['tasks']]
         return tasks
 
