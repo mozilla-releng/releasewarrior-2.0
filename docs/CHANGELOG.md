@@ -1,4 +1,4 @@
-Every time a new releaseduty cycle begings, new RelEng people are (re)ramping up. To ease the transition, we're keeping this CHANGELOG that should trace all the tools/productivity/infrastructure changes. This include high-level changes and should come into compliance with the rest of the documentation.
+Every time a new releaseduty cycle begins, new RelEng people are (re)ramping up. To ease the transition, we're keeping this CHANGELOG that should trace all the tools/productivity/infrastructure changes. This includes high-level changes and should come into compliance with the rest of the documentation.
 
 This page best serves the people that have previously been into the releaseduty cycle. Starting from the baseline, people coming back after `N` cycles can ramp up incrementally with the latest changes.
 
@@ -13,6 +13,7 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 - update verify only blocks on required platforms to start (eg: win32 update verify only blocks on win32 beetmover and balrog)
 - python 2.7.15 rollout to a portion of our infra
 - python 3.6.5 rollout completed to our scriptworkers
+- update verify no longer fails on expected differences, but will fail on any files found only in source or target; [bug 1461490](https://bugzilla.mozilla.org/show_bug.cgi?id=1461490)
 
 ## During 60.0 >= 2018-03-13
 
