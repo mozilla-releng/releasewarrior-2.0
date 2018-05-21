@@ -19,48 +19,6 @@ If no `diff-summary.log` is attached to the Task something more serious went wro
 
 # Known differences
 
-There are a few known cases where diffs are expected, and ignorable.
+There are no known cases where diffs are expected, so all task failures should be checked carefully.
 
-## Beta channel/ACCEPTED_MAR_CHANNEL_IDS during secondary update verify in RCs
-
-```
-Found diffs for complete update from https://aus5.mozilla.org/update/3/Firefox/59.0/20180215111455/Linux_x86-gcc3/en-US/beta-localtest/default/default/default/update.xml?force=1
-diff -r source/firefox/defaults/pref/channel-prefs.js target/firefox/defaults/pref/channel-prefs.js
-5c5
-< pref("app.update.channel", "beta");
----
-> pref("app.update.channel", "release");
-diff -r source/firefox/update-settings.ini target/firefox/update-settings.ini
-5c5
-< ACCEPTED_MAR_CHANNEL_IDS=firefox-mozilla-beta,firefox-mozilla-release
----
-> ACCEPTED_MAR_CHANNEL_IDS=firefox-mozilla-release
-```
-
-The differences shown tell us that when a user is running Beta and applies an RC MAR file, they end up with the same Firefox that a fresh RC install does, except they maintain their Beta update channel and ACCEPTED_MAR_CHANNEL_IDS. This is expected and OK (if we didn't have this diff, it would mean that we switched Beta users to the release channel!).
-
-## channel-prefs.js differences for some Firefox Beta tests
-
-```
-Found diffs for complete update from https://aus5.mozilla.org/update/3/Firefox/58.0/20180118215408/Linux_x86_64-gcc3/de/beta-localtest/default/default/default/update.xml?force=1
-diff -r source/firefox/defaults/pref/channel-prefs.js target/firefox/defaults/pref/channel-prefs.js
-5,6c5
-< //@line 6 "/builds/worker/workspace/build/src/browser/app/profile/channel-prefs.js"
-< pref("app.update.channel", "release");
----
-> pref("app.update.channel", "beta");
-```
-
-Similar to the previous section, these show up when we're testing that an RC that was shipped to Beta can update to the current Beta. This is expected and OK.
-
-## channel-prefs.js comment changes
-
-```
-diff -r source/Firefox.app/Contents/Resources/defaults/pref/channel-prefs.js target/Firefox.app/Contents/Resources/defaults/pref/channel-prefs.js^M
-5d4^M
-< //@line 6 "/builds/worker/workspace/build/src/browser/app/profile/channel-prefs.js"^M
-```
-
-`channel-prefs.js` contains comments that have the full path to a file in the build directory. If the build directory changes between a previous version and the latest version, this will show up as a difference in update verify. Being a comment change, this is totally ignorable.
-
-Newer versions of Firefox have removed this comment from `channel-prefs.js`, so this difference should go away entirely after the next round of watersheds.
+See [bug 1461490](https://bugzilla.mozilla.org/show_bug.cgi?id=1461490) for the implementation of transforms to resolve expected differences.
