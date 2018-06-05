@@ -141,7 +141,7 @@ You can also see the new 'Action: Release Promotion' task on [tools.taskcluster.
 INFO: RELEASE IN FLIGHT: fennec 60.0 build2 2017-11-20
 INFO: Graph 1: https://tools.taskcluster.net/task-group-inspector/#/NnPn1IvtQqq9ur84LyqhWg
 INFO: 	Incomplete human tasks:
-INFO: 		* ID 3 (alias: ship) - Push APK to play store
+INFO: 		* ID 3 (alias: pushapk) - run pushapk
 INFO: 		* ID 4 (alias: publish) - published release tasks
 INFO: 	Unresolved issues:
 ```
