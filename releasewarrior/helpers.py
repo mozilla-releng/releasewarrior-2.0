@@ -78,9 +78,11 @@ def get_config(path=CUSTOM_CONFIG):
     with open(DEFAULT_CONFIG) as fh:
         config = yaml.load(fh)
     # now append or replace with custom config items
-    with open(path) as fh:
-        config.update(yaml.load(fh))
+    if os.path.exists(path):
+        with open(path) as fh:
+            config.update(yaml.load(fh))
     config['templates_dir'] = config.get('templates_dir', DEFAULT_TEMPLATES_DIR)
+    config['releasewarrior_data_repo'] = os.path.expanduser(config['releasewarrior_data_repo'])
     return config
 
 

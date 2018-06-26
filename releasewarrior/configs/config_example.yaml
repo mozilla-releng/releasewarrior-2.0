@@ -1,5 +1,2 @@
 ### data repo
 releasewarrior_data_repo: ...
-upstream_repo_url_pattern: ((?:https|ssh)://|git@)github\.com[:/]mozilla-releng/releasewarrior-data(\.git)?
-simplified_repo_url: github.com/mozilla-releng/releasewarrior-data # Used only to simplify what's logged out###
-###
