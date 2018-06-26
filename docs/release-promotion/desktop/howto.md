@@ -42,6 +42,10 @@ Note: If they do not explicitly ask for `release-cdntest` it is okay to assume i
 
 * The build should all be green - watch for failures in the update verify tests, especially.
 
+### When - thunderbird
+
+* Thunderbird Release Management will send an email to the thunderbird-drivers mailing list, with a subject line of the form: `${version} - releng, please push to ${channel}`
+
 ### How
 
 * [Find the promote graphid](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/common/find-graphids.md#finding-graphids) for this release.
@@ -56,7 +60,7 @@ source bin/activate
 # paste the export line from get_graphids.py, you should have
 # found at least a promote taskid.
 #   export PROMOTE_TASK_ID=...
-ACTION_FLAVOR=push_firefox  # For devedition, use push_devedition
+ACTION_FLAVOR=push_firefox  # or push_devedition or push_thunderbird
 # This will output the task definition and ask if you want to proceed.
 python tools/buildfarm/release/trigger_action.py \
     ${PROMOTE_TASK_ID+--action-task-id ${PROMOTE_TASK_ID}} \
@@ -83,11 +87,12 @@ The `ship` phase should be triggered when the release is signed off. It runs the
 
 ### When
 
-An email will arrive to the release-signoff mailing list asking for a release to be pushed to the appropriate channel, such as 'release' for major releases, 'beta' for betas, and so on.
+An email will arrive to the release-signoff mailing list asking for a release to be pushed to the appropriate channel, such as 'release' for major releases, 'beta' for betas, and so on. (For thunderbird, the mail will be to the thunderbird-drivers list).
 
 Examples
 - `[desktop] Please push Firefox 58.0b5 to beta and DevEdition to aurora`
 - `[desktop] Please push Firefox 57.0 (build#4) to the release channel (25%)`
+-  (thunderbird) `${version} releng, please make live on beta channel`
 
 ### How
 
@@ -106,7 +111,7 @@ source bin/activate
 #   export DECISION_TASK_ID=...
 #   export PROMOTE_TASK_ID=...
 #   export PUSH_TASK_ID=...
-ACTION_FLAVOR=ship_firefox  # or ship_devedition
+ACTION_FLAVOR=ship_firefox  # or ship_devedition or ship_thunderbird
 # This will output the task definition and ask if you want to proceed.
 python tools/buildfarm/release/trigger_action.py \
     ${PUSH_TASK_ID+--action-task-id ${PUSH_TASK_ID}} \
@@ -146,6 +151,7 @@ After the scheduled change has been created by the "updates" task, and prior to 
     * Firefox release: <https://aus4-admin.mozilla.org/rules?product=Firefox&channel=release>
     * Firefox beta: <https://aus4-admin.mozilla.org/rules?product=Firefox&channel=beta>
     * DevEdition: <https://aus4-admin.mozilla.org/rules?product=Firefox&channel=aurora>
+    * Thunderbird beta: <https://aus4-admin.mozilla.org/rules?product=Thunderbird&channel=beta>
 * Or using the Balrog Scheduled Changes UI: <https://aus4-admin.mozilla.org/rules/scheduled_changes>
 
 Update releasewarrior:
