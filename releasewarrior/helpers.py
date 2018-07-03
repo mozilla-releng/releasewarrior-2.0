@@ -43,6 +43,9 @@ KNOWN_PRODUCT_PHASES = {
         'release-rc': ('promote_rc', 'ship_rc', 'push', 'ship'),
         'default': ('promote', 'push', 'ship'),
     },
+    'thunderbird': {
+        'default': ('promote', 'push', 'ship'),
+    }
 }
 
 
