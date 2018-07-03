@@ -355,7 +355,13 @@ def status(verbose, logger=LOGGER, config=CONFIG):
 
 @cli.command()
 @click.option('--push', is_flag=True, help="Pushes the data repo to upstream")
-def data(push, logger=LOGGER, config=CONFIG):
-    """Pushes teh data repo to upstream."""
+@click.option('--pull', is_flag=True, help="Pulls the data repo from upstream")
+def data(push, pull, logger=LOGGER, config=CONFIG):
+    """Interacts with the data repo."""
+    if push and pull:
+        logger.error("Can't push and pull at the same time.")
+        sys.exit(1)
     if push:
         git.push(logger, config)
+    if pull:
+        git.pull(logger, config)

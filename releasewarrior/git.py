@@ -46,3 +46,11 @@ def push(logger, config):
     logger.info("pushing changes to %s", list(upstream.urls)[0])
     push_info = upstream.push(refspec='master:master')
     logger.info("Summary of push: {}".format(push_info[0].summary))
+
+
+def pull(logger, config):
+    repo = Repo(config['releasewarrior_data_repo'])
+    upstream = find_upstream_repo(repo, logger, config)
+    logger.info("pulling changes from %s", list(upstream.urls)[0])
+    fetch_info = upstream.pull(refspec='master', ff_only=True)
+    logger.info("Summary of pull: {}".format(fetch_info[0].note))
