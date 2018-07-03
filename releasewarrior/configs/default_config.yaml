@@ -55,3 +55,9 @@ releasewarrior_artifacts:
 ## corsica settings
 corsica_enabled: true
 corsica: index.html
+
+
+## data repo
+releasewarrior_data_repo: ~/.mozbuild/releasewarrior-data
+upstream_repo_url_pattern: ((?:https|ssh)://|git@)github\.com[:/]mozilla-releng/releasewarrior-data(\.git)?
+simplified_repo_url: github.com/mozilla-releng/releasewarrior-data # Used only to simplify what's logged out###

@@ -19,11 +19,16 @@ python setup.py develop
 Using the develop target ensures that you get code updates along with data when pulling in changes.
 
 ## Configuring
-The minimal configuration required is the absolute local path of the releasewarrior-data repository.
+The default configuration expects the releasewarriro-data repository to live at `~/.mozbuild/releasewarrior-data`.
 
 ```
 # clone data repo somewhere on your system
-git clone git@github.com:mozilla-releng/releasewarrior-data.git
+mkdir -p ~/.mozbuild
+git clone git@github.com:mozilla-releng/releasewarrior-data.git ~/.mozbuild/releasewarrior-data
+```
+
+A custom location can be sepcified by specifying the absolute local path of the releasewarrior-data repository.
+```
 cp releasewarrior/configs/config_example.yaml releasewarrior/configs/config.yaml
 # edit config.yaml
 #   releasewarrior_data_repo: /path/to/repo/releasewarrior-data
