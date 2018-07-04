@@ -206,12 +206,13 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
 def validate_data_repo_updated(logger, config):
     repo = Repo(config['releasewarrior_data_repo'])
     if repo.is_dirty():
-        logger.warning("release data repo dirty")
+        logger.fatal("release data repo dirty. Aborting...")
+        return False
     upstream = find_upstream_repo(repo, logger, config)
     # TODO - we should allow csets to exist locally that are not on remote.
     logger.info("ensuring releasewarrior repo is up to date and in sync with {}".format(upstream))
-    logger.debug('fetching new csets from {}/master'.format(upstream))
-    upstream.fetch()
+    logger.debug('pulling new csets from {}/master'.format(upstream))
+    upstream.pull()
     commits_behind = list(repo.iter_commits('master..{}/master'.format(upstream)))
     if commits_behind:
         logger.fatal('local master is behind {}/master.'.format(upstream))
