@@ -212,7 +212,7 @@ def validate_data_repo_updated(logger, config):
     # TODO - we should allow csets to exist locally that are not on remote.
     logger.info("ensuring releasewarrior repo is up to date and in sync with {}".format(upstream))
     logger.debug('pulling new csets from {}/master'.format(upstream))
-    upstream.pull()
+    upstream.pull(rebase=True)
     commits_behind = list(repo.iter_commits('master..{}/master'.format(upstream)))
     if commits_behind:
         logger.fatal('local master is behind {}/master.'.format(upstream))
