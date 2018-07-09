@@ -51,25 +51,25 @@ itself, as well as Firefox the product, and correlate them with our release proc
   locally download the .xpi for the language in question.
 * Decrypt the AMO user/pass from our private repo, and in Firefox log into
   AMO's Developer Hub (Private Browsing Mode recommended)
-  [Screenshots [1] [2] [3] and [4]]
+  [Screenshots [[1]](#01) [[2]](#02) [[3]](#03) and [[4]](#04)]
 * Once there click over to `My Addons` and sort the list by "Created"
   (this brings the newest created addons to the top of the list)
-  [Screenshots [5] [6] and [7]]
-* Select the relevant language(s) to go to the extension detail page. [Screenshot 8]
-* Select to Upload a new version, to see the following page [Screenshot 9]
+  [Screenshots [[5]](#05) [[6]](#06) and [[7]](#07)]
+* Select the relevant language(s) to go to the extension detail page. [[Screenshot 8]](#08)
+* Select to Upload a new version, to see the following page [[Screenshot 9]](#09)
 * **IMPORTANT** On this page be SURE TO CLICK **CHANGE** to make the extension listed
-  follow prompts to alter the input [Screenshots [10], [11], and [12]]
+  follow prompts to alter the input [Screenshots [[10]](#10), [[11]](#11), and [[12]](#12)]
 * Finally upload the .xpi with "Select a file..." and then you'll see some results
-  [Screenshots [13] and [14]]
+  [Screenshots [[13]](#13) and [[14]](#14)]
 * Continue
-* You'll need to fill out a few required fields [Screenshots [15], [16] and [17]]
+* You'll need to fill out a few required fields [Screenshots [[15]](#15), [[16]](#16) and [[17]](#17)]
   * Summary can be simple "Language pack for <locale code>"
   * License is to be set to MPL 2.0
   * Submit this page with no further changes
 * In the slim chance you get hit with AMO's restriction of path length, feel free
   to edit it in an attempt to be descriptive but within the limits, this is purely
-  convenience. [Screenshot [18], [19]]
-* Success! [Screenshot [20]]
+  convenience. [Screenshot [[18]](#18), [[19]](#19)]
+* Success! [[Screenshot 20]](#20)
 * Go back and rerun the addon submission task that failed, to unblock the release.
 
 ### What if I don't do the important step in the manual process above?
@@ -86,3 +86,63 @@ forward.
 
 ## Screenshots relevant to above
 
+### 01
+![Login Flow 1](/docs/addons/Screenshot_01.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 02
+![Login Flow 2](/docs/addons/Screenshot_02.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 03
+![Login Flow 3](/docs/addons/Screenshot_03.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 04
+![Login Flow 4](/docs/addons/Screenshot_04.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 05
+![Find Langpack Flow 1](/docs/addons/Screenshot_05.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 06
+![Find Langpack Flow 2](/docs/addons/Screenshot_06.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 07
+![Find Langpack Flow 3](/docs/addons/Screenshot_07.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 08
+![Details Page](/docs/addons/Screenshot_08.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 09
+![Upload Version Flow 1](/docs/addons/Screenshot_09.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 10
+![Upload Version Flow 2](/docs/addons/Screenshot_10.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 11
+![Upload Version Flow 3](/docs/addons/Screenshot_11.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 12
+![Upload Version Flow 4](/docs/addons/Screenshot_12.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 13
+![Upload Version Flow 5](/docs/addons/Screenshot_13.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 14
+![Upload Version Flow 6](/docs/addons/Screenshot_14.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 15
+![Upload Version Flow 7](/docs/addons/Screenshot_15.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 16
+![Upload Version Flow 8](/docs/addons/Screenshot_16.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 17
+![Upload Version Flow 9](/docs/addons/Screenshot_17.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 18
+![Adjust Human URL 1](/docs/addons/Screenshot_18.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 19
+![Adjust Human URL 2](/docs/addons/Screenshot_19.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
+### 20
+![Success](/docs/addons/Screenshot_20.png?raw=true)
+[Back to how to section](#how-to-handle-new-languages-for-release)
