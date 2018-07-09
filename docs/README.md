@@ -21,6 +21,7 @@ This folder gathers all releaseduty documentation under one single umbrella. The
 - [misc-operations](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/misc-operations) - various other pieces of documentation that come into handy while releaseduty
 - [release-promotion](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/release-promotion) - to track the bread and butter of releaseduty for all products and platforms
 - [signing](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/signing) - to track any related signing duties that releaseduty must perform occasionally
+- [addons](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/addons/addons.md) - Information about how language packs and addon (AMO) submission works
 
 ## Overview
 
