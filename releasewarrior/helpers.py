@@ -212,7 +212,13 @@ def validate_data_repo_updated(logger, config):
     # TODO - we should allow csets to exist locally that are not on remote.
     logger.info("ensuring releasewarrior repo is up to date and in sync with {}".format(upstream))
     logger.debug('pulling new csets from {}/master'.format(upstream))
-    upstream.pull(rebase=True)
+    try:
+        upstream.pull(rebase=True)
+    except git_exc.GitCommandError:
+        logger.fatal(
+            'Could not rebase the repo on top of {}/master. Please run `git rebase --abort` then \
+resolve the conflicts manually'.format(upstream)
+        )
     commits_behind = list(repo.iter_commits('master..{}/master'.format(upstream)))
     if commits_behind:
         logger.fatal('local master is behind {}/master.'.format(upstream))
