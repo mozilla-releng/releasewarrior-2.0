@@ -16,10 +16,29 @@ The snap store comes with the concept of tracks (à la Google Play Store). For m
 | Firefox ESR             | `esr` aka `esr/stable` | We plan to use `esr/candidate` whenever the next major ESR version comes out | 
 
 
-## How to promote a snap to the `stable` channel?
+## Promote a snap to the `stable` channel
+
+### Who?
+
+Like for Google Play, Release Management is in change of deciding when they want to fully ship a Snap. Release Management has access to the web interface (and the CLI because credentials are the same) and performs the release action (like Google Play). If needed, Release Engineering can help.
+
+### When?
+
+Because, there is no roll out mechanism, Snaps are shipped to the entire population of a given channel. Unlike Google Play, we can roll back users to previous version, if needed. However, downgrades aren't supported internally in Firefox. Based on these facts, we should ship when we have enough data of the stability on Linux.
+
+### How?
+
+#### The easy way: via web interface
+
+1. Connect to https://dashboard.snapcraft.io/snaps/firefox/. Your credentials will be asked, your 2FA code too. If it doesn't, 'select "Always" for "Require an authentication device", and click "Update"' like explained [on this page](https://help.ubuntu.com/community/SSO/FAQs/2FA#How_do_I_add_a_new_authentication_device_and_start_using_2-factor_authentication.3F).
+1. On the left side, click on the release you want to ship.
+1. On the "channel" section, click on the link "Release". If brings you to a new page. If the page remains blank, reload it.
+1. Check the `stable` box (leave the `candidate` one checked) and click on `Release`.
+
+#### The more complete one: via command line
 
 1. Install `snapcraft`. The simplest way is to `docker pull snapcore/snapcraft:stable`, then `docker run -ti snapcore/snapcraft:stable bash`
-1. `snapcraft login`. Your credentials will be prompted, your 2FA code too. If it doesn't, 'select "Always" for "Require an authentication device", and click "Update"' like explained [on this page](https://help.ubuntu.com/community/SSO/FAQs/2FA#How_do_I_add_a_new_authentication_device_and_start_using_2-factor_authentication.3F).
+1. `snapcraft login`. Your credentials will be asked, your 2FA code too. If it doesn't, 'select "Always" for "Require an authentication device", and click "Update"' like explained [on this page](https://help.ubuntu.com/community/SSO/FAQs/2FA#How_do_I_add_a_new_authentication_device_and_start_using_2-factor_authentication.3F).
 1. `snapcraft status firefox` outputs something like:
 ```
 Track    Arch    Channel    Version      Revision
