@@ -80,7 +80,8 @@ Examples
 
 ### How
 
-* **If Plan A happened for pushing to mirrors and graph expired**, you'll need to create it according sans the pushing-to-mirrors (which at this point already happened).
+* If Plan A from above `Push artifacts to releases directory` was successful but now the graph has expired, you will need to create the second graph in a similar manner to "Plan B" from above but this time we
+can strip the `pushing-to-mirrors` related tasks since that is done:
 
 ```bash
 ssh `whoami`@buildbot-master85.bb.releng.scl3.mozilla.com  # host we release-runner and you generate/submit new release promotion graphs
@@ -123,8 +124,8 @@ python releasetasks_graph_gen.py --release-runner-config=../../../release-runner
 python releasetasks_graph_gen.py --release-runner-config=../../../release-runner.yml --branch-and-product-config="/home/cltbld/releasetasks/releasetasks/release_configs/${BRANCH_CONFIG}" --common-task-id=$TASK_TASKID_FROM_GRAPH1
 
 ```
-* **If Plan A happened for pushing to mirrors and graph hasn't expired**, proceed with the below instructions
-* **If Plan B happened for pushing to mirrors**, the second graphh has already been created so it's safe to proceed with the below instructions
+* If Plan A from above `Push artifacts to releases directory` and graph hasn't expired, proceed with the below instructions against the original, single graph for esr52.
+* If Plan B from above `Push artifacts to releases directory` happened, the second graph was already generated. Proceed with the below instructions against that second generated graph.
 
 * Go to the task graph and find taskId of `publish release human decision task`
 * Resolve the "publish release human decision" task:
