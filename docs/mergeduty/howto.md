@@ -23,7 +23,6 @@ The releng process usually operates like this:
 * A week after Merge day, bump mozilla-central and update bouncer
   * Ask relman to do final mozilla-central->mozilla-beta merge
   * bump the version and tag mozilla-central repo itself
-  * Trigger new nightlies
   * update bouncer aliases
   * bump wiki versions
 
@@ -112,7 +111,7 @@ hg -R build/mozilla-esr{$version} diff  # have someone sanity check output with 
 
 ### Disable migration blocking hg.m.o hooks
 
-There are ftl check hooks on [hg.m.o](http://hg.mozilla.org/) that prevent users from pushing to certain files. File a Dev Services bug or ask in #vcs, specifying when you would like to disable/re-enable the hook like this one. Example bug for this is [bug 1441782](https://bugzilla.mozilla.org/show_bug.cgi?id=1441782)
+There are ftl check hooks on [hg.m.o](http://hg.mozilla.org/) that prevent users from pushing to certain files. Additionally, there are pretxnclose.vcsreplicator hooks that need to be disabled as it can cause a push with a lot of commits (like a merge push) to fail. Until [bug 1415233](https://bugzilla.mozilla.org/show_bug.cgi?id=1415233) is resolved, you must explicitly ask for this hook to be disabled or have an hg.m.o work around in place. File a Dev Services bug or ask in #vcs, specifying when you would like to disable/re-enable the hooks like this one. Example bug for this is [bug 1441782](https://bugzilla.mozilla.org/show_bug.cgi?id=1441782).
 
 **Make sure you ask for the hooks to be disabled for both `mozilla-beta` and `mozilla-release`**.
 
@@ -241,11 +240,10 @@ python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_central
 1. Upon successful run, `mozilla-central` should get a version bump consisting of a `commit` like [this](https://hg.mozilla.org/mozilla-central/rev/d6957f004e9c) and a `tag` like [this](https://hg.mozilla.org/mozilla-central/rev/a1171de0b81e)
 1. Verify changesets are visible on [hg pushlog](https://hg.mozilla.org/mozilla-central/pushloghtml) and [Treeherder](https://treeherder.mozilla.org/#/jobs?repo=mozilla-central). It may take a couple of minutes to appear.
 
-### Trigger new nightlies
+### Turn off the long living merge instance
 
-1. Trigger nightlies for central. This can be done by:
-    1. trigger [nightly-desktop/mozilla-central](https://tools.taskcluster.net/hooks/#project-releng/nightly-desktop%252fmozilla-central) hook
-    1. trigger [nightly-fennec/mozilla-central](https://tools.taskcluster.net/hooks/#project-releng/nightly-fennec%252fmozilla-central) hook
+Until we are using the puppetized instance (Bug 1469284) and it automatically stops, we should manually stop the merge instance inbetween merge days (6-8 weeks apart)
+
 
 
 ### Reply to relman central bump completed
@@ -284,13 +282,11 @@ NEW_ESR_VERSION=52  # Only if a new ESR comes up (for instance 52.0esr)
 
 ### Bump bouncer versions
 
-1. After the bump, when it's confirmed we have good nightlies for `mozilla-central`, take time to update the [bouncer](https://bounceradmin.mozilla.com) locations as well in order to reflect the new version for following aliases:
+1. After the bump, when it's confirmed we have good nightlies for `mozilla-central` with a new gecko version (nightlies auto run twice a day), take time to update the [bouncer](https://bounceradmin.mozilla.com) locations as well in order to reflect the new version for following aliases:
     1. [firefox-nightly-latest](https://bounceradmin.mozilla.com/admin/mirror/location/?product__id__exact=2005)
     1. [firefox-nightly-latest-ssl](https://bounceradmin.mozilla.com/admin/mirror/location/?product__id__exact=6508)
     1. [firefox-nightly-latest-l10n](https://bounceradmin.mozilla.com/admin/mirror/location/?product__id__exact=6506)
     1. [firefox-nightly-latest-l10n-ssl](https://bounceradmin.mozilla.com/admin/mirror/location/?product__id__exact=6507)
-    1. [firefox-nightly-stub](https://bounceradmin.mozilla.com/admin/mirror/location/?product__id__exact=6509)
-    1. [firefox-nightly-stub-l10n](https://bounceradmin.mozilla.com/admin/mirror/location/?product__id__exact=6512)
 
 
 :warning: Be careful on how you make changes to bouncer entries. If it is just the version that gets bumped, that's totally fine, but if you also need to change some installer names or anything alike, `space` needs to be encoded to `%20%` and such. See [bug 1386765](https://bugzilla.mozilla.org/show_bug.cgi?id=1386765) for what happened during 57 nightlies migration.
