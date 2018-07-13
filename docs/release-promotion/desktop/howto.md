@@ -93,6 +93,7 @@ Examples
 - `[desktop] Please push Firefox 58.0b5 to beta and DevEdition to aurora`
 - `[desktop] Please push Firefox 57.0 (build#4) to the release channel (25%)`
 -  (thunderbird) `${version} releng, please make live on beta channel`
+- `[desktop] Please push Firefox 52.9.0esr-build2 and 60.1.0esr-build2 to the esr channel`
 
 ### How
 

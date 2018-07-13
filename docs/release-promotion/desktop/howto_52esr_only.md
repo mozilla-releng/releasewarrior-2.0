@@ -11,7 +11,7 @@
 
 ### When
 
-* Release Management will send an email to the release-signoff mailing list, with a subject line of the form: `[desktop] Please push ${version} to ${channel}` 
+* Release Management will send an email to the release-signoff mailing list, with a subject line of the form: `[desktop] Please push ${version} to ${channel}`
 
 Examples:
 - `[desktop] Please push Firefox 57.0.1 (build#2) to the release-cdntest channel`
@@ -25,7 +25,7 @@ Note: If they do not explicitly ask for `release-cdntest` it is okay to assume i
 
 ### How - Plan A
 
-* Check the `release` command for the link to the task graph. 
+* Check the `release` command for the link to the task graph.
 * There should be a pending task with "push to releases human decision task" in the name
 * Find the TaskID for this task, and resolve it:
     ```sh
@@ -48,12 +48,7 @@ To create the second graph:
 ssh `whoami`@buildbot-master85.bb.releng.scl3.mozilla.com  # host we release-runner and you generate/submit new release promotion graphs
 sudo su - cltbld
 TASK_TASKID_FROM_GRAPH1={insert a taskid from any task in graph 1}
-
-# IF a release candidate
-BRANCH_CONFIG=prod_mozilla-release_firefox_rc_graph_2.yml
-# IF an ESR
 BRANCH_CONFIG=prod_mozilla-esr52_firefox_rc_graph_2.yml
-# No such config file for releases.
 
 cd /home/cltbld/releasetasks/
 git pull origin master  # make sure we are up to date. note: make sure this is on master and clean first
@@ -84,6 +79,53 @@ Examples
 - `[desktop] Please push Firefox 57.0 (build#4) to the release channel (25%)`
 
 ### How
+
+* If Plan A from above `Push artifacts to releases directory` was successful but now the graph has expired, you will need to create the second graph in a similar manner to "Plan B" from above but this time we
+can strip the `pushing-to-mirrors` related tasks since that is done:
+
+```bash
+ssh `whoami`@buildbot-master85.bb.releng.scl3.mozilla.com  # host we release-runner and you generate/submit new release promotion graphs
+sudo su - cltbld
+TASK_TASKID_FROM_GRAPH1={insert a taskid from any task in graph 1}
+BRANCH_CONFIG=prod_mozilla-esr52_firefox_rc_graph_2.yml
+
+cd /home/cltbld/releasetasks/
+git pull origin master  # make sure we are up to date. note: make sure this is on master and clean first
+vi releasetasks/release_configs/prod_mozilla-esr52_firefox_rc_graph_2.yml # remove push-to-mirrors task from second graph
+git diff # you should have something similar to this
++++ b/releasetasks/release_configs/prod_mozilla-esr52_firefox_rc_graph_2.yml
+@@ -29,7 +29,7 @@ updates_enabled: false
+ checksums_enabled: false
+ push_to_candidates_enabled: false
+ update_verify_enabled: false
+-push_to_releases_enabled: true
++push_to_releases_enabled: false
+ channels:
+     - "esr"
+ publish_to_balrog_channels:
+@@ -51,7 +51,7 @@ funsize_balrog_api_root: "http://balrog/api"
+ balrog_api_root: "https://aus4-admin.mozilla.org/api"
+ build_tools_repo_path: "build/tools"
+ tuxedo_server_url: "https://bounceradmin.mozilla.com/api"
+-push_to_releases_automatic: true
++push_to_releases_automatic: false
+ beetmover_candidates_bucket: "net-mozaws-prod-delivery-firefox"
+ snap_enabled: false
+ update_verify_channel: null
+
+cd /builds/releaserunner/tools/buildfarm/release/
+hg pull -u # make sure we are up to date. note: make sure this is on default and clean first
+source /builds/releaserunner/bin/activate
+
+# call releasetasks_graph_gen.py with --dry-run and sanity check the graph output that would be submitted
+python releasetasks_graph_gen.py --release-runner-config=../../../release-runner.yml --branch-and-product-config="/home/cltbld/releasetasks/releasetasks/release_configs/${BRANCH_CONFIG}" --common-task-id=$TASK_TASKID_FROM_GRAPH1 --dry-run
+
+# call releasetasks_graph_gen.py for reals which will submit the graph to Taskcluster
+python releasetasks_graph_gen.py --release-runner-config=../../../release-runner.yml --branch-and-product-config="/home/cltbld/releasetasks/releasetasks/release_configs/${BRANCH_CONFIG}" --common-task-id=$TASK_TASKID_FROM_GRAPH1
+
+```
+* If Plan A from above `Push artifacts to releases directory` and graph hasn't expired, proceed with the below instructions against the original, single graph for esr52.
+* If Plan B from above `Push artifacts to releases directory` happened, the second graph was already generated. Proceed with the below instructions against that second generated graph.
 
 * Go to the task graph and find taskId of `publish release human decision task`
 * Resolve the "publish release human decision" task:
