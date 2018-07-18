@@ -1,7 +1,5 @@
 Original docs are [here](https://mana.mozilla.org/wiki/display/RelEng/Partner+Repack+Creation).
 
-Note: this landed after Firefox 60.0rc gtb, so if we need off-cycle partner repacks for Firefox 60.0, we'll have to create the action task off a later revision than the release.
-
 # Background
 
 We repackage Firefox for partners. Occasionally we'll have a new study (funnelcake) or a new partner or partner config that happens after a release is built, but before the next release is scheduled to be built, and we need to repack that partner off-cycle.
@@ -22,11 +20,11 @@ These are the steps on how to trigger the repack/signing/repackage/repackage-sig
 
 1. Determine the `PROMOTE_TASK_ID` for that release. This is in releasewarrior.
 
-1. Determine the partner list.
+1. Determine the partner list. Until [Bug 1469757](https://bugzilla.mozilla.org/show_bug.cgi?id=1469757) is resolved we only support a single, top-level config, eg `funnelcake`, not `funnelcakeNNN` or `yandex,ironsource`. If more than one partner is needed create separate graphs with different `PARTNER_SUBSET` exports.
 
 1. Determine if these are public or private partners. You can look at the `release_partner_config` in the previous promote task's `public/parameters.yml` artifact. If the partner has `upload_to_candidates` set to `True`, then it's a public partner, and it'll be uploaded to the candidates directory along with the release. Otherwise, it's a private partner, and it'll be uploaded to the partner bucket.
 
-1. Determine the partner build number we're going to use. This is the `v1` or `v2` in the directory path on S3, designed to bypass the CDN cache. We want to increment past the most recent: if we haven't done any off-cycle partner repack creation for this build, we'll use `2`. If we've run off-cycle partner repacks 3 times (using up `2`, `3`, and `4`), then we'd use `5`.
+1. Determine the partner build number we're going to use. This is the `v1` or `v2` in the directory path on S3, designed to bypass the CDN cache for public partner builds. We want to increment past the most recent: if we haven't done any off-cycle partner repack creation for this build, we'll use `2`. If we've run off-cycle partner repacks 3 times (using up `2`, `3`, and `4`), then we'd use `5`.
 
 1. Trigger the graph via `trigger_action.py`:
 
