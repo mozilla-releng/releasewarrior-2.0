@@ -213,11 +213,11 @@ def validate_data_repo_updated(logger, config):
     logger.info("ensuring releasewarrior repo is up to date and in sync with {}".format(upstream))
     logger.debug('pulling new csets from {}/master'.format(upstream))
     try:
-        upstream.pull(rebase=True)
-    except git_exc.GitCommandError:
+        # XXX ff_only=True is overriden by user's gitconfig. Known case: when user set rebase = true
+        upstream.pull(ff_only=True)
+    except git_exc.GitCommandError as e:
         logger.fatal(
-            'Could not rebase the repo on top of {}/master. Please run `git rebase --abort` then \
-resolve the conflicts manually'.format(upstream)
+            'Could not pull changes from {}/master: {}'.format(upstream, e)
         )
     commits_behind = list(repo.iter_commits('master..{}/master'.format(upstream)))
     if commits_behind:
