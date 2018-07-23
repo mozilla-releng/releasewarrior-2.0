@@ -86,6 +86,9 @@ tar --strip-components=2 -jvxf mozharness.tar.bz2
 #### mozilla-beta->mozilla-release migration no-op trial run
 
 ```sh
+# Set this variable to your ldap e-mail address to make sure
+# the push to hg.mozilla.org uses the correct username.
+ldap_username=your_ldap_username@mozilla.com
 python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/beta_to_release.py
 hg -R build/mozilla-release diff  # have someone sanity check output with you
  ```
@@ -93,6 +96,9 @@ hg -R build/mozilla-release diff  # have someone sanity check output with you
 #### mozilla-central->mozilla-beta migration no-op trial run
 
 ```sh
+# Set this variable to your ldap e-mail address to make sure
+# the push to hg.mozilla.org uses the correct username.
+ldap_username=your_ldap_username@mozilla.com
 python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/central_to_beta.py
 hg -R build/mozilla-beta diff  # have someone sanity check output with you
  ```
@@ -100,6 +106,9 @@ hg -R build/mozilla-beta diff  # have someone sanity check output with you
 #### esr version bump no-op trial run
 
 ```sh
+# Set this variable to your ldap e-mail address to make sure
+# the push to hg.mozilla.org uses the correct username.
+ldap_username=your_ldap_username@mozilla.com
 python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_esr.py
 hg -R build/mozilla-esr{$version} diff  # have someone sanity check output with you
  ```
