@@ -112,7 +112,8 @@ def get_branch(version, product, logger):
     elif bool(re.match("^(\d+\.\d(\.\d+)?)$", version)):
         if product in ["firefox", "fennec"] and bool(re.match("^(\d+\.\d+)$", version)):
             passed = False
-            logger.critical("This release doesn't look like a dot release. Was it meant to be a release-candidate?")
+            logger.critical("This release doesn't look like a dot release. Was it meant to be \
+a release-candidate?")
             logger.fatal("Include rc at the end of the `%s` for release-candidates", version)
         else:
             branch = "release"
@@ -145,18 +146,24 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
         "thunderbird": release.branch in ['beta', 'release']
     }
     if not branch_validations[release.product]:
-        logger.fatal("Conflict. Product: %s, can't be used with Branch: %s, determined by Version: %s",
-                     release.product, release.branch, release.version)
+        logger.fatal(
+            "Conflict. Product: %s, can't be used with Branch: %s, determined by Version: %s",
+            release.product, release.branch, release.version
+        )
         passed = False
     ###
 
     # ensure release data file exists where expected
-    upcoming_path = os.path.join(config['releasewarrior_data_repo'],
-                                 config['releases']['upcoming'][release.product],
-                                 "{}-{}-{}.json".format(release.product, release.branch, release.version))
-    inflight_path = os.path.join(config['releasewarrior_data_repo'],
-                                 config['releases']['inflight'][release.product],
-                                 "{}-{}-{}.json".format(release.product, release.branch, release.version))
+    upcoming_path = os.path.join(
+        config['releasewarrior_data_repo'],
+        config['releases']['upcoming'][release.product],
+        "{}-{}-{}.json".format(release.product, release.branch, release.version)
+    )
+    inflight_path = os.path.join(
+        config['releasewarrior_data_repo'],
+        config['releases']['inflight'][release.product],
+        "{}-{}-{}.json".format(release.product, release.branch, release.version)
+    )
     exists_in_upcoming = os.path.exists(upcoming_path)
     exists_in_inflight = os.path.exists(inflight_path)
     # TODO simplify and clean up these conditions
@@ -166,19 +173,25 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
                 logger.fatal("expected data file to exist in upcoming path: %s", upcoming_path)
                 passed = False
             if exists_in_inflight:
-                logger.fatal("data file exists in inflight path and wasn't expected: %s", inflight_path)
+                logger.fatal(
+                    "data file exists in inflight path and wasn't expected: %s", inflight_path
+                )
                 passed = False
         elif must_exist_in == "inflight":
             if not exists_in_inflight:
                 logger.fatal("expected data file to exist in inflight path: %s", inflight_path)
                 passed = False
             if exists_in_upcoming:
-                logger.fatal("data file exists in upcoming path and wasn't expected: %s", upcoming_path)
+                logger.fatal(
+                    "data file exists in upcoming path and wasn't expected: %s", upcoming_path
+                )
                 passed = False
         else:
             if not exists_in_upcoming and not exists_in_inflight:
-                logger.fatal("data file was expected to exist in either upcoming or inflight path: %s, %s",
-                             upcoming_path, inflight_path)
+                logger.fatal(
+                    "data file was expected to exist in either upcoming or inflight path: %s, %s",
+                    upcoming_path, inflight_path
+                )
                 passed = False
     else:
         if exists_in_upcoming or exists_in_inflight:
@@ -194,10 +207,14 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
     for state_dir in config['releases']:
         for product in config['releases'][state_dir]:
             os.makedirs(
-                os.path.join(config['releasewarrior_data_repo'], config['releases'][state_dir][product]),
+                os.path.join(
+                    config['releasewarrior_data_repo'], config['releases'][state_dir][product]
+                ),
                 exist_ok=True
             )
-    os.makedirs(os.path.join(config['releasewarrior_data_repo'], config['postmortems']), exist_ok=True)
+    os.makedirs(
+        os.path.join(config['releasewarrior_data_repo'], config['postmortems']), exist_ok=True
+    )
     ###
     if not passed:
         sys.exit(1)
@@ -290,10 +307,10 @@ def validate_graphid(graphid):
     """Validate a graphid's syntax.
 
     Uses the regular expression for 'taskGroupId' from
-    https://docs.taskcluster.net/reference/platform/taskcluster-queue/docs/task-schema#task-definition
+    https://docs.taskcluster.net/reference/platform/taskcluster-queue/docs/task-schema#task-definition  # noqa: E501
     """
     import re
-    taskgraphid_pattern = r'^[A-Za-z0-9_-]{8}[Q-T][A-Za-z0-9_-][CGKOSWaeimquy26-][A-Za-z0-9_-]{10}[AQgw]$'
+    taskgraphid_pattern = r'^[A-Za-z0-9_-]{8}[Q-T][A-Za-z0-9_-][CGKOSWaeimquy26-][A-Za-z0-9_-]{10}[AQgw]$'  # noqa: E501
     if re.fullmatch(taskgraphid_pattern, graphid):
         return True
     return False

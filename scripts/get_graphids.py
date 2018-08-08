@@ -5,8 +5,7 @@ import argparse
 import asyncio
 import async_timeout
 import posixpath
-from taskcluster.async import Index
-from taskcluster.async import Queue
+from taskcluster.aio import Index, Queue
 
 
 HG_URL = 'https://hg.mozilla.org/'

@@ -342,10 +342,14 @@ def update_inflight_issue(data, resolve, logger):
         for issue_id in resolve:
             # 0 based index so -1
             issue_index = int(issue_id) - 1
-            logger.info("resolving issue %s - %s", issue_id,
-                        data["inflight"][current_build_index]["issues"][issue_index]["description"])
+            logger.info(
+                "resolving issue %s - %s",
+                issue_id,
+                data["inflight"][current_build_index]["issues"][issue_index]["description"]
+            )
             data["inflight"][current_build_index]["issues"][issue_index]["resolved"] = True
-            data["inflight"][current_build_index]["issues"][issue_index]["future_threat"] = is_future_threat_input()
+            data["inflight"][current_build_index]["issues"][issue_index]["future_threat"] = \
+                is_future_threat_input()
 
     else:
         # create a new issueuisite task through interactive inputs

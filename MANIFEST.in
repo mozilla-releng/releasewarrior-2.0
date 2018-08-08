@@ -1,0 +1,11 @@
+recursive-include releasewarrior/configs *
+recursive-include releasewarrior/templates *
+
+include LICENSE
+include README.md
+include version.txt
+include requirements*.txt
+include extra-requirements-scripts.txt
+
+recursive-exclude * __pycache__
+recursive-exclude * *.py[co]

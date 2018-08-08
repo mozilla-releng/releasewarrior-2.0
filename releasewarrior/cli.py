@@ -208,7 +208,9 @@ def postmortem(date, logger=LOGGER, config=CONFIG):
 
     date = sanitize_date_input(date, logger)
 
-    completed_releases = [release for release in get_releases(config, logger, filter=complete_filter)]
+    completed_releases = [
+        release for release in get_releases(config, logger, filter=complete_filter)
+    ]
     postmortem_data_path = os.path.join(config["releasewarrior_data_repo"], config["postmortems"],
                                         "{}.json".format(date))
     postmortem_wiki_path = os.path.join(config["releasewarrior_data_repo"], config["postmortems"],
@@ -223,10 +225,15 @@ def postmortem(date, logger=LOGGER, config=CONFIG):
     # make sure archive and postmortem dirs exist
     for product in config['releases']['archive']:
         os.makedirs(
-            os.path.join(config['releasewarrior_data_repo'], config['releases']['archive'][product]),
+            os.path.join(
+                config['releasewarrior_data_repo'], config['releases']['archive'][product]
+            ),
             exist_ok=True
         )
-    os.makedirs(os.path.join(config['releasewarrior_data_repo'], config['postmortems']), exist_ok=True)
+    os.makedirs(
+        os.path.join(config['releasewarrior_data_repo'], config['postmortems']),
+        exist_ok=True
+    )
 
     # get existing postmortem data
     postmortem_data = {
@@ -281,7 +288,8 @@ def cancel(product, version, logger=LOGGER, config=CONFIG):
 @click.argument('version')
 def sync(product, version, logger=LOGGER, config=CONFIG):
     """Sync manual changes to json.
-    Takes currently saved json data of given release from data repo, generates the wiki and commits.
+    Takes currently saved json data of given release from data repo, generates the wiki and
+    commits.
     Product and version is also used to determine branch. e.g 57.0rc, 57.0.1, 57.0b2, 52.0.1esr
     """
     validate_rw_repo(logger, config)
@@ -295,7 +303,9 @@ def sync(product, version, logger=LOGGER, config=CONFIG):
 
 
 @cli.command()
-@click.option('--verbose', is_flag=True, help="shows all tracked releases as well as completed releases")
+@click.option(
+    '--verbose', is_flag=True, help="shows all tracked releases as well as completed releases"
+)
 def status(verbose, logger=LOGGER, config=CONFIG):
     """Shows prerequisites and inflight human tasks.
     """
@@ -320,8 +330,10 @@ def status(verbose, logger=LOGGER, config=CONFIG):
         logger.info("Expected GTB: %s", release["date"])
         logger.info("\tIncomplete prerequisites:")
         for prereq in remaining_prereqs:
-            logger.info("\t\t* ID: %s, deadline: %s, bug %s - %s", prereq['id'], prereq['deadline'],
-                        prereq["bug"], prereq["description"])
+            logger.info(
+                "\t\t* ID: %s, deadline: %s, bug %s - %s", prereq['id'], prereq['deadline'],
+                prereq["bug"], prereq["description"]
+            )
         if not remaining_prereqs:
             logger.info("\t\t* none")
 
@@ -329,7 +341,9 @@ def status(verbose, logger=LOGGER, config=CONFIG):
 
     ###
     # releases in flight
-    incomplete_releases = [release for release in get_releases(config, logger, filter=incomplete_filter)]
+    incomplete_releases = [
+        release for release in get_releases(config, logger, filter=incomplete_filter)
+    ]
     logger.info("")
     logger.info("INFLIGHT RELEASES...")
     if not incomplete_releases:
@@ -342,7 +356,9 @@ def status(verbose, logger=LOGGER, config=CONFIG):
     ###
     # completed releases (unresolved issues)
     if verbose:
-        complete_releases = [release for release in get_releases(config, logger, filter=complete_filter)]
+        complete_releases = [
+            release for release in get_releases(config, logger, filter=complete_filter)
+        ]
         logger.info("")
         logger.info("COMPLETED RELEASES...")
         if not complete_releases:

@@ -19,11 +19,10 @@ tasks:
         - >-
           git clone {{event.head.repo.url}} repo && cd repo && git config
           advice.detachedHead false && git checkout {{event.head.sha}} && pip3
-          install flake8 && flake8 . || true
+          install tox && tox
     metadata:
-      name: 'flake8'
-      description: 'flake8 linting'
+      name: 'tox'
+      description: 'tests and linting'
       owner: '{{ event.head.user.email }}'
       source: '{{ event.head.repo.url }}'
 allowPullRequests: public
-
