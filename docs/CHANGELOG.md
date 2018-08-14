@@ -8,6 +8,7 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 
 ### Added
 - added partner off-cycle support + docs
+- widevine docs
 
 ### Changed
 - update verify only blocks on required platforms to start (eg: win32 update verify only blocks on win32 beetmover and balrog)
