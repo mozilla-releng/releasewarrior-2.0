@@ -230,7 +230,8 @@ def validate_data_repo_updated(logger, config):
     logger.info("ensuring releasewarrior repo is up to date and in sync with {}".format(upstream))
     logger.debug('pulling new csets from {}/master'.format(upstream))
     try:
-        # XXX ff_only=True is overriden by user's gitconfig. Known case: when user set rebase = true
+        # XXX ff_only=True is overriden by user's gitconfig. Known case: when user set
+        # rebase = true
         upstream.pull(ff_only=True)
     except git_exc.GitCommandError as e:
         logger.fatal(
