@@ -12,21 +12,38 @@ Sometimes updates must be done because Google (the owner of Widevine) deprecates
 
 ### Ensure what Firefox version is able to run the new version
 
-Take a look at widevine version numbers. For instance: 1.4.9.1088.
-
-| Digit | Name         | Notes                                                             |
-|-------|--------------|-------------------------------------------------------------------|
-| 1     | ?            |                                                                   |
-| 4     | ?            |                                                                   |
-| 9     | API level    | If this number changes, some Firefox internals must be changed    |
-| 1088  | Build number | This number keeps increasing even if the other numbers got bumped |
-
-If the API level (or higher) is bumped, please check with the Media team what Firefox is able to run this Widevine.
-
 :warning: There are 2 types of patches the Media team makes:
 
 1. The actual patch to make Firefox compatible with the new API (for example: [bug 1420836](https://bugzilla.mozilla.org/show_bug.cgi?id=1420836)). This kind of patch must happen **before** the balrog rule is set.
 1. Another patch that updates the fallback downloader (like [bug 1479579](https://bugzilla.mozilla.org/show_bug.cgi?id=1479579)). This kind of patch can be landed **after** the balrog rule is set
+
+Take a look at Widevine version numbers to determine whether Firefox needs to be updated.
+
+
+#### Old schema (< 1.4.9.X)
+
+For instance: 1.4.9.1088.
+
+| Digit | Name         | Notes                                                             |
+|-------|--------------|-------------------------------------------------------------------|
+| 1     | Major        | It has always been 1, so far                                      |
+| 4     | Module       | Significant changes must happen on the Firefox side               |
+| 9     | Interface    | If this number changes, some Firefox internals must be changed    |
+| 1088  | Revision     | This number keeps increasing even if the other numbers got bumped |
+
+If the API level (or higher) is bumped, please check with the Media team what Firefox is able to run this Widevine.
+
+#### New schema (> 1.4.9.x)
+
+For instance: TBD
+
+| Digit | Name         | Notes                                                             |
+|-------|--------------|-------------------------------------------------------------------|
+|       | Major        | See old schema                                                    |
+|       | Interface    | See old schema                                                    |
+|       | Revision     | See old schema                                                    |
+|       | ?            | TDB                                                               |
+
 
 ### Create the blob
 
