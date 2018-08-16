@@ -47,7 +47,67 @@ For instance: TBD
 
 ### Create the blob
 
-// TODO 
+Unlike Firefox, no automation creates a blob. Nor do we have a script (patch welcome!) to generate one. Therefore we need to create a new blob. The easiest way to do this is to download the most previous release blob, e.g.[Widevine-1.4.9.1088](https://aus4-admin.mozilla.org/releases#Widevine-1.4.9.1088). Then open in an editor. It's small and should be like:
+
+```json
+{
+  "hashFunction": "sha512",
+  "name": "Widevine-1.4.9.1088",
+  "product": "Widevine",
+  "schema_version": 1000,
+  "vendors": {
+    "gmp-widevinecdm": {
+      "platforms": {
+        "Darwin_x86_64-gcc3": {
+          "alias": "Darwin_x86_64-gcc3-u-i386-x86_64"
+        },
+        "Darwin_x86_64-gcc3-u-i386-x86_64": {
+          "fileUrl": "https://redirector.gvt1.com/edgedl/widevine-cdm/1.4.9.1088-mac-x64.zip",
+          "filesize": 3220735,
+          "hashValue": "79cde6f9457f1b46f03ba5baade0852ad2a7d640930c3229a750deb37b5061a9e75e8d6410a138bbdd7c871f8310476ad4a6f295cd05235ea9f392de339ff83c"
+        },
+        "Linux_x86-gcc3": {
+          "fileUrl": "https://redirector.gvt1.com/edgedl/widevine-cdm/1.4.9.1088-linux-ia32.zip",
+          "filesize": 3062013,
+          "hashValue": "fb0207c6e24c05144ed345a6e37afc8e7bc2700c9bc4b536fa23503f08f2d258e10c4f1ef40f6ed0d6d8eaf495dbdcc924e71314cc1858f81fe6208cd210e8b5"
+        },
+        "Linux_x86_64-gcc3": {
+          "fileUrl": "https://redirector.gvt1.com/edgedl/widevine-cdm/1.4.9.1088-linux-x64.zip",
+          "filesize": 2921375,
+          "hashValue": "8038d142f14b8992db282003ed7bd7fcb6a11c556fdfe34d410d017c3d8d792c24f38a24f6f65fea1a979a4c697f50cca826d8a28ae4fa9740512c3291d52aaf"
+        },
+        "Linux_x86_64-gcc3-asan": {
+          "alias": "Linux_x86_64-gcc3"
+        },
+        "WINNT_x86-msvc": {
+          "fileUrl": "https://redirector.gvt1.com/edgedl/widevine-cdm/1.4.9.1088-win-ia32.zip",
+          "filesize": 3389392,
+          "hashValue": "8e115f3f941663ac052570191acca09cb025388f82b232df5770aeb1781a611f002226de244ddd1b75553bbb5154068dca8913465b2c27ea28a1b4cae8359682"
+        },
+        "WINNT_x86-msvc-x64": {
+          "alias": "WINNT_x86-msvc"
+        },
+        "WINNT_x86-msvc-x86": {
+          "alias": "WINNT_x86-msvc"
+        },
+        "WINNT_x86_64-msvc": {
+          "fileUrl": "https://redirector.gvt1.com/edgedl/widevine-cdm/1.4.9.1088-win-x64.zip",
+          "filesize": 3351002,
+          "hashValue": "48b25b1a89ac07fa041c17ff4ae6ac43171a69a7fdcb226c09150b8ecc824dc3a7fa2f2a9f607c35fb5e1e234cfc0bd717a9a48883fc8084ac0743f2e695bbf8"
+        },
+        "WINNT_x86_64-msvc-x64": {
+          "alias": "WINNT_x86_64-msvc"
+        }
+      },
+      "version": "1.4.9.1088"
+    }
+  }
+}
+```
+
+From the above, edit the `name`, `version` to match the current new version. Then under each platform, update the `hashValue`, `filesize`, and `fileUrl` based on the values provided to you in the widevine tracking bug.
+
+Finally, save that new release blob, upload it to Balrog via the "Add new release" button within https://aus4-admin.mozilla.org/releases, and save the release blob name to match the new version the blob is based on.
 
 ### Create the balrog rule
 
