@@ -29,7 +29,7 @@ These are the steps on how to trigger the repack/signing/repackage/repackage-sig
 1. Trigger the graph via `trigger_action.py`:
 
 ```
-ssh buildbot-master85.bb.releng.scl3.mozilla.com
+ssh buildbot-master01.bb.releng.use1.mozilla.com
 sudo su - cltbld
 cd /builds/releaserunner3/
 source bin/activate

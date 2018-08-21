@@ -8,7 +8,7 @@ To do this we create a new task graph to perform all the release promotion steps
 ## Prerequisites
 
 - VPN Access
-- SSH Access to buildbot-master85
+- SSH Access to `buildbot-master01.bb.releng.use1.mozilla.com`
 - (Optional, convenient) [taskcluster-cli](https://github.com/taskcluster/taskcluster-cli) set up
 
 ## When to perform these steps
@@ -47,7 +47,7 @@ bugs found
 1. This action will create a new ship graph
 
 ```bash
-ssh buildbot-master85.bb.releng.scl3.mozilla.com
+ssh buildbot-master01.bb.releng.use1.mozilla.com
 sudo su - cltbld
 cd /builds/releaserunner3/
 source bin/activate

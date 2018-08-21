@@ -70,7 +70,7 @@ In order to do your job,  you need to be granted access to a bare minimum:
 - Write access to [releasewarrior-2.0](https://github.com/mozilla-releng/releasewarrior-2.0/) and [releasewarrior-data](https://github.com/mozilla-releng/releasewarrior-data/) repo
 - Read/write access to [Balrog](https://aus4-admin.mozilla.org/)
 - Read access to [Ship-it](https://ship-it.mozilla.org/)
-- SSH access to `buildbot-master85.bb.releng.scl3.mozilla.com`.
+- SSH access to `buildbot-master01.bb.releng.use1.mozilla.com`.
 
 There are a few more other places where access is needed (such as [bouncer](https://bounceradmin.mozilla.com/admin/), etc) but we're trying to keep those access-list short so addings can be done in time depending on necessities.
 

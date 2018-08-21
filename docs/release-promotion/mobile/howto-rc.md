@@ -8,7 +8,7 @@ At that point, we run the `ship_fennec` graph to mark it as shipped.
 ## Prerequisites
 
 - VPN Access
-- SSH Access to buildbot-master85
+- SSH Access to `buildbot-master01.bb.releng.use1.mozilla.com`
 - (Optional, convenient) [taskcluster-cli](https://github.com/taskcluster/taskcluster-cli) set up
 
 ## When to perform these steps
@@ -45,7 +45,7 @@ bugs found
 1. This action will create a new ship-rc graph
 
 ```sh
-ssh buildbot-master85.bb.releng.scl3.mozilla.com
+ssh buildbot-master01.bb.releng.use1.mozilla.com
 sudo su - cltbld
 cd /builds/releaserunner3/
 source bin/activate
@@ -82,7 +82,7 @@ unset PROMOTE_TASK_ID
 1. This action will create a new ship graph
 
 ```sh
-ssh buildbot-master85.bb.releng.scl3.mozilla.com
+ssh buildbot-master01.bb.releng.use1.mozilla.com
 sudo su - cltbld
 cd /builds/releaserunner3/
 source bin/activate

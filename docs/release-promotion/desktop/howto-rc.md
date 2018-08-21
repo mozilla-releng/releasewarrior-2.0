@@ -86,7 +86,7 @@ Shortly before we ship a major release, we need to remove the What's New Page fr
 
 * taskcluster-cli installed
 * releasewarrior-2.0 installed
-* ssh access to `buildbot-master85.bb.releng.scl3.mozilla.com`
+* ssh access to `buildbot-master01.bb.releng.use1.mozilla.com`
 
 ## Differences between Firefox RC and non-RC
 
@@ -109,7 +109,7 @@ Shortly before we ship a major release, we need to remove the What's New Page fr
 * For now, we have to ssh to bm85 to generate the ship-rc graph.
 
 ```
-ssh buildbot-master85.bb.releng.scl3.mozilla.com
+ssh buildbot-master01.bb.releng.use1.mozilla.com
 sudo su - cltbld
 cd /builds/releaserunner3/
 source bin/activate
@@ -144,7 +144,7 @@ unset PROMOTE_TASK_ID
 * For now, we have to ssh to bm85 to generate the push graph.
 
 ```
-ssh buildbot-master85.bb.releng.scl3.mozilla.com
+ssh buildbot-master01.bb.releng.use1.mozilla.com
 sudo su - cltbld
 cd /builds/releaserunner3/
 source bin/activate
@@ -191,7 +191,7 @@ Examples
 
 ```bash
 # ship action, after having run both promote and push (RC behavior)
-ssh buildbot-master85.bb.releng.scl3.mozilla.com
+ssh buildbot-master01.bb.releng.use1.mozilla.com
 sudo su - cltbld
 cd /builds/releaserunner3/
 source bin/activate

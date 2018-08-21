@@ -47,7 +47,7 @@ For a standard post-promote action (
 
 ```bash
 # standard action after a promote. This will be a ship-without-a-push or a push.
-ssh buildbot-master83.bb.releng.scl3.mozilla.com
+ssh buildbot-master77.bb.releng.use1.mozilla.com
 sudo su - cltbld
 cd /builds/releaserunner3/
 source bin/activate
@@ -64,7 +64,7 @@ For a standard post-promote action with some push or ship fixes in a newer revis
 ```bash
 # standard action on a newer revision after a promote.
 # This will be a ship-without-a-push or a push
-ssh buildbot-master83.bb.releng.scl3.mozilla.com
+ssh buildbot-master77.bb.releng.use1.mozilla.com
 sudo su - cltbld
 cd /builds/releaserunner3/
 source bin/activate
@@ -80,7 +80,7 @@ During RCs, we run `promote`, then `push`. To run `ship`, do the following:
 
 ```bash
 # ship action, after having run both promote and push (RC behavior)
-ssh buildbot-master83.bb.releng.scl3.mozilla.com
+ssh buildbot-master77.bb.releng.use1.mozilla.com
 sudo su - cltbld
 cd /builds/releaserunner3/
 source bin/activate
@@ -131,7 +131,7 @@ Sometimes we land a graph fix on a separate revision from the builds we promoted
 
 ```bash
 # ship action, after having run both promote and push (RC behavior)
-ssh buildbot-master83.bb.releng.scl3.mozilla.com
+ssh buildbot-master77.bb.releng.use1.mozilla.com
 sudo su - cltbld
 cd /builds/releaserunner3/
 source bin/activate

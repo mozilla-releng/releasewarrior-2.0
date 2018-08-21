@@ -2,7 +2,7 @@
 
 * taskcluster-cli installed
 * releasewarrior-2.0 installed
-* ssh access to `buildbot-master85.bb.releng.scl3.mozilla.com`
+* ssh access to `buildbot-master01.bb.releng.use1.mozilla.com`
 
 ## Push artifacts to releases directory
 
@@ -53,7 +53,7 @@ Note: If they do not explicitly ask for `release-cdntest` it is okay to assume i
 * For now, we have to ssh to bm85 to generate the push graph.
 
 ```
-ssh buildbot-master85.bb.releng.scl3.mozilla.com
+ssh buildbot-master01.bb.releng.use1.mozilla.com
 sudo su - cltbld
 cd /builds/releaserunner3/
 source bin/activate
@@ -103,7 +103,7 @@ Examples
 
 ```bash
 # ship action, after having run both promote and push (RC behavior)
-ssh buildbot-master85.bb.releng.scl3.mozilla.com
+ssh buildbot-master01.bb.releng.use1.mozilla.com
 sudo su - cltbld
 cd /builds/releaserunner3/
 source bin/activate
