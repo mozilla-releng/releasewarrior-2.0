@@ -419,6 +419,11 @@ def log_release_status(release, logger):
     for graph_info in release["inflight"][current_build_index]["graphids"]:
         logger.info("%s graph: https://tools.taskcluster.net/task-group-inspector/#/%s",
                     graph_info[0], graph_info[1])
+    logger.info("")
+    logger.info("\treleaserunner variables:")
+    for graph_info in release["inflight"][current_build_index]["graphids"]:
+        print("\t\texport {}_TASK_ID={}".format(graph_info[0].upper(), graph_info[1]))
+    logger.info("")
     logger.info("\tIncomplete human tasks:")
     for task in remaining_tasks:
         alias = ""

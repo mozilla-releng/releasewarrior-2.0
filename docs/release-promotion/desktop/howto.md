@@ -57,10 +57,10 @@ ssh buildbot-master85.bb.releng.scl3.mozilla.com
 sudo su - cltbld
 cd /builds/releaserunner3/
 source bin/activate
-# paste the export line from get_graphids.py, you should have
+# paste the export lines from rw status, you should have
 # found at least a promote taskid.
 #   export PROMOTE_TASK_ID=...
-ACTION_FLAVOR=push_firefox  # or push_devedition or push_thunderbird
+ACTION_FLAVOR=push_firefox  # or ACTION_FLAVOR=push_devedition or ACTION_FLAVOR=push_thunderbird
 # This will output the task definition and ask if you want to proceed.
 python tools/buildfarm/release/trigger_action.py \
     ${PROMOTE_TASK_ID+--action-task-id ${PROMOTE_TASK_ID}} \
@@ -107,12 +107,12 @@ ssh buildbot-master85.bb.releng.scl3.mozilla.com
 sudo su - cltbld
 cd /builds/releaserunner3/
 source bin/activate
-# paste the export line from get_graphids.py, you should have
+# paste the export lines from rw status, you should have
 # found a decision taskid, and a promote taskid, and a push taskid.
 #   export DECISION_TASK_ID=...
 #   export PROMOTE_TASK_ID=...
 #   export PUSH_TASK_ID=...
-ACTION_FLAVOR=ship_firefox  # or ship_devedition or ship_thunderbird
+ACTION_FLAVOR=ship_firefox  # or ACTION_FLAVOR=ship_devedition or ACTION_FLAVOR=ship_thunderbird
 # This will output the task definition and ask if you want to proceed.
 python tools/buildfarm/release/trigger_action.py \
     ${PUSH_TASK_ID+--action-task-id ${PUSH_TASK_ID}} \
