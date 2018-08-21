@@ -301,19 +301,6 @@ NEW_ESR_VERSION=52  # Only if a new ESR comes up (for instance 52.0esr)
     * [The current cycle](https://wiki.mozilla.org/index.php?title=Template:CURRENT_CYCLE)
 
 
-### Bump bouncer versions
-
-1. After the bump, when it's confirmed we have good nightlies for `mozilla-central` with a new gecko version (nightlies auto run twice a day), take time to update the [bouncer](https://bounceradmin.mozilla.com) locations as well in order to reflect the new version for following aliases:
-    1. [firefox-nightly-latest](https://bounceradmin.mozilla.com/admin/mirror/location/?product__id__exact=2005)
-    1. [firefox-nightly-latest-ssl](https://bounceradmin.mozilla.com/admin/mirror/location/?product__id__exact=6508)
-    1. [firefox-nightly-latest-l10n](https://bounceradmin.mozilla.com/admin/mirror/location/?product__id__exact=6506)
-    1. [firefox-nightly-latest-l10n-ssl](https://bounceradmin.mozilla.com/admin/mirror/location/?product__id__exact=6507)
-
-
-:warning: Be careful on how you make changes to bouncer entries. If it is just the version that gets bumped, that's totally fine, but if you also need to change some installer names or anything alike, `space` needs to be encoded to `%20%` and such. See [bug 1386765](https://bugzilla.mozilla.org/show_bug.cgi?id=1386765) for what happened during 57 nightlies migration.
-
-:warning: It is expected that the two stub products have a `win` and `win64` location which both point to the same location. We don't have a `win64` stub installer, instead the mislabeled 32bit stub selects the correct full installer at runtime.
-
 ### Re-opening the tree(s)
 
 This step is performed by Sherrifs and RelMan when green builds are present so you don't have to worry about anything here.
