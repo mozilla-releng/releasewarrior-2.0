@@ -105,7 +105,7 @@ Unlike Firefox, no automation creates a blob. Nor do we have a script (patch wel
 }
 ```
 
-From the above, edit the `name`, `version` to match the current new version. Then under each platform, update the `hashValue`, `filesize`, and `fileUrl` based on the values provided to you in the widevine tracking bug. e.g. [https://bugzilla.mozilla.org/show_bug.cgi?id=1475260#c0].
+From the above, edit the `name`, `version` to match the current new version. Then under each platform, update the `hashValue`, `filesize`, and `fileUrl` based on the values provided to you in the widevine tracking bug. e.g. [bug 1475260](https://bugzilla.mozilla.org/show_bug.cgi?id=1475260#c0).
 
 Finally, save that new release blob, upload it to Balrog via the "Add new release" button within https://aus4-admin.mozilla.org/releases, and save the release blob name to match the new version the blob is based on.
 
