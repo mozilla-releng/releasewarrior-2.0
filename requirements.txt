@@ -4,3 +4,5 @@ GitPython==2.1.5
 Jinja2==2.9.6
 PyYAML==3.13
 arrow==0.10.0
+mozilla-version==0.2.0
+requests==2.19.1
