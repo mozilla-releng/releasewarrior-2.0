@@ -115,15 +115,15 @@ cd /builds/releaserunner3/
 source bin/activate
 # paste the export line from above, you should have found at least
 # a promote taskid.
-#   export PROMOTE_TASK_ID=...
+#   export PROMOTE_RC_TASK_ID=...
 ACTION_FLAVOR=ship_firefox_rc
 python tools/buildfarm/release/trigger_action.py \
-    ${PROMOTE_TASK_ID+--action-task-id ${PROMOTE_TASK_ID}} \
+    ${PROMOTE_RC_TASK_ID+--action-task-id ${PROMOTE_RC_TASK_ID}} \
     --release-runner-config /builds/releaserunner3/release-runner.yml \
     --action-flavor ${ACTION_FLAVOR}
 # Unset env vars to minimize the possibility of rerunning with different graph ids
 unset ACTION_FLAVOR
-unset PROMOTE_TASK_ID
+unset PROMOTE_RC_TASK_ID
 # This will output the task definition and ask if you want to proceed.
 ```
   * The `taskId` of the action task will be the `taskGroupId` of the next graph.
@@ -150,15 +150,18 @@ cd /builds/releaserunner3/
 source bin/activate
 # paste the export line from above, you should have found at least
 # a promote taskid.
-#   export PROMOTE_TASK_ID=...
+#   export PROMOTE_RC_TASK_ID=...
+#   export SHIP_RC_TASK_ID=...
 ACTION_FLAVOR=push_firefox
 python tools/buildfarm/release/trigger_action.py \
-    ${PROMOTE_TASK_ID+--action-task-id ${PROMOTE_TASK_ID}} \
+    ${PROMOTE_RC_TASK_ID+--action-task-id ${PROMOTE_RC_TASK_ID}} \
+    ${SHIP_RC_TASK_ID+--previous-graph-ids ${SHIP_RC_TASK_ID}} \
     --release-runner-config /builds/releaserunner3/release-runner.yml \
     --action-flavor ${ACTION_FLAVOR}
 # Unset env vars to minimize the possibility of rerunning with different graph ids
 unset ACTION_FLAVOR
-unset PROMOTE_TASK_ID
+unset PROMOTE_RC_TASK_ID
+unset SHIP_RC_TASK_ID
 # This will output the task definition and ask if you want to proceed.
 ```
   * The `taskId` of the action task will be the `taskGroupId` of the next graph.
@@ -198,19 +201,21 @@ source bin/activate
 # paste the export line from above, you should have found a
 # decision taskid, and a promote taskid, and a push taskid.
 #   export DECISION_TASK_ID=...
-#   export PROMOTE_TASK_ID=...
+#   export PROMOTE_RC_TASK_ID=...
+#   export SHIP_RC_TASK_ID=...
 #   export PUSH_TASK_ID=...
 ACTION_FLAVOR=ship_firefox  # or ship_devedition
 python tools/buildfarm/release/trigger_action.py \
     ${PUSH_TASK_ID+--action-task-id ${PUSH_TASK_ID}} \
     ${DECISION_TASK_ID+--decision-task-id ${DECISION_TASK_ID}} \
-    ${PROMOTE_TASK_ID+--previous-graph-ids ${PROMOTE_TASK_ID}} \
+    ${PROMOTE_RC_TASK_ID+--previous-graph-ids ${PROMOTE_RC_TASK_ID}${SHIP_RC_TASK_ID+,${SHIP_RC_TASK_ID}}} \
     --release-runner-config /builds/releaserunner3/release-runner.yml \
     --action-flavor ${ACTION_FLAVOR}
 # Unset env vars to minimize the possibility of rerunning with different graph ids
 unset ACTION_FLAVOR
 unset DECISION_TASK_ID
-unset PROMOTE_TASK_ID
+unset PROMOTE_RC_TASK_ID
+unset SHIP_RC_TASK_ID
 unset PUSH_TASK_ID
 # This will output the task definition and ask if you want to proceed.
 ```

@@ -89,15 +89,15 @@ source bin/activate
 # paste the export line from above, you should have found a
 # promote taskid
 #   export PROMOTE_TASK_ID=...
-#   export SHIP_TASK_ID=...
+#   export SHIP_RC_TASK_ID=...
 python tools/buildfarm/release/trigger_action.py \
-    ${SHIP_TASK_ID+--action-task-id ${SHIP_TASK_ID}} \
+    ${SHIP_RC_TASK_ID+--action-task-id ${SHIP_RC_TASK_ID}} \
     ${PROMOTE_TASK_ID+--previous-graph-ids ${PROMOTE_TASK_ID}} \
     --release-runner-config /builds/releaserunner3/release-runner.yml \
     --action-flavor ship_fennec
 # Unset PROMOTE_TASK_ID and SHIP_TASK_ID to minimize the possibility of rerunning with different graph ids
 unset PROMOTE_TASK_ID
-unset SHIP_TASK_ID
+unset SHIP_RC_TASK_ID
 ```
   * The `taskId` of the action task will be the `taskGroupId` of the next graph.
 
