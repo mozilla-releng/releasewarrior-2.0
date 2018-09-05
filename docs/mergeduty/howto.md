@@ -240,7 +240,7 @@ Until we are using the puppetized instance (Bug 1469284) and it automatically st
 ```
 This is now complete:
 * mozilla-central has been tagged and version bumped
-* new nightlies have been trigged
+* newly triggered nightlies will pick the version change on cron-based schedule
 ```
 
 ### Update wiki versions
