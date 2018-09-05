@@ -20,10 +20,9 @@ The releng process usually operates like this:
   * mozilla-central merges to mozilla-beta (relman may merge after this until we bump mozilla-central version)
   * mozilla-esr gets version bumped
   * Ask relman to create a mozilla-beta relbranch for Fennec
-* A week after Merge day, bump mozilla-central and update bouncer
+* A week after Merge day, bump mozilla-central
   * Ask relman to do final mozilla-central->mozilla-beta merge
   * bump the version and tag mozilla-central repo itself
-  * update bouncer aliases
   * bump wiki versions
 
 
@@ -34,7 +33,6 @@ Originally, the m-c->m-b was done a week after m-b->m-r. Starting at Firefox 57,
 ## Requirements
 
 1. For migrations: access and setup of [the merge remote instance](merge-and-staging-instance.md#access-and-setup-existing-merge-instance). While possible to do locally, the remote instance is strongly recommended.
-1. For updating bouncer aliases: Access to Bouncer
 1. Access to Treestatus
 1. A tracking migration bug
 
@@ -50,17 +48,6 @@ File a tracking migration bug if there isn't one. (e.g. [bug 1412962](https://bu
 
 Ensure you have access and have setup [the merge remote instance](merge-and-staging-instance.md#access-and-setup-existing-merge-instance).
 
-### Test access to Bouncer
-
-Ensure you have access to Bouncer. You may need an account. Ask rail/mtabara/nthomas for more details if you have never done this before.
-
-1. Create a SOCKS proxy on port `10000` using SSH via one of the masters (this should move to a jumphost after bug 1484055):
-```
-ssh -ND 10000  buildbot-master01.bb.releng.use1.mozilla.com
-```
-1. Setup Firefox (`Firefox` -> `Preferences` -> `Network Proxy` -> `Settings`) to use it like this:
-![this](/docs/mergeduty/media/bouncer_setup_firefox.png?raw=true)
-1. Navigate to [Bouncer](https://bounceradmin.mozilla.com/) to make sure you can login
 
 
 ### Do migration no-op trial runs
@@ -253,7 +240,7 @@ Until we are using the puppetized instance (Bug 1469284) and it automatically st
 ```
 This is now complete:
 * mozilla-central has been tagged and version bumped
-* new nightlies have been trigged
+* newly triggered nightlies will pick the version change on cron-based schedule
 ```
 
 ### Update wiki versions
