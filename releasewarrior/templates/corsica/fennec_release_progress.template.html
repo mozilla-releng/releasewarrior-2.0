@@ -1,19 +1,20 @@
-<h2>Fennec Release <small class="text-muted">{{ releases["fennec"]["release"]["version"] }} build{{ releases["fennec"]["release"]["buildnum"] }}</small></h2>
+{% for release in releases["fennec"]["release"] %}
+<h2>Fennec Release <small class="text-muted">{{ release["version"] }} build{{ release["buildnum"] }}</small></h2>
 <div class="progress" style="height: 30px;">
-  {% if releases["fennec"]["release"]["human_tasks"]["shipit"] %}
+  {% if release["human_tasks"]["shipit"] %}
   <div class="progress-bar bg-primary" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">Release kicked off</div>
   {% else %}
   <div class="progress-bar bg-white text-muted" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">Release kick off</div>
   {% endif %}
-  {% if releases["fennec"]["release"]["human_tasks"]["ship"] %}
+  {% if release["human_tasks"]["ship"] %}
   <div class="progress-bar bg-primary" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">Uploaded builds</div>
   {% else %}
   <div class="progress-bar bg-white text-muted" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">Upload builds</div>
   {% endif %}
-  {% if releases["fennec"]["release"]["human_tasks"].get("ship-rc") or releases["fennec"]["release"]["human_tasks"]["ship"] %}
+  {% if release["human_tasks"].get("ship-rc") or release["human_tasks"]["ship"] %}
   <div class="progress-bar bg-primary" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">Published on Google Play</div>
   {% else %}
   <div class="progress-bar bg-white text-muted" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100">Publish on Google Play</div>
   {% endif %}
 </div>
-
+{% endfor %}

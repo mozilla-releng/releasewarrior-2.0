@@ -146,11 +146,15 @@ def generate_corsica(config, logger):
                 human_tasks[task["alias"]] = task["resolved"]
         if not corsica_data["releases"].get(release["product"]):
             corsica_data["releases"][release["product"]] = {}
-        corsica_data["releases"][release["product"]][branch] = {
+
+        if not corsica_data["releases"][release["product"]].get(branch):
+            corsica_data["releases"][release["product"]][branch] = []
+        corsica_data["releases"][release["product"]][branch].append({
             "buildnum": release["inflight"][current_build_index]["buildnum"],
             "version": release["version"].replace("rc", ""),
             "human_tasks": human_tasks
-        }
+        })
+
     index_template = config['templates']["corsica"]["index"]
 
     env = Environment(loader=FileSystemLoader(config['templates_dir']),
