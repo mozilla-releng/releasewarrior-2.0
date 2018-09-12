@@ -92,7 +92,7 @@ def prereq(product, version, resolve, logger=LOGGER, config=CONFIG):
     """
     validate_rw_repo(logger, config)
     release, data_path, wiki_path = get_release_info(product, version, logger, config)
-    validate(release, logger, config, must_exist=True, must_exist_in="upcoming")
+    validate(release, logger, config, must_exist=True)
     data = load_json(data_path)
 
     resolve_msg = "Resolved {}".format(resolve) if resolve else ""

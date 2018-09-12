@@ -413,8 +413,11 @@ def generate_release_postmortem_data(release):
 
 def log_release_status(release, logger):
     current_build_index = get_current_build_index(release)
-    remaining_tasks = get_remaining_items(release["inflight"][current_build_index]["human_tasks"])
-    remaining_issues = get_remaining_items(release["inflight"][current_build_index]["issues"])
+    current_build = release["inflight"][current_build_index]
+
+    remaining_preflight_tasks = get_remaining_items(release["preflight"]["human_tasks"])
+    remaining_tasks = get_remaining_items(current_build["human_tasks"])
+    remaining_issues = get_remaining_items(current_build["issues"])
 
     logger.info("=" * 79)
     logger.info("RELEASE: %s %s build%s %s",
@@ -427,6 +430,17 @@ def log_release_status(release, logger):
     logger.info("\treleaserunner variables:")
     for graph_info in release["inflight"][current_build_index]["graphids"]:
         print("\t\texport {}_TASK_ID={}".format(graph_info[0].upper(), graph_info[1]))
+
+    first_remaining_preflight_task = True
+    for task in remaining_preflight_tasks:
+        if first_remaining_preflight_task:
+            logger.info("")
+            logger.info("\tIncomplete preflight tasks:")
+            first_remaining_preflight_task = False
+        logger.info("\t\t* Deadline {} - ID {} - Bug {} - {}".format(
+            task["deadline"], task["id"], task["bug"], task["description"]
+        ))
+
     logger.info("")
     logger.info("\tIncomplete human tasks:")
     for task in remaining_tasks:
