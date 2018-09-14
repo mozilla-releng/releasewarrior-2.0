@@ -40,7 +40,7 @@ Originally, the m-c->m-b was done a week after m-b->m-r. Starting at Firefox 57,
 
 There is an AWS instance to run staging and merging instances so that we are fewer hops away from the hg repos.
 1. To access it, make sure to start the `mergeday1` instance in `us-west-2` from the `AWS console`. That is, finding
-it in the instance list, hover over to `Actions' -> `Instance state` -> `Start`. It will get puppetized as soon as it's started.
+it in the instance list, hover over to `Actions` -> `Instance state` -> `Start`. It will get puppetized as soon as it's started.
 
 2. You should be able to access it with:
 
