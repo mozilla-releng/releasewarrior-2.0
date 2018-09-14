@@ -21,7 +21,7 @@ Use cases:
 
 ## Merge scripts
 
-1.  See the doc [AWS staging instance](mergeduty/howto.md#merge-remote-instance) to see if using a dedicated instance for staging releases would be helpful.
+1.  See the doc [AWS staging instance](../mergeduty/howto.md#merge-remote-instance) to see if using a dedicated instance for staging releases would be helpful.
 
 2. Use the <a href="../scripts/staging_merge.py">script</a> to run the merge for you. Parameters are the directory to run the merge in, and the repos to merge_from, and merge_to.  For example:
 ```
