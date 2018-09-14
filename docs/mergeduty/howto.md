@@ -32,9 +32,21 @@ Originally, the m-c->m-b was done a week after m-b->m-r. Starting at Firefox 57,
 
 ## Requirements
 
-1. For migrations: access and setup of [the merge remote instance](merge-and-staging-instance.md#access-and-setup-existing-merge-instance). While possible to do locally, the remote instance is strongly recommended.
+1. For migrations: access and setup of [the merge remote instance](#Merge-remote-instance). While possible to do locally, the remote instance is strongly recommended.
 1. Access to Treestatus
 1. A tracking migration bug
+
+### Merge remote instance
+
+There is an AWS instance to run staging and merging instances so that we are fewer hops away from the hg repos.
+1. To access it, make sure to start the `mergeday1` instance in `us-west-2` from the `AWS console`. That is, finding
+it in the instance list, hover over to `Actions' -> `Instance state` -> `Start`. It will get puppetized as soon as it's started.
+
+2. You should be able to access it with:
+
+```sh
+ ssh mergeday1.srv.releng.usw2.mozilla.com
+```
 
 # Tasks
 
@@ -46,7 +58,7 @@ File a tracking migration bug if there isn't one. (e.g. [bug 1412962](https://bu
 
 ### Access and setup the merge remote instance
 
-Ensure you have access and have setup [the merge remote instance](merge-and-staging-instance.md#access-and-setup-existing-merge-instance).
+Ensure you have access and have setup [the merge remote instance](#Merge-remote-instance).
 
 
 
@@ -204,9 +216,9 @@ Ask RelMan, (e.g. [RyanVM](https://mozillians.org/en-US/u/RyanVM/)), to do this 
 
 **What happens**: A new tag is needed to specify the end of the nightly cycle. Then clobber and bump versions in `mozilla-central` as instructions depict.
 
-**How**: This is now done via the [remote instance](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/mergeduty/merge-and-staging-instance.md) and **gecko_migrations.py** similar to bumping **esr**:
+**How**: This is now done via [the merge remote instance](#Merge-remote-instance) and **gecko_migrations.py** similar to bumping **esr**:
 
-1. connect to the [remote instance](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/mergeduty/merge-and-staging-instance.md) and `cd` to the current `merge_day` work dir as did for the first part of the mergeduty
+1. connect to [the merge remote instance](#Merge-remote-instance) and `cd` to the current `merge_day` work dir as did for the first part of the mergeduty
 1. Run the tag/bump for m-c and show the diff to another person on releaseduty.
 ```sh
 python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_central.py
