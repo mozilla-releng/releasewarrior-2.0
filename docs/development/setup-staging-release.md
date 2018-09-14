@@ -21,7 +21,7 @@ Use cases:
 
 ## Merge scripts
 
-1.  See the doc <a href="merge-and-staging-instance.md">AWS staging instance</a> to see if using a dedicated instance for staging releases would be helpful.
+1.  See the doc [AWS staging instance](../mergeduty/howto.md#merge-remote-instance) to see if using a dedicated instance for staging releases would be helpful.
 
 2. Use the <a href="../scripts/staging_merge.py">script</a> to run the merge for you. Parameters are the directory to run the merge in, and the repos to merge_from, and merge_to.  For example:
 ```
@@ -49,7 +49,7 @@ Optional: reset the staging balrog db which is important for staging release bui
 
 - release runner will consume [project branch configs](https://dxr.mozilla.org/build-central/rev/92614acc90330edf360d97d8575b7e917ddc43b2/buildbot-configs/mozilla/project_branches.py#114)
 - mozharness [configs](https://dxr.mozilla.org/mozilla-central/source/testing/mozharness/configs/releases/) - all configs with `dev` prefix
-- in order to avoid pushing patcher configs changes/tags to *real* [tools](http://hg.mozilla.org/build/tools/) repo, we have changed the buildbot and in-tree configs to point to the <a href="https://hg.mozilla.org/users/stage-ffxbld/tools">staging tools repo</a>) 
+- in order to avoid pushing patcher configs changes/tags to *real* [tools](http://hg.mozilla.org/build/tools/) repo, we have changed the buildbot and in-tree configs to point to the <a href="https://hg.mozilla.org/users/stage-ffxbld/tools">staging tools repo</a>)
 
 ## Misc
 
