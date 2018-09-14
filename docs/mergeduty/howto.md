@@ -32,7 +32,7 @@ Originally, the m-c->m-b was done a week after m-b->m-r. Starting at Firefox 57,
 
 ## Requirements
 
-1. For migrations: access and setup of [the merge remote instance](#Merge-remote-instance). While possible to do locally, the remote instance is strongly recommended.
+1. For migrations: access and setup of [the merge remote instance](#merge-remote-instance). While possible to do locally, the remote instance is strongly recommended.
 1. Access to Treestatus
 1. A tracking migration bug
 
@@ -58,7 +58,7 @@ File a tracking migration bug if there isn't one. (e.g. [bug 1412962](https://bu
 
 ### Access and setup the merge remote instance
 
-Ensure you have access and have setup [the merge remote instance](#Merge-remote-instance).
+Ensure you have access and have setup [the merge remote instance](#merge-remote-instance).
 
 
 
@@ -216,9 +216,9 @@ Ask RelMan, (e.g. [RyanVM](https://mozillians.org/en-US/u/RyanVM/)), to do this 
 
 **What happens**: A new tag is needed to specify the end of the nightly cycle. Then clobber and bump versions in `mozilla-central` as instructions depict.
 
-**How**: This is now done via [the merge remote instance](#Merge-remote-instance) and **gecko_migrations.py** similar to bumping **esr**:
+**How**: This is now done via [the merge remote instance](#merge-remote-instance) and **gecko_migrations.py** similar to bumping **esr**:
 
-1. connect to [the merge remote instance](#Merge-remote-instance) and `cd` to the current `merge_day` work dir as did for the first part of the mergeduty
+1. connect to [the merge remote instance](#merge-remote-instance) and `cd` to the current `merge_day` work dir as did for the first part of the mergeduty
 1. Run the tag/bump for m-c and show the diff to another person on releaseduty.
 ```sh
 python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_central.py
