@@ -52,6 +52,7 @@ latest   amd64   stable     60.0.1-2     89
                  edge       ^            ^
 ```
 1. Note the revision of the `latest/candidate` (aka `candidate`) snap. In this example: `97`
+1. If you don't see the version you are expecting, list all available revisions by running `snapcraft list-revisions firefox | head`
 1. `snapcraft release firefox $REVISION stable`, `$REVISION` being the number found in the previous (e.g.: `97`).
 
 ## How to manually push a snap to the store, in case automation failed?
