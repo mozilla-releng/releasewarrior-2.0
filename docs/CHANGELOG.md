@@ -12,6 +12,14 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 - switched to ship-it v2
 - reduced mac signing concurrency from 4 to 2 to reduce server churn
 
+## During 62.0 >= 2018-06-26
+
+### Changed
+- switched to Ship-it v2 for beta releases
+
+### Added
+- releasewarrior local automation to add WNP
+
 ## During 61.0 >= 2018-05-09
 
 ### Added
