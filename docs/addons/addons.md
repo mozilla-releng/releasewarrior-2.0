@@ -1,7 +1,7 @@
 # Addon Submission Pipeline
 ## Terminology:
 
-* listed - Addon is viewable on AMO by end-users. 
+* listed - Addon is viewable on AMO by end-users.
 * unlisted - Addon is available only to the addon uploader for download, and servable
   outside of AMO.
 * Language Pack - A translation pack for Gecko strings bundled as an addon.
@@ -87,62 +87,62 @@ forward.
 ## Screenshots relevant to above
 
 ### 01
-![Login Flow 1](/docs/addons/Screenshot_01.png?raw=true)
+![Login Flow 1](/docs/addons/media/Screenshot_01.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 02
-![Login Flow 2](/docs/addons/Screenshot_02.png?raw=true)
+![Login Flow 2](/docs/addons/media/Screenshot_02.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 03
-![Login Flow 3](/docs/addons/Screenshot_03.png?raw=true)
+![Login Flow 3](/docs/addons/media/Screenshot_03.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 04
-![Login Flow 4](/docs/addons/Screenshot_04.png?raw=true)
+![Login Flow 4](/docs/addons/media/Screenshot_04.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 05
-![Find Langpack Flow 1](/docs/addons/Screenshot_05.png?raw=true)
+![Find Langpack Flow 1](/docs/addons/media/Screenshot_05.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 06
-![Find Langpack Flow 2](/docs/addons/Screenshot_06.png?raw=true)
+![Find Langpack Flow 2](/docs/addons/media/Screenshot_06.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 07
-![Find Langpack Flow 3](/docs/addons/Screenshot_07.png?raw=true)
+![Find Langpack Flow 3](/docs/addons/media/Screenshot_07.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 08
-![Details Page](/docs/addons/Screenshot_08.png?raw=true)
+![Details Page](/docs/addons/media/Screenshot_08.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 09
-![Upload Version Flow 1](/docs/addons/Screenshot_09.png?raw=true)
+![Upload Version Flow 1](/docs/addons/media/Screenshot_09.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 10
-![Upload Version Flow 2](/docs/addons/Screenshot_10.png?raw=true)
+![Upload Version Flow 2](/docs/addons/media/Screenshot_10.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 11
-![Upload Version Flow 3](/docs/addons/Screenshot_11.png?raw=true)
+![Upload Version Flow 3](/docs/addons/media/Screenshot_11.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 12
-![Upload Version Flow 4](/docs/addons/Screenshot_12.png?raw=true)
+![Upload Version Flow 4](/docs/addons/media/Screenshot_12.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 13
-![Upload Version Flow 5](/docs/addons/Screenshot_13.png?raw=true)
+![Upload Version Flow 5](/docs/addons/media/Screenshot_13.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 14
-![Upload Version Flow 6](/docs/addons/Screenshot_14.png?raw=true)
+![Upload Version Flow 6](/docs/addons/media/Screenshot_14.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 15
-![Upload Version Flow 7](/docs/addons/Screenshot_15.png?raw=true)
+![Upload Version Flow 7](/docs/addons/media/Screenshot_15.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 16
-![Upload Version Flow 8](/docs/addons/Screenshot_16.png?raw=true)
+![Upload Version Flow 8](/docs/addons/media/Screenshot_16.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 17
-![Upload Version Flow 9](/docs/addons/Screenshot_17.png?raw=true)
+![Upload Version Flow 9](/docs/addons/media/Screenshot_17.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 18
-![Adjust Human URL 1](/docs/addons/Screenshot_18.png?raw=true)
+![Adjust Human URL 1](/docs/addons/media/Screenshot_18.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 19
-![Adjust Human URL 2](/docs/addons/Screenshot_19.png?raw=true)
+![Adjust Human URL 2](/docs/addons/media/Screenshot_19.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)
 ### 20
-![Success](/docs/addons/Screenshot_20.png?raw=true)
+![Success](/docs/addons/media/Screenshot_20.png?raw=true)
 [Back to how to section](#how-to-handle-new-languages-for-release)

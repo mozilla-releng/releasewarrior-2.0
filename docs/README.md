@@ -13,6 +13,7 @@ where the coordination happens among the releaseduty squirrels.
 This folder gathers all releaseduty documentation under one single umbrella. The structure is as follows:
 
 - [CHANGELOG](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/CHANGELOG.md) - to track large changes to the workflow and tools of releaseduty
+- [addons](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/addons) - to track all addons related information and understanding
 - [balrog](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/balrog) - to track all Balrog related information and understanding
 - [day1](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/day1) - day1 documentation for all releng folks starting/resuming their releaseduty cycle
 - [development](https://github.com/mozilla-releng/releasewarrior-2.0/tree/master/docs/development) - documentation for various related pieces that are still under development (e.g. tcmigration or Ship It v2. stuff)
