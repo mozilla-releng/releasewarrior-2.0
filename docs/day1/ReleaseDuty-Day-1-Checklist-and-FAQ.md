@@ -1,6 +1,6 @@
 If you're reading this page it means that you're ramping up as an official releaseduty squirrel within Mozilla RelEng, so please allow us to give you a warm welcome!
 
-Releaseduty is a designated pass-the-token role that we assign every 6 weeks to members of the team. The role mainly involves handling all the coordination and communication with other [teams](#Teams) as well as doing all the operational tasks to make sure the release workflow is as smooth as possible.
+Releaseduty is a designated pass-the-token role that we assign every 6 weeks to members of the team. The role mainly involves handling all the coordination and communication with other [teams](#teams) as well as doing all the operational tasks to make sure the release workflow is as smooth as possible.
 
 While this role can get quite disruptive, we prefer this approach of assigning the responsibility to a small set of people who will own all the tasks, while we shield the others in Release Engineering from interruptions.
 
@@ -23,17 +23,14 @@ Meetings are usually conducted using [Vidyo](https://mana.mozilla.org/wiki/displ
 Join Mozilla's IRC network using either the [public documentation](https://wiki.mozilla.org/IRC) or if you have an LDAP account, you can also use [IRCCloud](https://mana.mozilla.org/wiki/display/SD/IRCCloud+Account+Setup)
 
 You ought to be present and pay attention to conversations happening in:
+
+- **_#ci** (where CIduty team helps with various hiccups that infra might enocunter))
 - **_#releaseduty_** (main RelEng dedicated communication channel for releaseduty)
 - **_#release-drivers_** (where QE and RelMan usually coordinate)
-- **_#releng_** (public RelEng channel where many non-releaseduty topics are also discussed)
 - **_#relman_** (optional - about to be retired soon, where RelMan hangs out around usually)
-- **_#tbdrivers_** (where TB drivers discuss Thunderbird releases)
+- **_#tbdrivers_** (optional - where TB drivers discuss Thunderbird releases)
 
-Older channels, which are not currently required, but listed here for information:
-- **_#release-notifications_** (very spammy channel where all release automation notifications are being sent)
-- **_#release-notifications-dev_** (spammy channel where all staging releases notifications are being sent)
-
-### Email 
+### Email
 
 As ReleaseDuty you need to *subscribe* to certain mailing lists.
 
@@ -118,7 +115,6 @@ Ensure the next duty cycle have signed up to any phabricator reviews, such as th
 - Bugzilla issues regarding specific releases/WNP are filed under [Release Engineering:Releases](https://bugzilla.mozilla.org/enter_bug.cgi?product=Release%20Engineering&component=Releases)
 - Issues regarding automation are filed under [Release Engineering:Release Automation](https://bugzilla.mozilla.org/enter_bug.cgi?product=Release%20Engineering&component=Release%20Automation)
 - The CHANGELOG in the releasewarrior-data repository contains a summary of larger changes made during the duty cycle.
-- Historically, we've used this [etherpad](https://public.etherpad-mozilla.org/p/releaseduty_handoff) to handoff any information from one squirrely to another when cycle. It's optional but feel free to reuse this
 
 ## Teams
 
@@ -174,25 +170,15 @@ From time to time, a handful of issues precipitate a dot release. When that happ
 following which we merge the code for the next release cycle so that the beta release bumps its version. In the lights of this logic, a dot release (e.g. 43.0.1 or 44.0.1) happens a certain amount of time after the official release.
 For that reason, a dot release can't be tested in beta channel as the at-that-moment beta version is greater than the dot release version, hence the updater would refuse to downgrade. Therefore, there is only one cycle of update_verify for dot releases (update_verify_release == update_verify in this case).
 
-
-7.  *How do I start the Fennec build after it has been submitted to ship it by Relman?*
-
-The Fennec build is not started automatically after it is submitted to ship-it as occurs with the desktop builds.  The Fennec build is usually submitted to ship-it by RelMan at the same time as desktop builds so you'll have to start it manually using the steps here [Fennec Release promotion](https://github.com/mozilla/releasewarrior/fennec-temp-relpro.md) After [bug 134765] (https://bugzilla.mozilla.org/show_bug.cgi?id=1347635) is resolved, the Fennec builds will be started automatically by ship-it.
-
-
-8.  *Is there explicit signoff from RelMan for DevEdition builds?*
+7.  *Is there explicit signoff from RelMan for DevEdition builds?*
 
 No, after b1, there isn't signoff from RelMan on DevEdition builds.  QA only verifies the DevEdition builds every two weeks. With the exception of b1, and assuming all the tasks complete as expected, the DevEdition builds should be shipped at the same time as we receive signoff for the corresponding desktop builds.
 
 
-9. *Can RelEng adjust the rate of the Firefox apk in the Google play store?*
-
-By default, the push apk task for Fennec sets a rate of 10% in the Google Play store for b1, 100% for other betas.  After b1, you will have land a patch on beta to change the rate to 100% on mozilla-beta.  See ( Mobile Firefox push to Play Store always re-sets the update rate to 10%)[https://bugzilla.mozilla.org/show_bug.cgi?id=1393207] for details. Relman is responsible for adjusting the rate as required. Releng folks don't have write access to the google store to change this value.
-
-10. *How should I inform the ReleaseDuty team of recent changes in automation that may impact an upcoming release?*
+8. *How should I inform the ReleaseDuty team of recent changes in automation that may impact an upcoming release?*
 
 You can mention it to the current ReleaseDuty folks in the #releaseduty channel. Please also add it to the upcoming release in the ../releases/FUTURE/ dir. See [future release support](../releases/FUTURE/README.md) for more details.
 
-11. *How do I coordinate with marketing on release day?*
+9. *How do I coordinate with marketing on release day?*
 
 Join the #release-coordination channel on Mozilla Slack
