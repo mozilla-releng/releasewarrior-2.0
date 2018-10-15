@@ -106,7 +106,7 @@ hg -R build/mozilla-esr{$version} diff  # have someone sanity check output with 
 
 ## Release Merge Day
 
-**When**: Wait for go from relman to release-signoff@mozilla.com. For date, see [Release Scheduling calendar](https://calendar.google.com/calendar/embed?src=bW96aWxsYS5jb21fZGJxODRhbnI5aTh0Y25taGFiYXRzdHY1Y29AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) or check with relman
+**When**: Wait for go from relman to release-signoff@mozilla.com. Relman might want to do the migration in two steps. Read the email to understand which migration you are suppose to do, and then wait for second email. For date, see [Release Scheduling calendar](https://calendar.google.com/calendar/embed?src=bW96aWxsYS5jb21fZGJxODRhbnI5aTh0Y25taGFiYXRzdHY1Y29AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) or check with relman
 
 ### Disable migration blocking hg.m.o hooks
 
