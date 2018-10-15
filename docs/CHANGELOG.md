@@ -4,6 +4,10 @@ This page best serves the people that have previously been into the releaseduty 
 
 _**As releaseduty squirrels are the ones with the best context when it comes to releases, they are the ones to edit this page and amend it accordingly. Keep in mind that changes should be in compliance with the other pieces of documentation.**_
 
+## During 64.0 >= 2018-10-15
+### Changed
+- MARs are now signed via autograph (hashes only)
+
 ## During 63.0 >= 2018-09-05
 ### Added
 - added 6 new mac signing servers
