@@ -75,6 +75,10 @@ NOTE: doing multiple gecko_migration runs is safe. Each run the script will purg
 ```sh
 # connect to remote instance.
 sudo su - buildduty
+# create a screen session to be disconnect-proof and allow for session sharing
+script /dev/null
+screen
+# proceed inside the screen session
 source /home/buildduty/mergeday/bin/activate
 mkdir merge_day_${RELEASE_VERSION_FOR_CYCLE}
 cd merge_day_${RELEASE_VERSION_FOR_CYCLE}
