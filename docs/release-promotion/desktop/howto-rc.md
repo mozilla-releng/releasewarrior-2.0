@@ -13,31 +13,37 @@ What's New Page setup should be done shortly after updates are available on the 
 ## wnp
 ### How
 
-* Download the existing Release Blob (e.g. `Firefox-59.0-build1`)
+* Copy the existing blob to `-No-WNP`. It will be used in the next release cycle.
   * Go to https://aus4-admin.mozilla.org/releases
   * Search for the release blob you need
   * Click `Download`
-  * Copy it to a `-No-WNP` version (you'll need this later). Eg: `Firefox-59.0-build1-No-WNP.json`.
-* Make the following changes to the `-No-WNP` version:
-  * Append `-No-WNP` to the `name` field.
-* Make the following changes to the original file (eg: `Firefox-59.0-build1.json`):
-  * Add a new item to the `updateLine` list that looks something like the following:
-
+  * Copy it to a `-No-WNP` version (you'll need this later). Eg: `Firefox-63.0-build1-No-WNP.json`.
+* Modify the existing blob to contain the WNP instructions:
+  * run `release wnp_blob --blob-name [BLOB_TO_CHANGE] [WNP_URL] firefox [VERSION]`. Example:
+``` sh
+release wnp_blob --blob-name 'Firefox-63.0-build1' "https://www.mozilla.org/%LOCALE%/firefox/63.0/whatsnew/?oldversion=%OLD_VERSION%" firefox 63.0
 ```
-  "updateLine": [
-    {
-      "for": {
-        "channels": ["release", "release-localtest", "release-cdntest"],
-        "locales": ["ast", "bg", "en-US", ...],
-        "versions": ["<59.0"]
-      },
-      "fields": {
-        "actions": "showURL",
-        "openURL": "https://www.mozilla.org/%LOCALE%/firefox/59.0/whatsnew/?oldversion=%OLD_VERSION%"
-      }
+  * check out the content of `new_blob.json` which just got created. It must contain a `detailsURL` entry and an `openURL` one for `updateLine`. Example:
+```json
+  "updateLine": [{
+    "fields": {
+      "detailsURL": "https://www.mozilla.org/%LOCALE%/firefox/63.0/releasenotes/",
+      "type": "minor"
+    },
+    "for": {}
+  }, {
+    "for": {
+      "channels": ["release", "release-localtest", "release-cdntest"],
+      "locales": ["ast", "bg", "en-US", "..."],
+      "versions": ["<63.0"]
+    },
+    "fields": {
+      "actions": "showURL",
+      "openURL": "https://www.mozilla.org/%LOCALE%/firefox/63.0/whatsnew/?oldversion=%OLD_VERSION%"
     }
-  ]
+  }]
 ```
+  * Update the blob on balrog by uploading `new_blob.json`
 
 The block above says that all responses constructed with this blob should include `detailsURL` and `type` (because the first `for` block is empty), while only requests matching `locales` and `versions` from the second `for` block should get `actions` and `openURL` in their response.
 The list of locales and WNP URL should be whatever you received from Product before you began this process.
