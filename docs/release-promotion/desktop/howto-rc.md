@@ -18,6 +18,7 @@ What's New Page setup should be done shortly after updates are available on the 
   * Search for the release blob you need
   * Click `Download`
   * Copy it to a `-No-WNP` version (you'll need this later). Eg: `Firefox-63.0-build1-No-WNP.json`.
+  * Modify this file to have a `-No-WNP` in the name.
 * Modify the existing blob to contain the WNP instructions:
   * run `release wnp_blob --blob-name [BLOB_TO_CHANGE] [WNP_URL] firefox [VERSION]`. Example:
 ``` sh
