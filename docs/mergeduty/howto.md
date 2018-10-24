@@ -60,29 +60,29 @@ Rather than extend Releasewarrior with more complexity, the idea here is to try 
 
 To track human tasks and issues during merges, we use the following [trello board](https://trello.com/b/AyyFAEbS/mergeduty-tasks)
 
-First, ensure the board is clean:
+**First, ensure the board is clean**:
 
-1. In the "Merge Tasks" list, select "Archive all cards in this list"
-1. sanity check that all items in "Postmortem Issues" and "Postmortem Action Items" lists have been resolved then:
-  a. In the "Postmortem Issues" list, select "move all cards in this list" to the "Archived Postmortem Issues" list
-  a. In the "Postmortem Action Items" list, select "move all cards in this list" to the "Archived Postmortem Action Items" list
+- In the `Merge Tasks` list, select `Archive all cards in this list`
+- Sanity check that all items in `Postmortem Issues` and `Postmortem Action Items` lists have been resolved then:
+  - In the `Postmortem Issues` list, select `move all cards in this list` to the `Archived Postmortem Issues` list
+  - In the `Postmortem Action Items` list, select `move all cards in this list` to the `Archived Postmortem Action Items` list
   
-Now prep the board for this cycle's planned merges:
+**Now prep the board for this cycle's planned merges**:
 
-1. for each card in the "Templates" list, select the card then under Actions, choose "Move" and put in the "Merge Tasks" list
-1. for each newly copied card in the "Merge Tasks" list
-  a. add the people on mergeduty to the members list
-  a. set a deadline for each that correspond with the current [merge schedule](https://calendar.google.com/calendar/embed?src=bW96aWxsYS5jb21fZGJxODRhbnI5aTh0Y25taGFiYXRzdHY1Y29AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ)
+- For each card in the `Templates` list, select the card then under Actions, choose `Copy` and put in the `Merge Tasks` list
+- For each newly copied card in the `Merge Tasks` list
+  - Add the people on mergeduty to the members list
+  - Set a deadline for each that correspond with the current [merge schedule](https://calendar.google.com/calendar/embed?src=bW96aWxsYS5jb21fZGJxODRhbnI5aTh0Y25taGFiYXRzdHY1Y29AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ)
 
-For each merge task:
+**For each merge task**:
 
-As you go through the steps documented below, update the checklists within the cards under "Merge Tasks". This helps with handoff and tracking state.
+As you go through the steps documented below, update the checklists within the cards under `Merge Tasks`. This helps with handoff and tracking state.
 
-As issues arise, add a card under the "Merge Issues" list. Associate with bugs where appropriate. Use labels for issues. Each issue should either be "Resolved" or "Unresolved" and some "Resolved" issues may be also labeled as "Future Threats".
+As issues arise, add a card under the `Merge Issues` list. Associate with bugs where appropriate. Use labels for issues. Each issue should either be `Resolved` or `Unresolved` and some `Resolved` issues may be also labeled as `Future Threats`.
 
-For postmortems:
+**For postmortems**:
 
-After merge days, schedule a postmortem (or use current releaseduty postmortem) and move all issues to the "Postmortem Issues" list. During the postmortem, if any action items come up, track those in the "Postmortem Action Items" list.
+After merge days, schedule a postmortem (or use current releaseduty postmortem) and move all issues to the `Postmortem Issues` list. During the postmortem, if any action items come up, track those in the `Postmortem Action Items` list.
 
 ### File tracking migration bug
 
