@@ -7,6 +7,7 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 ## During 64.0 >= 2018-10-15
 ### Changed
 - MARs are now signed via autograph (hashes only)
+- Mergeduty tasks are now tracked in [Trello](https://trello.com/b/AyyFAEbS/mergeduty-tasks)
 
 ## During 63.0 >= 2018-09-05
 ### Added

@@ -11,6 +11,7 @@ MergeDuty consists of multiple separate days of work. Each day you must perform 
 
 The releng process usually operates like this:
 * A week before the merge, do the prep work
+  * Set up mergeduty trello tracking board
   * Verify you have access to what you need
   * Make sure that all the dry-run migrations run cleanly
   * Sanity check you have no blocking migration bugs
@@ -35,6 +36,7 @@ Originally, the m-c->m-b was done a week after m-b->m-r. Starting at Firefox 57,
 1. For migrations: access and setup of [the merge remote instance](#merge-remote-instance). While possible to do locally, the remote instance is strongly recommended.
 1. Access to Treestatus
 1. A tracking migration bug
+1. Access to Release Engineering Trello board
 
 ### Merge remote instance
 
@@ -52,6 +54,36 @@ it in the instance list, hover over to `Actions` -> `Instance state` -> `Start`.
 
 ## Prep day - 1 week prior to Merge day
 
+### Set up mergeduty Trello board
+
+Rather than extend Releasewarrior with more complexity, the idea here is to try Trello and use Templated cards for todo tracking.
+
+To track human tasks and issues during merges, we use the following [trello board](https://trello.com/b/AyyFAEbS/mergeduty-tasks)
+
+**First, ensure the board is clean**:
+
+- In the `Merge Tasks` list, select `Archive all cards in this list`
+- Sanity check that all items in `Postmortem Issues` and `Postmortem Action Items` lists have been resolved then:
+  - In the `Postmortem Issues` list, select `move all cards in this list` to the `Archived Postmortem Issues` list
+  - In the `Postmortem Action Items` list, select `move all cards in this list` to the `Archived Postmortem Action Items` list
+  
+**Now prep the board for this cycle's planned merges**:
+
+- For each card in the `Templates` list, select the card then under Actions, choose `Copy` and put in the `Merge Tasks` list
+- For each newly copied card in the `Merge Tasks` list
+  - Add the people on mergeduty to the members list
+  - Set a deadline for each that correspond with the current [merge schedule](https://calendar.google.com/calendar/embed?src=bW96aWxsYS5jb21fZGJxODRhbnI5aTh0Y25taGFiYXRzdHY1Y29AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ)
+
+**For each merge task**:
+
+As you go through the steps documented below, update the checklists within the cards under `Merge Tasks`. This helps with handoff and tracking state.
+
+As issues arise, add a card under the `Merge Issues` list. Associate with bugs where appropriate. Use labels for issues. Each issue should either be `Resolved` or `Unresolved` and some `Resolved` issues may be also labeled as `Future Threats`.
+
+**For postmortems**:
+
+After merge days, schedule a postmortem (or use current releaseduty postmortem) and move all issues to the `Postmortem Issues` list. During the postmortem, if any action items come up, track those in the `Postmortem Action Items` list.
+
 ### File tracking migration bug
 
 File a tracking migration bug if there isn't one. (e.g. [bug 1412962](https://bugzilla.mozilla.org/show_bug.cgi?id=1412962))
@@ -59,8 +91,6 @@ File a tracking migration bug if there isn't one. (e.g. [bug 1412962](https://bu
 ### Access and setup the merge remote instance
 
 Ensure you have access and have setup [the merge remote instance](#merge-remote-instance).
-
-
 
 ### Do migration no-op trial runs
 
