@@ -76,14 +76,14 @@ def output_graphs_human(tasks):
         for bn in sorted(buildnumbers, reverse=True):
             for ci in set([t['ci'] for t in product_tasks if t['buildnum'] == bn]):
                 promote = [t['taskid'] for t in product_tasks
-                           if t['buildnum'] == bn and t['ci'] == ci and
-                           'promote_' in t['flavor']]
+                           if t['buildnum'] == bn and t['ci'] == ci
+                           and 'promote_' in t['flavor']]
                 push = [t['taskid'] for t in product_tasks
-                        if t['buildnum'] == bn and t['ci'] == ci and
-                        'push_' in t['flavor']]
+                        if t['buildnum'] == bn and t['ci'] == ci
+                        and 'push_' in t['flavor']]
                 ship = [t['taskid'] for t in product_tasks
-                        if t['buildnum'] == bn and t['ci'] == ci and
-                        'ship_' in t['flavor']]
+                        if t['buildnum'] == bn and t['ci'] == ci
+                        and 'ship_' in t['flavor']]
                 if len(promote) > 1 or len(push) > 1 or len(ship) > 1:
                     raise Exception("Found too many relevant graphs")
                 if not promote:
@@ -109,14 +109,14 @@ def output_graphs_export(tasks):
             for ci in set([t['ci'] for t in product_tasks if t['buildnum'] == bn]):
                 print("|{:.^80}|".format('build{}'.format(bn)))
                 promote = [t['taskid'] for t in product_tasks
-                           if t['buildnum'] == bn and t['ci'] == ci and
-                           'promote_' in t['flavor']]
+                           if t['buildnum'] == bn and t['ci'] == ci
+                           and 'promote_' in t['flavor']]
                 push = [t['taskid'] for t in product_tasks
-                        if t['buildnum'] == bn and t['ci'] == ci and
-                        'push_' in t['flavor']]
+                        if t['buildnum'] == bn and t['ci'] == ci
+                        and 'push_' in t['flavor']]
                 ship = [t['taskid'] for t in product_tasks
-                        if t['buildnum'] == bn and t['ci'] == ci and
-                        'ship_' in t['flavor']]
+                        if t['buildnum'] == bn and t['ci'] == ci
+                        and 'ship_' in t['flavor']]
                 if len(promote) > 1 or len(push) > 1 or len(ship) > 1:
                     raise Exception("Found too many relevant graphs")
                 print('export DECISION_TASK_ID={}'.format(ci))

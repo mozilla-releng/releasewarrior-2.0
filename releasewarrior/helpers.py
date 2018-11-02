@@ -107,21 +107,21 @@ def get_branch(version, product, logger):
     passed = True
     branch = ""
 
-    if bool(re.match("^\d+\.0rc$", version)):
+    if bool(re.match(r"^\d+\.0rc$", version)):
         branch = "release-rc"
-    elif bool(re.match("^(\d+\.\d(\.\d+)?)$", version)):
-        if product in ["firefox", "fennec"] and bool(re.match("^(\d+\.\d+)$", version)):
+    elif bool(re.match(r"^(\d+\.\d(\.\d+)?)$", version)):
+        if product in ["firefox", "fennec"] and bool(re.match(r"^(\d+\.\d+)$", version)):
             passed = False
             logger.critical("This release doesn't look like a dot release. Was it meant to be \
 a release-candidate?")
             logger.fatal("Include rc at the end of the `%s` for release-candidates", version)
         else:
             branch = "release"
-    elif bool(re.match("^\d+\.0b\d+$", version)):
+    elif bool(re.match(r"^\d+\.0b\d+$", version)):
         branch = "beta"
         if product == "devedition":
             branch = "devedition"
-    elif bool(re.match("^(\d+\.\d(\.\d+)?esr)$", version)):
+    elif bool(re.match(r"^(\d+\.\d(\.\d+)?esr)$", version)):
         parts = version.split('.')
         branch = "esr{}".format(parts[0])
     else:
@@ -275,7 +275,7 @@ def validate_rw_repo(logger, config):
     if not min_sha:
         logger.warning('no release data information on minimum sha for releasewarrior')
 
-    if not re.match('[0-9a-fA-F]', min_sha):
+    if not re.match(r'[0-9a-fA-F]', min_sha):
         logger.fatal('min sha ({}) is invalid format'.format(min_sha))
         sys.exit(1)
 
