@@ -165,3 +165,64 @@ Further details and examples can be found on the [[Balrog page|Balrog and Schedu
 
 If this is a Release (not a beta, devedition or RC), then schedule an update in Balrog to change the background rate of the rule to 0% the next day.
 * Go to Balrog and "Schedule an Update" for the "Firefox: release" rule that changes "backgroundRate" to 0 at 9am Pacific the following day. All other fields should remain the same.
+
+## Bump the Election Edition bouncer entries
+
+### Background
+
+The Firefox Election Edition is a long-lived repack of Firefox associated with the 2018 US
+ mid-term elections, with a special download page on
+ [www.mozilla.org](https://www.mozilla.org/en-US/firefox/election/).
+We need to manually update the bouncer locations when we ship a new build on the
+release channel, so that the repack stays in sync with the vanilla Firefox.
+
+[Bug 1497097](https://bugzilla.mozilla.org/show_bug.cgi?id=1497097) is to automate this
+process (in general).
+
+### When
+This is done as part of the ship phase, ideally after the `release-bouncer-aliases-firefox
+` task completes. This is for all releases on the release channel (but not beta or ESR).
+
+### How
+[Log in to bouncer](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/misc-operations/accessing-bouncer.md)
+and update the three locations for the
+[firefox-election-edition](https://bounceradmin.mozilla.com/admin/mirror/location/?product__id__exact=9829) product.
+
+In each location, update two version values, and adjust the buildN to shipping build.
+For now it's normal to  serve these from the candidates directory.
+
+For example, Mac changes from
+
+`/firefox/candidates/63.0-candidates/build2/partner-repacks/firefox/firefox-election-edition/v1/mac/en-US/Firefox%2063.0.dmg`
+
+to
+
+`/firefox/candidates/63.0.1-candidates/build4/partner-repacks/firefox/firefox-election-edition/v1/mac/en-US/Firefox%2063.0.1.dmg`
+
+Verify the links work by running this in a terminal:
+```
+$ for os in osx win win64; do
+    echo "-------- OS: ${os} --------";
+    curl -sIL "https://download.mozilla.org/?product=firefox-election-edition&os=${os}&lang=en-US" |grep -E '^HTTP|^Location';
+done
+```
+The output should look similar to
+```
+OS: osx
+HTTP/1.1 302 Found
+Location: https://download-installer.cdn.mozilla.net/pub/firefox/candidates/63.0.1-candidates/build4/partner-repacks/firefox/firefox-election-edition/v1/mac/en-US/Firefox%2063.0.1.dmg
+HTTP/2 200
+----------------
+OS: win
+HTTP/1.1 302 Found
+Location: https://download-installer.cdn.mozilla.net/pub/firefox/candidates/63.0.1-candidates/build4/partner-repacks/firefox/firefox-election-edition/v1/win32/en-US/Firefox%20Setup%2063.0.1.exe
+HTTP/2 200
+----------------
+OS: win64
+HTTP/1.1 302 Found
+Location: https://download-installer.cdn.mozilla.net/pub/firefox/candidates/63.0.1-candidates/build4/partner-repacks/firefox/firefox-election-edition/v1/win64/en-US/Firefox%20Setup%2063.0.1.exe
+HTTP/2 200
+----------------
+```
+
+Bouncer should return a 302 to the actual file location, which should be a 200 rather than 404.
