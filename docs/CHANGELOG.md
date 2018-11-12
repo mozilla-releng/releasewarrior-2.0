@@ -3,11 +3,11 @@ Every time a new releaseduty cycle begins, new RelEng people are (re)ramping up.
 This page best serves the people that have previously been into the releaseduty cycle. Starting from the baseline, people coming back after `N` cycles can ramp up incrementally with the latest changes.
 
 _**As releaseduty squirrels are the ones with the best context when it comes to releases, they are the ones to edit this page and amend it accordingly. Keep in mind that changes should be in compliance with the other pieces of documentation.**_
-
 ## During 64.0 >= 2018-10-15
 ### Changed
 - MARs are now signed via autograph (hashes only)
 - Mergeduty tasks are now tracked in [Trello](https://trello.com/b/AyyFAEbS/mergeduty-tasks)
+- Releaseduty now assists CIDuty with [puppet pyup PRs](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/misc-operations/puppet-pyup.md) once per week
 
 ## During 63.0 >= 2018-09-05
 ### Added
