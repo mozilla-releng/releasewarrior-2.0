@@ -46,6 +46,8 @@ release wnp_blob --blob-name 'Firefox-63.0-build1' "https://www.mozilla.org/%LOC
 ```
   * Update the blob on balrog by uploading `new_blob.json`
 
+> If using `diff` to compare the old and new release blobs, remember to use `diff -Z` as the copy downloaded from balrog has trailing whitespace and the new version does not.
+
 The block above says that all responses constructed with this blob should include `detailsURL` and `type` (because the first `for` block is empty), while only requests matching `locales` and `versions` from the second `for` block should get `actions` and `openURL` in their response.
 The list of locales and WNP URL should be whatever you received from Product before you began this process.
 
