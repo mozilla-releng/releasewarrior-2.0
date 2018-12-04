@@ -8,7 +8,7 @@ To do this we create a new task graph to perform all the release promotion steps
 ## Prerequisites
 
 - VPN Access
-- Ship-it v2 access
+- SSH Access to `buildbot-master01.bb.releng.use1.mozilla.com`
 - (Optional, convenient) [taskcluster-cli](https://github.com/taskcluster/taskcluster-cli) set up
 
 ## When to perform these steps
@@ -43,11 +43,28 @@ bugs found
 
 ### Creating the ship graph
 
-* We will create a new task with the label 'Action: Release Promotion' in the existing on-push graph.
-* This action will create a new ship graph
-* Click on the corresponding phase button in the [Ship-it v2 UI](https://shipit.mozilla-releng.net/)<Paste>.
-* Find the graphid in the Ship-it v2 UI. Every phase is linked to the
-   corresponding graph after it's scheduled.
+1. We will create a new task with the label 'Action: Release Promotion' in the existing on-push graph.
+1. This action will create a new ship graph
+
+```bash
+ssh buildbot-master01.bb.releng.use1.mozilla.com
+sudo su - cltbld
+cd /builds/releaserunner3/
+source bin/activate
+# paste the export line from above, you should have found a
+# decision taskid, and a promote taskid, and a push taskid.
+#   export PROMOTE_TASK_ID=...
+ACTION_FLAVOR=ship_fennec
+python tools/buildfarm/release/trigger_action.py \
+    ${PROMOTE_TASK_ID+--action-task-id ${PROMOTE_TASK_ID}} \
+    --release-runner-config /builds/releaserunner3/release-runner.yml \
+    --action-flavor ${ACTION_FLAVOR}
+# Unset PROMOTE_TASK_ID to minimize the possibility of rerunning with different graph ids
+unset PROMOTE_TASK_ID
+```
+
+  * The `taskId` of the action task will be the `taskGroupId` of the next graph.
+
 * Announce to release-signoff that the release is live
 * Update releasewarrior:
     ```sh

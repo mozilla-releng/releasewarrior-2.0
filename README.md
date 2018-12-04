@@ -226,7 +226,7 @@ Examples:
 $ release task firefox 57.0b2
 INFO: ensuring releasewarrior repo is up to date and in sync with upstream
 INFO: Current existing inflight tasks:
-INFO: ID: 1 - submit to Shipit
+INFO: ID: 1 - submit to Shipit v2
 INFO: ID: 2 - publish release tasks
 INFO: ID: 3 - signoff in Balrog
 After which existing task should this new task be run? Use ID [1]: 2

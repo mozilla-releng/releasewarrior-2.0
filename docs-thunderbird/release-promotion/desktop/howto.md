@@ -2,7 +2,7 @@
 
 * taskcluster-cli installed
 * releasewarrior-2.0 installed
-* [Ship-it v2](https://shipit.mozilla-releng.net/) access
+* ssh access to `buildbot-master01.bb.releng.use1.mozilla.com`
 
 ## Push artifacts to releases directory
 
@@ -48,10 +48,29 @@ Note: If they do not explicitly ask for `release-cdntest` it is okay to assume i
 
 ### How
 
-* Click on the corresponding phase button in the [Ship-it v2 UI](https://shipit.mozilla-releng.net/).
+* [Find the promote graphid](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/common/find-graphids.md#finding-graphids) for this release.
 
-* Find the graphid in the Ship-it v2 UI. Every phase is linked to the
-  corresponding graph after it's scheduled.
+* For now, we have to ssh to bm85 to generate the push graph.
+
+```
+ssh buildbot-master01.bb.releng.use1.mozilla.com
+sudo su - cltbld
+cd /builds/releaserunner3/
+source bin/activate
+# paste the export lines from rw status, you should have
+# found at least a promote taskid.
+#   export PROMOTE_TASK_ID=...
+ACTION_FLAVOR=push_firefox  # or ACTION_FLAVOR=push_devedition or ACTION_FLAVOR=push_thunderbird
+# This will output the task definition and ask if you want to proceed.
+python tools/buildfarm/release/trigger_action.py \
+    ${PROMOTE_TASK_ID+--action-task-id ${PROMOTE_TASK_ID}} \
+    --release-runner-config /builds/releaserunner3/release-runner.yml \
+    --action-flavor ${ACTION_FLAVOR}
+# Unset env vars to minimize the possibility of rerunning with different graph ids
+unset ACTION_FLAVOR
+unset PROMOTE_TASK_ID
+```
+  * The `taskId` of the action task will be the `taskGroupId` of the next graph.
 
 * Update releasewarrior:
     ```sh
@@ -78,13 +97,38 @@ Examples
 
 ### How
 
-* Click on the corresponding phase button in the [Ship-it v2 UI](https://shipit.mozilla-releng.net/).
+* [Find the promote and push graphids](https://github.com/mozilla-releng/releasewarrior-2.0/blob/master/docs/release-promotion/common/find-graphids.md#finding-graphids) for this release.
 
-* Find the graphid in the Ship-it v2 UI. Every phase is linked to the
-  corresponding graph after it's scheduled.
+* Then:
+
+```bash
+# ship action, after having run both promote and push (RC behavior)
+ssh buildbot-master01.bb.releng.use1.mozilla.com
+sudo su - cltbld
+cd /builds/releaserunner3/
+source bin/activate
+# paste the export lines from rw status, you should have
+# found a decision taskid, and a promote taskid, and a push taskid.
+#   export DECISION_TASK_ID=...
+#   export PROMOTE_TASK_ID=...
+#   export PUSH_TASK_ID=...
+ACTION_FLAVOR=ship_firefox  # or ACTION_FLAVOR=ship_devedition or ACTION_FLAVOR=ship_thunderbird
+# This will output the task definition and ask if you want to proceed.
+python tools/buildfarm/release/trigger_action.py \
+    ${PUSH_TASK_ID+--action-task-id ${PUSH_TASK_ID}} \
+    ${DECISION_TASK_ID+--decision-task-id ${DECISION_TASK_ID}} \
+    ${PROMOTE_TASK_ID+--previous-graph-ids ${PROMOTE_TASK_ID}} \
+    --release-runner-config /builds/releaserunner3/release-runner.yml \
+    --action-flavor ${ACTION_FLAVOR}
+# Unset env vars to minimize the possibility of rerunning with different graph ids
+unset ACTION_FLAVOR
+unset DECISION_TASK_ID
+unset PROMOTE_TASK_ID
+unset PUSH_TASK_ID
+```
+  * The `taskId` of the action task will be the `taskGroupId` of the next graph.
 
 * Announce to release-signoff that the release is live
-
 * Update releasewarrior:
     ```sh
     release graphid --phase ship ${taskId} ${product} ${version}

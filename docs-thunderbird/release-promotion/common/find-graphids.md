@@ -28,7 +28,7 @@ Cons:
 ## get_graphids.py
 
 
-* Find the `hg revision` of the release in [Ship-it v2 UI](https://shipit.mozilla-releng.net/), and copy it.
+* Find the `hg revision` of the release in [Ship It](http://ship-it.mozilla.org/), and copy it.
 * Run get_graphids.py from releasewarrior-2.0's scripts directory.
 
 ```sh

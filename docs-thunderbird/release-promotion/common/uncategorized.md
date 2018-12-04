@@ -1,10 +1,10 @@
 # A word on selecting partials in Ship-it
 
 This is purely informative as this is step performed by RelMan. Yet, it's good to have it at hand in case we're asked.
-When selecting partials in [Ship-it v2](https://shipit.mozilla-releng.net/), you need to make sure those specific releases lie within both
+When selecting partials in [Ship-it](http://ship-it.mozilla.org/), you need to make sure those specific releases lie within both
 the `candidates` and `releases` directories. This is because [release-runner](hg.mozilla.org/build/tools/file/tip/buildfarm/release/release-runner3.py) is
 running some sanity checks on each of the provided partials. Part of the checks make sure that the certain release has been
-fully pushed to `~candidates` directory and then copied-over into the `~releases` directory. Absent this and the [Ship-it v2](https://shipit.mozilla-releng.net/) interface
+fully pushed to `~candidates` directory and then copied-over into the `~releases` directory. Absent this and the [Ship-it](http://ship-it.mozilla.org/) interface
 will throw an error.
 
 # A note on rerunning action tasks

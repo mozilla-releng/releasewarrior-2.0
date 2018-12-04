@@ -41,7 +41,7 @@ Optional: reset the staging balrog db which is important for staging release bui
 
 ## Staging tools
 
-- dev [Ship-it v2](https://shipit.staging.mozilla-releng.net/)
+- dev [Ship-it](https://ship-it-dev.allizom.org/)
 - staging [release runner](https://dxr.mozilla.org/build-central/rev/5f83e0516fc449586bbce4db4eb759f6cede8781/puppet/manifests/moco-nodes.pp#633)
 - release automation notifications [group](https://groups.google.com/a/mozilla.com/forum/?hl=en#!forum/release-automation-notifications-dev) and `#release-notifications-dev` IRC channel
 

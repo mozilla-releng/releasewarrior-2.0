@@ -66,7 +66,7 @@ In order to do your job,  you need to be granted access to a bare minimum:
 - A [Bugzilla](https://bugzilla.mozilla.org/) account
 - Write access to [releasewarrior-2.0](https://github.com/mozilla-releng/releasewarrior-2.0/) and [releasewarrior-data](https://github.com/mozilla-releng/releasewarrior-data/) repo
 - Read/write access to [Balrog](https://aus4-admin.mozilla.org/)
-- Read access to [Ship-it v2](https://shipit.mozilla-releng.net/)
+- Read access to [Ship-it](https://ship-it.mozilla.org/)
 - SSH access to `buildbot-master01.bb.releng.use1.mozilla.com`.
 
 There are a few more other places where access is needed (such as [bouncer](https://bounceradmin.mozilla.com/admin/), etc) but we're trying to keep those access-list short so addings can be done in time depending on necessities.
@@ -138,7 +138,7 @@ Ensure the next duty cycle have signed up to any phabricator reviews, such as th
 
 1. *How does the Ship-it workflow function in terms of shipping a new release?*
 
-RelMan submits a new release from [here](https://shipit.mozilla-releng.net/), another RelMan reviews that and once it hits 'Ready' + 'Do eeaat' the release enters the 'Reviewed' section and waits to be run.
+RelMan submits a new release from [here](https://ship-it.mozilla.org/), another RelMan reviews that and once it hits 'Ready' + 'Do eeaat' the release enters the 'Reviewed' section and waits to be run.
 Since there's a `release-runner.sh` script running in a loop on [bm81](https://hg.mozilla.org/build/puppet/file/default/manifests/moco-nodes.pp#l598), there's a max window of 60 seconds till the job gets its share, following which it enters the 'Running/Complete' table where we can observe its state.
 The "Reviewed" tab goes to "No pending release" yet again.
 
