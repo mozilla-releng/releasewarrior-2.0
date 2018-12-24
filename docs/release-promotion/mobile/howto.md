@@ -49,9 +49,3 @@ bugs found
 * Find the graphid in the Ship-it v2 UI. Every phase is linked to the
    corresponding graph after it's scheduled.
 * Announce to release-signoff that the release is live
-* Update releasewarrior:
-    ```sh
-    release graphid --phase ship ${taskId} ${product} ${version}
-    release task ${product} ${version} --resolve pushapk
-    cd ../releasewarrior-data && git push
-    ```

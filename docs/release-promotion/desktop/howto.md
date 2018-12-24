@@ -1,7 +1,6 @@
 ## Requirements
 
 * taskcluster-cli installed
-* releasewarrior-2.0 installed
 * [Ship-it v2](https://shipit.mozilla-releng.net/) access
 
 ## Push artifacts to releases directory
@@ -53,13 +52,6 @@ Note: If they do not explicitly ask for `release-cdntest` it is okay to assume i
 * Find the graphid in the Ship-it v2 UI. Every phase is linked to the
   corresponding graph after it's scheduled.
 
-* Update releasewarrior:
-    ```sh
-    release graphid --phase push ${taskId} ${product} ${version}
-    release task ${product} ${version} --resolve mirrors
-    cd ../releasewarrior-data && git push
-    ```
-
 ## Ship the release
 
 ### Background
@@ -85,13 +77,6 @@ Examples
 
 * Announce to release-signoff that the release is live
 
-* Update releasewarrior:
-    ```sh
-    release graphid --phase ship ${taskId} ${product} ${version}
-    release task ${product} ${version} --resolve ship
-    cd ../releasewarrior-data && git push
-    ```
-
 ## Obtain sign-offs for changes
 
 ### Background
@@ -110,12 +95,6 @@ After the scheduled change has been created by the "updates" task, and prior to 
     * DevEdition: <https://aus4-admin.mozilla.org/rules?product=Firefox&channel=aurora>
     * Thunderbird beta: <https://aus4-admin.mozilla.org/rules?product=Thunderbird&channel=beta>
 * Or using the Balrog Scheduled Changes UI: <https://aus4-admin.mozilla.org/rules/scheduled_changes>
-
-Update releasewarrior:
-```sh
-release task ${product} ${version} --resolve signoff
-cd ../releasewarrior-data && git push
-```
 
 Further details and examples can be found on the [[Balrog page|Balrog and Scheduled Changes]]
 
