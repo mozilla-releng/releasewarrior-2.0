@@ -1,17 +1,10 @@
 import click
 import arrow
-import json
 import sys
 
 import os
 
 from releasewarrior import git
-from releasewarrior.balrog import (
-    ensure_blob_name_exists_on_balrog,
-    get_release_blob,
-    craft_wnp_blob,
-    TooManyBlobsFoundError
-)
 from releasewarrior.helpers import (
     get_config,
     get_logger,
