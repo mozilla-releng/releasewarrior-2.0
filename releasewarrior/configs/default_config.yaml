@@ -2,19 +2,10 @@
 # releasewarrior-data paths
 releases:
   upcoming:
-    firefox: upcoming/firefox
-    devedition: upcoming/devedition
-    fennec: upcoming/fennec
     thunderbird: upcoming/thunderbird
   inflight:
-    firefox: inflight/firefox
-    devedition: inflight/devedition
-    fennec: inflight/fennec
     thunderbird: inflight/thunderbird
   archive:
-    firefox: archive/firefox
-    devedition: archive/devedition
-    fennec: archive/fennec
     thunderbird: archive/thunderbird
 
 postmortems: postmortems
@@ -25,18 +16,6 @@ postmortems: postmortems
 templates:
   # input
   data:
-    firefox:
-      beta: firefox/beta.json.tmpl
-      release-rc: firefox/release-rc.json.tmpl
-      release: firefox/release.json.tmpl
-      esr52: firefox/esr52.json.tmpl
-      esr60: firefox/esr60.json.tmpl
-    devedition:
-      devedition: firefox/devedition.json.tmpl
-    fennec:
-      beta: fennec/beta.json.tmpl
-      release: fennec/release.json.tmpl
-      release-rc: fennec/release-rc.json.tmpl
     thunderbird:
       beta: thunderbird/beta.json.tmpl
       release: thunderbird/release.json.tmpl

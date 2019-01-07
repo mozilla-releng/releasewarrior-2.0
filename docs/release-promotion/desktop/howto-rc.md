@@ -94,7 +94,6 @@ Shortly before we ship a major release, we need to remove the What's New Page fr
 ## Requirements
 
 * taskcluster-cli installed
-* releasewarrior-2.0 installed
 * [Ship-it v2](https://shipit.mozilla-releng.net/) access
 
 ## Differences between Firefox RC and non-RC
@@ -117,13 +116,6 @@ Shortly before we ship a major release, we need to remove the What's New Page fr
 * Find the graphid in the Ship-it v2 UI. Every phase is linked to the
   corresponding graph after it's scheduled.
 
-* Update releasewarrior:
-    ```sh
-    release graphid --phase ship_rc ${taskId} ${product} ${version}
-    release task ${product} ${version} --resolve ship-rc
-    cd ../releasewarrior-data && git push
-    ```
-
 ## push
 
 ### How
@@ -132,13 +124,6 @@ Shortly before we ship a major release, we need to remove the What's New Page fr
 
 * Find the graphid in the Ship-it v2 UI. Every phase is linked to the
   corresponding graph after it's scheduled.
-
-* Update releasewarrior:
-    ```sh
-    release graphid --phase push ${taskId} ${product} ${version}
-    release task ${product} ${version} --resolve mirrors
-    cd ../releasewarrior-data && git push
-    ```
 
 ## ship
 
@@ -162,13 +147,6 @@ Examples
 
 * Announce to release-signoff that the release is live
 
-* Update releasewarrior:
-    ```sh
-    release graphid --phase ship ${taskId} ${product} ${version}
-    release task ${product} ${version} --resolve ship
-    cd ../releasewarrior-data && git push
-    ```
-
 ## Obtain sign-offs for changes
 
 ### Background
@@ -186,11 +164,5 @@ After the scheduled change has been created by the "updates" task, and prior to 
     * Firefox beta: <https://aus4-admin.mozilla.org/rules?product=Firefox&channel=beta>
     * DevEdition: <https://aus4-admin.mozilla.org/rules?product=Firefox&channel=aurora>
 * Or using the Balrog Scheduled Changes UI: <https://aus4-admin.mozilla.org/rules/scheduled_changes>
-
-Update releasewarrior:
-```sh
-release task ${product} ${version} --resolve signoff
-cd ../releasewarrior-data && git push
-```
 
 Further details and examples can be found on the [[Balrog page|Balrog and Scheduled Changes]]

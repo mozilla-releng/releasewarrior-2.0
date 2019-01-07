@@ -32,17 +32,6 @@ DEFAULT_TEMPLATES_DIR = os.path.join(
 RW_REPO = os.path.abspath(os.path.join(os.path.realpath(__file__), '..', '..'))
 
 KNOWN_PRODUCT_PHASES = {
-    'devedition': {
-        'default': ('promote', 'push', 'ship'),
-    },
-    'fennec': {
-        'release-rc': ('promote', 'ship_rc', 'ship'),
-        'default': ('promote', 'ship'),
-    },
-    'firefox': {
-        'release-rc': ('promote_rc', 'ship_rc', 'push', 'ship'),
-        'default': ('promote', 'push', 'ship'),
-    },
     'thunderbird': {
         'default': ('promote', 'push', 'ship'),
     }
@@ -110,17 +99,9 @@ def get_branch(version, product, logger):
     if bool(re.match(r"^\d+\.0rc$", version)):
         branch = "release-rc"
     elif bool(re.match(r"^(\d+\.\d(\.\d+)?)$", version)):
-        if product in ["firefox", "fennec"] and bool(re.match(r"^(\d+\.\d+)$", version)):
-            passed = False
-            logger.critical("This release doesn't look like a dot release. Was it meant to be \
-a release-candidate?")
-            logger.fatal("Include rc at the end of the `%s` for release-candidates", version)
-        else:
-            branch = "release"
+        branch = "release"
     elif bool(re.match(r"^\d+\.0b\d+$", version)):
         branch = "beta"
-        if product == "devedition":
-            branch = "devedition"
     elif bool(re.match(r"^(\d+\.\d(\.\d+)?esr)$", version)):
         parts = version.split('.')
         branch = "esr{}".format(parts[0])
@@ -140,9 +121,6 @@ def validate(release, logger, config, must_exist=False, must_exist_in=None):
     # branch validation against product
     # not critical so simply prevent basic mistakes
     branch_validations = {
-        "devedition": release.branch in ['devedition'],
-        "fennec": release.branch in ['beta', 'release', 'release-rc'],
-        "firefox": release.branch in ['beta', 'release', 'release-rc', 'esr52', 'esr60'],
         "thunderbird": release.branch in ['beta', 'release']
     }
     if not branch_validations[release.product]:

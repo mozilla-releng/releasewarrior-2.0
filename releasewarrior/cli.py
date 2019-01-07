@@ -1,17 +1,10 @@
 import click
 import arrow
-import json
 import sys
 
 import os
 
 from releasewarrior import git
-from releasewarrior.balrog import (
-    ensure_blob_name_exists_on_balrog,
-    get_release_blob,
-    craft_wnp_blob,
-    TooManyBlobsFoundError
-)
 from releasewarrior.helpers import (
     get_config,
     get_logger,
@@ -61,7 +54,7 @@ def cli():
 
 
 @cli.command()
-@click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
+@click.argument('product', type=click.Choice(['thunderbird']))
 @click.argument('version')
 @click.option('--gtb-date', help="date of planned GTB. format: YYYY-MM-DD",
               default=arrow.now('US/Pacific').format("YYYY-MM-DD"))
@@ -82,7 +75,7 @@ def track(product, version, gtb_date, logger=LOGGER, config=CONFIG):
 
 
 @cli.command()
-@click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
+@click.argument('product', type=click.Choice(['thunderbird']))
 @click.argument('version')
 @click.option('--resolve', multiple=True, help="prerequisite human task id or alias to resolve.")
 def prereq(product, version, resolve, logger=LOGGER, config=CONFIG):
@@ -104,7 +97,7 @@ def prereq(product, version, resolve, logger=LOGGER, config=CONFIG):
 
 
 @cli.command()
-@click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
+@click.argument('product', type=click.Choice(['thunderbird']))
 @click.argument('version')
 def newbuild(product, version, logger=LOGGER, config=CONFIG):
     """Mark a release as submitted to shipit.
@@ -127,7 +120,7 @@ def newbuild(product, version, logger=LOGGER, config=CONFIG):
 
 # TODO include valid aliases
 @cli.command()
-@click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
+@click.argument('product', type=click.Choice(['thunderbird']))
 @click.argument('version')
 @click.option('--resolve', multiple=True, help="inflight human task id or alias to resolve.")
 def task(product, version, resolve, logger=LOGGER, config=CONFIG):
@@ -151,7 +144,7 @@ def task(product, version, resolve, logger=LOGGER, config=CONFIG):
 
 
 @cli.command()
-@click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
+@click.argument('product', type=click.Choice(['thunderbird']))
 @click.argument('version')
 @click.option('--resolve', multiple=True, help="inflight issue to resolve")
 def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
@@ -174,7 +167,7 @@ def issue(product, version, resolve, logger=LOGGER, config=CONFIG):
 
 @cli.command()
 @click.argument('graphid')
-@click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
+@click.argument('product', type=click.Choice(['thunderbird']))
 @click.argument('version')
 @click.option('--phase', type=click.Choice(['promote', 'promote_rc', 'push', 'ship', 'ship_rc']))
 def graphid(graphid, product, version, phase, logger=LOGGER, config=CONFIG):
@@ -270,7 +263,7 @@ def postmortem(date, logger=LOGGER, config=CONFIG):
 
 
 @cli.command()
-@click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
+@click.argument('product', type=click.Choice(['thunderbird']))
 @click.argument('version')
 def cancel(product, version, logger=LOGGER, config=CONFIG):
     """Abort the current buildnum.
@@ -291,7 +284,7 @@ def cancel(product, version, logger=LOGGER, config=CONFIG):
 
 
 @cli.command()
-@click.argument('product', type=click.Choice(['firefox', 'devedition', 'fennec', 'thunderbird']))
+@click.argument('product', type=click.Choice(['thunderbird']))
 @click.argument('version')
 def sync(product, version, logger=LOGGER, config=CONFIG):
     """Sync manual changes to json.
@@ -388,58 +381,3 @@ def data(push, pull, logger=LOGGER, config=CONFIG):
         git.push(logger, config)
     if pull:
         git.pull(logger, config)
-
-
-@cli.command()
-@click.argument('wnp_url')
-# TODO Add 'devedition', 'fennec', 'thunderbird' whenever supported
-@click.argument('product', type=click.Choice(['firefox']))
-@click.argument('version')
-@click.option('--blob-name', default=None, help='Explicit blob name to use')
-@click.option(
-    '--for-channels', default='release,release-localtest,release-cdntest',
-    type=str, help='Channel that will get the WNP shown. Comma-separated.'
-)
-@click.option(
-    '--for-locales', default=None,
-    help='Locales that will get the WNP shown. Defaults to the same locales of the previous \
-release. Comma-separated.'
-)
-@click.option(
-    '--for-version', default=None,
-    help='Versions that will get the WNP shown. E.g.: "<61.0". Defaults to: "<X.0", X being the \
-major version of the blob'
-)
-@click.option(
-    '--output-file', type=click.File(mode='w'),
-    default='new_blob.json', help='File where the new blob will be output.'
-)
-def wnp_blob(
-    wnp_url, product, version, blob_name, for_channels, for_locales, for_version, output_file,
-    logger=LOGGER, config=CONFIG
-):
-    """Generate local Balrog blob with WNP rule."""
-    if not blob_name:
-        validate_rw_repo(logger, config)
-        release, data_path, _ = get_release_info(product, version, logger, config)
-        validate(release, logger, config, must_exist=True, must_exist_in="inflight")
-        data = load_json(data_path)
-        current_build_index = get_current_build_index(data)
-        build_number = current_build_index + 1
-        blob_name = '{}-{}-build{}'.format(product, version, build_number)
-        try:
-            ensure_blob_name_exists_on_balrog(blob_name)
-        except TooManyBlobsFoundError as e:
-            logger.critical('{}. Which one do you want? (specify with --blob-name)'.format(e))
-            sys.exit(1)
-    else:
-        try:
-            ensure_blob_name_exists_on_balrog(blob_name)
-        except TooManyBlobsFoundError:
-            # If blob_name was fully specified, then we use this one. Other blobs matching it are
-            # suffixed by something else (e.g: Firefox-62.0-build1 vs Firefox-62.0-build1-No-WNP)
-            pass
-    orig_blob = get_release_blob(blob_name)
-    new_blob = craft_wnp_blob(orig_blob, wnp_url, for_channels, for_locales, for_version)
-    json.dump(new_blob, output_file, sort_keys=True, indent=4)
-    logger.info('New blob written at: {}'.format(output_file.name))
