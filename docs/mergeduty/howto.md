@@ -15,6 +15,7 @@ How are those repositories kept in sync? That's `MergeDuty` and is part of the `
 * Do the prep work a week before the merge
   * [Set up mergeduty trello tracking board](#set-up-mergeduty-trello-tracking-board)
   * [File tracking migration bug](#file-tracking-migration-bug)
+  * [Run staging releases](#run-staging-releases)
   * [Access and setup the merge remote instance](#access-and-setup-the-merge-remote-instance)
   * [Do migration no-op trial runs](#do-migration-no-op-trial-runs)
   * [Sanity check no blocking migration bugs](#sanity-check-no-blocking-migration-bugs)
@@ -68,6 +69,35 @@ After merge days, schedule a postmortem (or use current releaseduty postmortem) 
 ### File tracking migration bug
 
 File a tracking migration bug if there isn't one (e.g. [bug 1412962](https://bugzilla.mozilla.org/show_bug.cgi?id=1412962))
+
+### Run staging releases
+
+In order to prepare a smooth `b1` and `RC`, staging releases are to be run in the week before the mergeday day 1. In order for this to happen, we're using [staging releases submitted to try](https://firefox-source-docs.mozilla.org/tools/try/selectors/release.html).
+
+** For central to beta migration **
+
+- hop on `central` repository
+- make sure you're up to date with the tip of the repo
+- `mach try release --version <future-version-0b1> --migration central-to-beta`
+
+** For beta to release migration **
+
+- hop on `beta` repository
+- make sure you're up to date with the tip of the repo
+- `mach try release --version <future-version.0> --migration beta-to-release`
+
+These will create try pushes that look-alike the repos once they are merged. Once the decision tasks of the newly created CI graphs
+are green, staging releases can be created off of them via the [shipit-staging instance](https://shipit.staging.mozilla-releng.net/).
+
+One caveat here is the list of partials that needs to be filled-in.
+:warning: The partials need to exist in S3 and be valid releases in [Balrog staging instance](https://balrog-admin.stage.mozaws.net/)
+
+Ideally staging releases are triggered both on Monday/Tuesday but also on Thursday/Friday to ensure that we're up to date with all the patches that
+Sheriffs are landing before the RC week.
+
+Once the staging releases are being triggered, it's highly recommended that at least a comment is being dropped to Sherrifs team (e.g. Aryx) to let them know these are happening in order to:
+* avoid stepping on each others toes as they may run staging releases as well
+* make sure we're up-to-date to recent patches that they may be aware of
 
 ### Access and setup the merge remote instance
 
