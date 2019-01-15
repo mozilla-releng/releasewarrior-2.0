@@ -90,7 +90,7 @@ These will create try pushes that look-alike the repos once they are merged. Onc
 are green, staging releases can be created off of them via the [shipit-staging](https://shipit.staging.mozilla-releng.net/) instance.
 
 One caveat here is the list of partials that needs to be filled-in.
-:warning: The partials need to exist in S3 and be valid releases in [Balrog staging](https://balrog-admin.stage.mozaws.net/)
+:warning: The partials need to exist in S3 and be valid releases in [Balrog staging](https://balrog-admin.stage.mozaws.net/).
 
 Ideally staging releases are triggered both on _Monday/Tuesday_ but also on _Thursday/Friday_ to ensure that we're up to date with all the patches that
 Sheriffs are landing before the `RC` week.
