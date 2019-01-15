@@ -1,6 +1,6 @@
 # MergeDuty
 
-All code changes to Firefox and Fennec land in the [mozilla-central](https://hg.mozilla.org/mozilla-central) repository.
+All code changes to Firefox and Fennec land in the [mozilla-central](https://hg.mozilla.org/mozilla-central) repository
 * The `nightly` releases are built from that repo twice a day.
 * DevEdition and Beta releases are built from the [beta](https://hg.mozilla.org/releases/mozilla-beta/) repository
 * Extended Support Releases follow-up from the relevant ESR repo, such as [mozilla-esr52](https://hg.mozilla.org/releases/mozilla-esr52/)
@@ -12,7 +12,7 @@ How are those repositories kept in sync? That's `MergeDuty` and is part of the `
 
 `MergeDuty` consists of multiple separate days of work. Each day you must perform several sequential tasks. The days are spread out over nearly three weeks, with *three* major days of activity:
 
-* [Do the prep work a week before the merge](#do-the-prep-work-a-week-before-the-merge)
+* Do the prep work a week before the merge
   * [Set up mergeduty trello tracking board](#set-up-mergeduty-trello-tracking-board)
   * [File tracking migration bug](#file-tracking-migration-bug)
   * [Access and setup the merge remote instance](#access-and-setup-the-merge-remote-instance)
@@ -31,7 +31,7 @@ How are those repositories kept in sync? That's `MergeDuty` and is part of the `
 
 Historical context of this procedure:
 
-Originally, the m-c->m-b was done a week after m-b->m-r. Starting at Firefox 57, Release Management wanted to ship DevEdition b1 week before the planned mozilla-beta merge day. This meant Releng had to merge both repos at the same time.
+Originally, the `m-c` -> `m-b` was done a week after `m-b` -> `m-r`. Starting at `Firefox 57`, Release Management wanted to ship DevEdition `b1` week before the planned mozilla-beta merge day. This meant Releng had to merge both repos at the same time.
 
 ## Do the prep work a week before the merge
 
