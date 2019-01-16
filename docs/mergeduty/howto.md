@@ -78,19 +78,19 @@ In order to prepare a smooth `b1` and `RC`, staging releases are to be run in th
 
 - hop on `central` repository
 - make sure you're up to date with the tip of the repo
-- `mach try release --version <future-version-0b1> --migration central-to-beta`
+- `mach try release --version <future-version-0b1> --migration central-to-beta --tasks release-sim`
 
 **For beta to release migration**
 
 - hop on `beta` repository
 - make sure you're up to date with the tip of the repo
-- `mach try release --version <future-version.0> --migration beta-to-release`
+- `mach try release --version <future-version.0> --migration beta-to-release --tasks release-sim`
 
 These will create try pushes that look-alike the repos once they are merged. Once the decision tasks of the newly created CI graphs
 are green, staging releases can be created off of them via the [shipit-staging](https://shipit.staging.mozilla-releng.net/) instance.
 
 One caveat here is the list of partials that needs to be filled-in.
-:warning: The partials need to exist in S3 and be valid releases in [Balrog staging](https://balrog-admin.stage.mozaws.net/).
+:warning: The partials need to exist in [S3](http://ftp.stage.mozaws.net/pub/firefox/releases/) and be valid releases in [Balrog staging](https://balrog-admin.stage.mozaws.net/).
 
 Ideally staging releases are triggered both on _Monday/Tuesday_ but also on _Thursday/Friday_ to ensure that we're up to date with all the patches that
 Sheriffs are landing before the `RC` week.
