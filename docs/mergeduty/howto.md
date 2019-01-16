@@ -1,64 +1,46 @@
 # MergeDuty
 
-Most code changes to Firefox and Fennec land in the [mozilla-central](https://hg.mozilla.org/mozilla-central) repository, and 'nightly' releases are built from that repo.
-DevEdition and Beta are built from the [mozilla-beta](https://hg.mozilla.org/releases/mozilla-beta/) repository, Extended Support Releases from the relevant ESR repo, such as [mozilla-esr52](https://hg.mozilla.org/releases/mozilla-esr52/), and Release and Release Candidates are built from [mozilla-release](https://hg.mozilla.org/releases/mozilla-release/).
+All code changes to Firefox and Fennec land in the [mozilla-central](https://hg.mozilla.org/mozilla-central) repository
+* The `nightly` releases are built from that repo twice a day.
+* DevEdition and Beta releases are built from the [beta](https://hg.mozilla.org/releases/mozilla-beta/) repository
+* Extended Support Releases follow-up from the relevant ESR repo, such as [mozilla-esr52](https://hg.mozilla.org/releases/mozilla-esr52/)
+* Release and Release Candidates are built from [mozilla-release](https://hg.mozilla.org/releases/mozilla-release/) repository
 
-How are those repositories kept in sync? That's MergeDuty. You will be merging repositories to create new beta, release candidates, releases and extended support releases.
+How are those repositories kept in sync? That's `MergeDuty` and is part of the `releaseduty` responsability.
 
 ## Overview of Procedure
 
-MergeDuty consists of multiple separate days of work. Each day you must perform several sequential tasks. The days are spread out over nearly three weeks, with 3 major days of activity.
+`MergeDuty` consists of multiple separate days of work. Each day you must perform several sequential tasks. The days are spread out over nearly three weeks, with *three* major days of activity:
 
-The releng process usually operates like this:
-* A week before the merge, do the prep work
-  * Set up mergeduty trello tracking board
-  * Verify you have access to what you need
-  * Make sure that all the dry-run migrations run cleanly
-  * Sanity check you have no blocking migration bugs
-* On Merge day
-  * ask vcs to disable hg.m.o l10n hooks
+* Do the prep work a week before the merge
+  * [Set up mergeduty trello tracking board](#set-up-mergeduty-trello-tracking-board)
+  * [File tracking migration bug](#file-tracking-migration-bug)
+  * [Run staging releases](#run-staging-releases)
+  * [Access and setup the merge remote instance](#access-and-setup-the-merge-remote-instance)
+  * [Do migration no-op trial runs](#do-migration-no-op-trial-runs)
+  * [Sanity check no blocking migration bugs](#sanity-check-no-blocking-migration-bugs)
+* On Merge day:
   * mozilla-beta merges to mozilla-release
   * mozilla-central merges to mozilla-beta (relman may merge after this until we bump mozilla-central version)
   * mozilla-esr gets version bumped
   * Ask relman to create a mozilla-beta relbranch for Fennec
-* A week after Merge day, bump mozilla-central
+* A week after Merge day, bump mozilla-central:
   * Ask relman to do final mozilla-central->mozilla-beta merge
   * bump the version and tag mozilla-central repo itself
   * bump wiki versions
 
 
-For history of this procedure:
+Historical context of this procedure:
 
-Originally, the m-c->m-b was done a week after m-b->m-r. Starting at Firefox 57, Release Management wanted to ship DevEdition b1 week before the planned mozilla-beta merge day. This meant Releng had to merge both repos at the same time.
+Originally, the `m-c` -> `m-b` was done a week after `m-b` -> `m-r`. Starting at `Firefox 57`, Release Management wanted to ship DevEdition `b1` week before the planned mozilla-beta merge day. This meant Releng had to merge both repos at the same time.
 
-## Requirements
+## Do the prep work a week before the merge
 
-1. For migrations: access and setup of [the merge remote instance](#merge-remote-instance). While possible to do locally, the remote instance is strongly recommended.
-1. Access to Treestatus
-1. A tracking migration bug
-1. Access to Release Engineering Trello board
-
-### Merge remote instance
-
-There is an AWS instance to run staging and merging instances so that we are fewer hops away from the hg repos.
-1. To access it, make sure to start the `mergeday1` instance in `us-west-2` from the `AWS console`. That is, finding
-it in the instance list, hover over to `Actions` -> `Instance state` -> `Start`. It will get puppetized as soon as it's started.
-
-2. You should be able to access it with:
-
-```sh
- ssh mergeday1.srv.releng.usw2.mozilla.com
-```
-
-# Tasks
-
-## Prep day - 1 week prior to Merge day
-
-### Set up mergeduty Trello board
+### Set up mergeduty trello tracking board
 
 Rather than extend Releasewarrior with more complexity, the idea here is to try Trello and use Templated cards for todo tracking.
 
-To track human tasks and issues during merges, we use the following [trello board](https://trello.com/b/AyyFAEbS/mergeduty-tasks)
+To track human tasks and issues during merges, we use the following [trello board](https://trello.com/b/AyyFAEbS/mergeduty-tasks).
 
 **First, ensure the board is clean**:
 
@@ -66,7 +48,7 @@ To track human tasks and issues during merges, we use the following [trello boar
 - Sanity check that all items in `Postmortem Issues` and `Postmortem Action Items` lists have been resolved then:
   - In the `Postmortem Issues` list, select `move all cards in this list` to the `Archived Postmortem Issues` list
   - In the `Postmortem Action Items` list, select `move all cards in this list` to the `Archived Postmortem Action Items` list
-  
+
 **Now prep the board for this cycle's planned merges**:
 
 - For each card in the `Templates` list, select the card then under Actions, choose `Copy` and put in the `Merge Tasks` list
@@ -86,11 +68,52 @@ After merge days, schedule a postmortem (or use current releaseduty postmortem) 
 
 ### File tracking migration bug
 
-File a tracking migration bug if there isn't one. (e.g. [bug 1412962](https://bugzilla.mozilla.org/show_bug.cgi?id=1412962))
+File a tracking migration bug if there isn't one (e.g. [bug 1412962](https://bugzilla.mozilla.org/show_bug.cgi?id=1412962))
+
+### Run staging releases
+
+In order to prepare a smooth `b1` and `RC`, staging releases are to be run in the week before the mergeday day 1. In order for this to happen, we're using [staging releases submitted to try](https://firefox-source-docs.mozilla.org/tools/try/selectors/release.html).
+
+**For central to beta migration**
+
+- hop on `central` repository
+- make sure you're up to date with the tip of the repo
+- `mach try release --version <future-version-0b1> --migration central-to-beta --tasks release-sim`
+
+**For beta to release migration**
+
+- hop on `beta` repository
+- make sure you're up to date with the tip of the repo
+- `mach try release --version <future-version.0> --migration beta-to-release --tasks release-sim`
+
+These will create try pushes that look-alike the repos once they are merged. Once the decision tasks of the newly created CI graphs
+are green, staging releases can be created off of them via the [shipit-staging](https://shipit.staging.mozilla-releng.net/) instance.
+
+One caveat here is the list of partials that needs to be filled-in.
+:warning: The partials need to exist in [S3](http://ftp.stage.mozaws.net/pub/firefox/releases/) and be valid releases in [Balrog staging](https://balrog-admin.stage.mozaws.net/).
+
+Ideally staging releases are triggered both on _Monday/Tuesday_ but also on _Thursday/Friday_ to ensure that we're up to date with all the patches that
+Sheriffs are landing before the `RC` week.
+
+Once the staging releases are being triggered, it's highly recommended that at least a comment is being dropped to Sherrifs team (e.g. `Aryx`) to let them know these are happening in order to:
+* avoid stepping on each others toes as they may run staging releases as well
+* make sure we're up-to-date to recent patches that they may be aware of
+
+:warning: Allow yourself enough time to wait for these staging releases to be completed. Since they are running in `try`, they have the lowest priority even on the staging workers so it usually takes longer for them to complete.
 
 ### Access and setup the merge remote instance
 
-Ensure you have access and have setup [the merge remote instance](#merge-remote-instance).
+Ensure you have access and have setup the merge remote instance. While possible to do locally, the remote instance is strongly recommended.
+
+There is an AWS instance to run staging and merging instances so that we are fewer hops away from the hg repos.
+1. To access it, make sure to start the `mergeday1` instance in `us-west-2` from the `AWS console`. That is, finding
+it in the instance list, hover over to `Actions` -> `Instance state` -> `Start`. It will get puppetized as soon as it's started.
+
+2. You should be able to access it with:
+
+```sh
+ ssh mergeday1.srv.releng.usw2.mozilla.com
+```
 
 ### Do migration no-op trial runs
 
@@ -137,16 +160,13 @@ python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_esr.py 
 hg -R build/mozilla-esr{$version} diff  # have someone sanity check output with you
  ```
 
+### Sanity check no blocking migration bugs
+
+Make sure the bug that tracks the migration has no blocking items.
 
 ## Release Merge Day
 
 **When**: Wait for go from relman to release-signoff@mozilla.com. Relman might want to do the migration in two steps. Read the email to understand which migration you are suppose to do, and then wait for second email. For date, see [Release Scheduling calendar](https://calendar.google.com/calendar/embed?src=bW96aWxsYS5jb21fZGJxODRhbnI5aTh0Y25taGFiYXRzdHY1Y29AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) or check with relman
-
-### Disable migration blocking hg.m.o hooks
-
-There are ftl check hooks on [hg.m.o](http://hg.mozilla.org/) that prevent users from pushing to certain files. Additionally, there are pretxnclose.vcsreplicator hooks that need to be disabled as it can cause a push with a lot of commits (like a merge push) to fail. Until [bug 1415233](https://bugzilla.mozilla.org/show_bug.cgi?id=1415233) is resolved, you must explicitly ask for this hook to be disabled or have an hg.m.o work around in place. File a Dev Services bug or ask in #vcs, specifying when you would like to disable/re-enable the hooks like this one. Example bug for this is [bug 1441782](https://bugzilla.mozilla.org/show_bug.cgi?id=1441782).
-
-**Make sure you ask for the hooks to be disabled for both `mozilla-beta` and `mozilla-release`**.
 
 ### Merge beta to release
 
@@ -220,11 +240,6 @@ sudo su - cltbld
 cd /builds/l10n-bumper
 lockfile -10 -r3 /builds/l10n-bumper/bumper.lock 2>/dev/null && (cd /builds/l10n-bumper && /tools/python27/bin/python2.7 mozharness/scripts/l10n_bumper.py -c l10n_bumper/mozilla-beta.py --ignore-closed-tree --build; rm -f /builds/l10n-bumper/bumper.lock)
 ```
-
-### Re-enable hg.m.o hooks post-merging
-
-Make sure you drop a comment in the bug to ask for re-enabling the hooks for `mozilla-beta` and `mozilla-release` again.
-
 
 ### Reply to relman migrations are complete
 
