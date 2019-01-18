@@ -1,10 +1,10 @@
 # Widevine updates
 
-Widevine is a system addon allowing Firefox user to read DRM'd content (like Netflix). We provide updates via Balrog.  
+Widevine is a system addon allowing Firefox user to read DRM'd content (like Netflix). We provide updates via Balrog.
 
 ## When
 
-The request comes from the media team. They usually file a bug like [this one.](https://bugzilla.mozilla.org/show_bug.cgi?id=1475260) 
+The request comes from the media team. They usually file a bug like [this one.](https://bugzilla.mozilla.org/show_bug.cgi?id=1475260)
 
 Sometimes updates must be done because Google (the owner of Widevine) deprecates a version that still may be used by a supported Firefox version (e.g.: Firefox ESR).
 
@@ -42,7 +42,7 @@ For instance: TBD
 |       | Major        | See old schema                                                    |
 |       | Interface    | See old schema                                                    |
 |       | Revision     | See old schema                                                    |
-|       | ?            | TDB                                                               |
+|       | ?            | TBD                                                               |
 
 
 ### Create the blob
@@ -111,11 +111,11 @@ Finally, save that new release blob, upload it to Balrog via the "Add new releas
 
 ### Create the balrog rule
 
-Unlike Firefox updates, Widevine ones all happen in the same channel (except for the nightlytest, the internal testing channel). This means users are given a new widevine based on their Firefox version. For instance: if we provide a new widevine to 62.0 at the time 62.0b15 ships, then users with 62.0b1-b14 will also get this version. Make sure with the media team these betas are compatible! In the case it's not, please remind Firefox doesn't send which beta it's on to Balrog. You have to filter out based on the version **and** the buildID (the buildID alone doesn't work if a 61 dot release happens afterwards).
+Unlike Firefox updates, Widevine ones all happen in the same channel (except for the nightlytest, the internal testing channel). This means users are given a new widevine based on their Firefox version. For instance: if we provide a new widevine to 62.0 at the time 62.0b15 ships, then users with 62.0b1-b14 will also get this version. Make sure with the media team these betas are compatible! In the case it's not, please remember Firefox doesn't send which beta it's on to Balrog. You have to filter out based on the version **and** the buildID (the buildID alone doesn't work if a 61 dot release happens afterwards).
 
 In the end, a rule looks that filters on both like this one: ![Balrog rule](/docs/misc-operations/widevine-balrog-rule.png?raw=true)
 
-### Testing 
+### Testing
 
 You can use the nightlytest channel to test changes before sending them to production. A widevine request to balrog is like this one: https://aus5.mozilla.org/update/3/GMP/62.0/20180802174131/WINNT_x86_64-msvc-x64/en-US/nightlytest/default/default/default/update.xml
 
