@@ -230,7 +230,7 @@ python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_esr.py 
 
 ### Run the l10n bumper
 
-Run `l10n-bumper` against beta
+Run `l10n-bumper` against beta:
 
 ```sh
 ssh buildbot-master01.bb.releng.use1.mozilla.com
