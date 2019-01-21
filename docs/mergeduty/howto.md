@@ -23,7 +23,7 @@ How are those repositories kept in sync? That's `MergeDuty` and is part of the `
   * [Merge beta to release](#merge-beta-to-release)
   * [Merge central to beta](#merge-central-to-beta)(relman may merge after this until we bump `mozilla-central` version)
   * [Bump mozilla-esr](#bump-esr-version)
-  * [Run l10n bumper](#run-l10n-bumper)
+  * [Run l10n bumper](#run-the-l10n-bumper)
   * [Reply migrations are complete](#reply-to-relman-migrations-are-complete)
   * [Ask for mozilla-beta Fennec Relbranch](#relbranch-in-m-b-for-Fennec)
 * A week after Merge day, bump mozilla-central:
