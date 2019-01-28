@@ -293,7 +293,7 @@ python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_central
 
 ### Turn off the long living merge instance
 
-Until we are using the puppetized instance (Bug 1469284) and it automatically stops, we should manually stop the merge instance inbetween merge days (6-8 weeks apart)
+The machine is not configured to automatically shut down. We should manually stop the merge instance inbetween merge days (6-8 weeks apart)
 
 
 ### Reply to relman central bump completed
@@ -308,7 +308,9 @@ This is now complete:
 
 ### Update wiki versions
 
-1. Updating is done automatically with the proper scripts at hand:
+The following steps don't work anymore because of [bug 1414278](https://bugzilla.mozilla.org/show_bug.cgi?id=1414278).
+
+~~1. Updating is done automatically with the proper scripts at hand:~~
 ```sh
 wget https://hg.mozilla.org/build/tools/raw-file/default/buildfarm/maintenance/wiki_functions.sh
 wget https://hg.mozilla.org/build/tools/raw-file/default/buildfarm/maintenance/update_merge_day_wiki.sh
@@ -317,9 +319,9 @@ export WIKI_PASSWORD=*******
 NEW_ESR_VERSION=52  # Only if a new ESR comes up (for instance 52.0esr)
 ./update_merge_day_wiki.sh # Or ./update_merge_day_wiki.sh -e $NEW_ESR_VERSION
 ```
-:warning: This script was broken at one point. If script fails, update the wiki pages manually by bumping the gecko version in below urls
+~~:warning: This script was broken at one point. If script fails, update the wiki pages manually by bumping the gecko version in below urls~~
 
-1. Check the new values:
+1. ~~Check~~ Edit the new values manually:
   * [NEXT_VERSION](https://wiki.mozilla.org/Template:Version/Gecko/release/next)
   * [CENTRAL_VERSION](https://wiki.mozilla.org/Template:Version/Gecko/central/current)
   * [BETA_VERSION](https://wiki.mozilla.org/Template:Version/Gecko/beta/current)
