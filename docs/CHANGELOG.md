@@ -4,7 +4,7 @@ This page best serves the people that have previously been into the releaseduty 
 
 _**As releaseduty squirrels are the ones with the best context when it comes to releases, they are the ones to edit this page and amend it accordingly. Keep in mind that changes should be in compliance with the other pieces of documentation.**_
 
-## During 64.0 >= 2018-10-15
+## During 66.0 >= 2019-01-29
 ### Changed
 - adding list of whatsnewpage locales in-tree is now part of mergeduty
 - removed thunderbird docs. thunderbird is now managed by thunderbird team and they have support for shipit v2
