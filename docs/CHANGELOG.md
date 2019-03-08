@@ -3,6 +3,10 @@ Every time a new releaseduty cycle begins, new RelEng people are (re)ramping up.
 This page best serves the people that have previously been into the releaseduty cycle. Starting from the baseline, people coming back after `N` cycles can ramp up incrementally with the latest changes.
 
 _**As releaseduty squirrels are the ones with the best context when it comes to releases, they are the ones to edit this page and amend it accordingly. Keep in mind that changes should be in compliance with the other pieces of documentation.**_
+## During 66.0 >= 2019-01-30
+### Changed
+- scriptworker 22 now signs and verifies ed25519 signatures; gpg signatures are deprecated.
+
 ## During 64.0 >= 2018-10-15
 ### Changed
 - MARs are now signed via autograph (hashes only)
