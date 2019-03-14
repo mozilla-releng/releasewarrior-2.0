@@ -19,6 +19,7 @@ How are those repositories kept in sync? That's `MergeDuty` and is part of the `
   * [Access and setup the merge remote instance](#access-and-setup-the-merge-remote-instance)
   * [Do migration no-op trial runs](#do-migration-no-op-trial-runs)
   * [Sanity check no blocking migration bugs](#sanity-check-no-blocking-migration-bugs)
+  * [Land whatsnewpage list of locales](#land-whatsnewpage-list-of-locales)
 * On Merge day:
   * [Merge beta to release](#merge-beta-to-release)
   * [Merge central to beta](#merge-central-to-beta)
@@ -165,6 +166,12 @@ hg -R build/mozilla-esr{$version} diff  # have someone sanity check output with 
 ### Sanity check no blocking migration bugs
 
 Make sure the bug that tracks the migration has no blocking items.
+
+### Land whatsnewpage list of locales
+
+1. find the whatsnewpage tracking bug for current release. e.g. [Bug 1523699](https://bugzilla.mozilla.org/show_bug.cgi?id=1523699)
+1. on the Friday before the first merge, the l10n team (flod) will post the final list of locales for whatsnewpage
+1. update the [in-tree whatsnewpage list of locales](https://hg.mozilla.org/mozilla-central/file/tip/browser/config/whats_new_page.yml) on central and uplift that to beta. Similar to [this patch](https://hg.mozilla.org/mozilla-central/rev/55c218c9489b). It will uplift to release when the merge happens
 
 ## Release Merge Day
 
