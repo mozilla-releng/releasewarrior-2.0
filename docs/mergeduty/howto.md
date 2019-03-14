@@ -169,9 +169,12 @@ Make sure the bug that tracks the migration has no blocking items.
 
 ### Land whatsnewpage list of locales
 
-1. find the whatsnewpage tracking bug for current release. e.g. [Bug 1523699](https://bugzilla.mozilla.org/show_bug.cgi?id=1523699)
-1. on the Friday before the first merge, the l10n team (flod) will post the final list of locales for whatsnewpage
-1. update the [in-tree whatsnewpage list of locales](https://hg.mozilla.org/mozilla-central/file/tip/browser/config/whats_new_page.yml) on central and uplift that to beta. Similar to [this patch](https://hg.mozilla.org/mozilla-central/rev/55c218c9489b). It will uplift to release when the merge happens
+1. For each release, there should already be a bug flying around named `Setup WNP for users coming from < X and receiving the X release`. Find it for the current release. e.g. [Bug 1523699](https://bugzilla.mozilla.org/show_bug.cgi?id=1523699).
+We should always aim to chain this bug to our main mergeduty tracking bug. That is, block the WNP bug against the `tracking XXX migration day`. If not already, please do so. This way, it's easier to find deps and nagivate via bugs.
+1. By the Friday prior to merge day, the l10n (most likely `flod`) team will have posted the final list of locales for whatsnewpage.
+Double-check with them again to make sure that is the final list. The list of locales comes in two forms: attachment in bug directly to be `hg import`ed, but also as a comment.
+Make sure to double-check they match as that's generated automatically and sometimes there could be fallouts resulting in mismatches.
+1. Update the [in-tree whatsnewpage list of locales](https://hg.mozilla.org/mozilla-central/file/tip/browser/config/whats_new_page.yml) on central and uplift that to beta. Similar to [this patch](https://hg.mozilla.org/mozilla-central/rev/55c218c9489b). It will uplift to release when the merge happens
 
 ## Release Merge Day
 
