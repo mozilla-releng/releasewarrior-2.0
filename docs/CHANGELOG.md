@@ -4,8 +4,14 @@ This page best serves the people that have previously been into the releaseduty 
 
 _**As releaseduty squirrels are the ones with the best context when it comes to releases, they are the ones to edit this page and amend it accordingly. Keep in mind that changes should be in compliance with the other pieces of documentation.**_
 
-## During 66.0 >= 2019-01-29
+## During 67.0 >= 2019-03-11
 ### Changed
+- update & final verify will check SSL certificates of Balrog, archive.m.o etc
+
+## During 66.0 >= 2019-01-30
+### Changed
+- scriptworker 22 now signs and verifies ed25519 signatures; gpg signatures are deprecated.
+- partner repacks are now enabled on ESR60
 - adding list of whatsnewpage locales in-tree is now part of mergeduty
 - removed thunderbird docs. thunderbird is now managed by thunderbird team and they have support for shipit v2
 
