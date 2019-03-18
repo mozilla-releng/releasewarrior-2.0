@@ -28,9 +28,12 @@ How are those repositories kept in sync? That's `MergeDuty` and is part of the `
   * [Reply migrations are complete](#reply-to-relman-migrations-are-complete)
   * [Ask for mozilla-beta Fennec Relbranch](#relbranch-in-m-b-for-Fennec)
 * A week after Merge day, bump mozilla-central:
-  * Ask relman to do final mozilla-central->mozilla-beta merge
-  * bump the version and tag mozilla-central repo itself
-  * bump wiki versions
+  * [Ask relman to do final central to beta merge](#merge-central-to-beta-one-last-time)
+  * [Tag central and bump versions](#tag-central-and-bump-versions)
+  * [Turn off merge instance](#turn-off-the-long-living-merge-instance)
+  * [Reply to RelMan that procedure is completed](#reply-to-relman-central-bump-completed)
+  * [Update wiki versions](#update-wiki-versions)
+  * [Re-open trees](#re-opening-the-trees)
 
 
 Historical context of this procedure:
@@ -278,9 +281,9 @@ Ask RelMan, (e.g. [RyanVM](https://mozillians.org/en-US/u/RyanVM/)), to do this 
 
 **What happens**: A new tag is needed to specify the end of the nightly cycle. Then clobber and bump versions in `mozilla-central` as instructions depict.
 
-**How**: This is now done via [the merge remote instance](#merge-remote-instance) and **gecko_migrations.py** similar to bumping **esr**:
+**How**: This is now done via [the merge remote instance](#access-and-setup-the-merge-remote-instance) and **gecko_migrations.py** similar to bumping **esr**:
 
-1. connect to [the merge remote instance](#merge-remote-instance) and `cd` to the current `merge_day` work dir as did for the first part of the mergeduty
+1. connect to [the merge remote instance](#access-and-setup-the-merge-remote-instance) and `cd` to the current `merge_day` work dir as did for the first part of the mergeduty
 1. Run the tag/bump for m-c and show the diff to another person on releaseduty.
 ```sh
 python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_central.py
@@ -308,7 +311,7 @@ The machine is not configured to automatically shut down. We should manually sto
 
 ### Reply to relman central bump completed
 
-1. Reply to the migration request with the template:
+Reply to the migration request with the template:
 
 ```
 This is now complete:
