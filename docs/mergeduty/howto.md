@@ -283,7 +283,7 @@ Ask RelMan, (e.g. [RyanVM](https://mozillians.org/en-US/u/RyanVM/)), to do this 
 1. connect to [the merge remote instance](#merge-remote-instance) and `cd` to the current `merge_day` work dir as did for the first part of the mergeduty
 1. Run the tag/bump for m-c and show the diff to another person on releaseduty.
 ```sh
-python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_central.py
+python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_central.py --ssh-user ffxbld-merge
 hg -R build/mozilla-central diff
  ```
 1. The diff for `central` should be fairly similar to [this](https://hg.mozilla.org/mozilla-central/rev/d6957f004e9c)
