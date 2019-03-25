@@ -7,6 +7,7 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 ## During 67.0 >= 2019-03-11
 ### Changed
 - update & final verify will check SSL certificates of Balrog, archive.m.o etc
+- the release promotion action is now a hook.
 
 ## During 66.0 >= 2019-01-30
 ### Changed
