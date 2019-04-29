@@ -6,9 +6,11 @@ We repackage Firefox for partners. Occasionally we'll have a new study (funnelca
 
 # When?
 
-We'll get a bug for a new partner repack or funnelcake.
+We'll get a bug for a new partner repack or funnelcake, in the Release Engineering :: Custom Release Requests component in Bugzilla.
 
 These will need to run against a previously-promoted release.
+
+**Warning:** Adding a new partner, or partner sub-config, can cause alarming failures for an in-progress Firefox release, but does not actually block the release. The problem usually occurs in the push or ship phase, where a new partner config since the previous phase causes extra partner tasks in the new graph and these fail. A resolution for this is tracked in [Bug 1496530](https://bugzilla.mozilla.org/show_bug.cgi?id=1496530), but in the meantime you can either delay the partner configuration change until the release is complete, or inform releaseduty to ignore the extra tasks.
 
 # How?
 
