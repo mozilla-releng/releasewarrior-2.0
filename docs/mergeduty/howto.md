@@ -143,6 +143,9 @@ mkdir merge_day_${RELEASE_VERSION_FOR_CYCLE}
 cd merge_day_${RELEASE_VERSION_FOR_CYCLE}
 wget -O mozharness.tar.bz2 https://hg.mozilla.org/mozilla-central/archive/tip.tar.bz2/testing/mozharness/
 tar --strip-components=2 -jvxf mozharness.tar.bz2
+wget -O mozbase.tar.bz2 https://hg.mozilla.org/mozilla-central/archive/tip.tar.bz2/testing/mozbases/
+tar --strip-components=2 -jvxf mozbase.tar.bz2
+for package in manifestparser mozinfo mozprocess mozfile; do cp -pr mozbase/${package}/${package} mozharness/; done
  ```
 
 #### mozilla-beta->mozilla-release migration no-op trial run
