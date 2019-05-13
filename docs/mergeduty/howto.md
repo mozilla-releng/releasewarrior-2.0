@@ -230,7 +230,7 @@ python mozharness/scripts/merge_day/gecko_migration.py \
 
 ### Bump ESR version
 
-Note: you may have 1 or 2 ESRs to bump. If you are not sure, ask.
+Note: You could have one ESR to bump, or two. If you are not sure, ask.
 
 1. Steps are similar to a merge.
 1. Run the bump-esr [no-op trial run]() one more time, and show the diff to another person on releaseduty.
