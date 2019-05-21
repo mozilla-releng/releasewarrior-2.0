@@ -33,6 +33,7 @@ How are those repositories kept in sync? That's `MergeDuty` and is part of the `
   * [Turn off merge instance](#turn-off-the-long-living-merge-instance)
   * [Reply to RelMan that procedure is completed](#reply-to-relman-central-bump-completed)
   * [Update wiki versions](#update-wiki-versions)
+  * [Bump Nightly version in ShipIt](#bump-nightly-shipit)
   * [Re-open trees](#re-opening-the-trees)
 
 
@@ -346,6 +347,20 @@ NEW_ESR_VERSION=52  # Only if a new ESR comes up (for instance 52.0esr)
     * [The next ship date](https://wiki.mozilla.org/index.php?title=Template:FIREFOX_SHIP_DATE)
     * [The next merge date](https://wiki.mozilla.org/index.php?title=Template:FIREFOX_MERGE_DATE)
     * [The current cycle](https://wiki.mozilla.org/index.php?title=Template:CURRENT_CYCLE)
+
+
+### Bump Nightly version in ShipIt
+
+ShipIt currently hardcodes the version of Nightly that's being released. It doesn't automatically updated
+because it would need to know when a new nightly was available, not just when the version had been updated in-tree.
+Everything up to merging this pull request can be done early, but the PR must not be merged before the 
+first nightly has been built and published with the new version.
+
+1. `git clone https://github.com/mozilla/release-services.git`
+2. `git checkout -b nightly_version_bump_${version}`
+3. Edit https://github.com/mozilla/release-services/blob/master/src/shipit/api/shipit_api/config.py#L41
+4. Commit, and submit a pull request
+5. Merge the pull request _after_ a new nightly version has been pushed to CDNs
 
 
 ### Re-opening the tree(s)
