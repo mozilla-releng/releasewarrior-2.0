@@ -204,8 +204,8 @@ python mozharness/scripts/merge_day/gecko_migration.py \
 
 :warning: If an **auth** issue comes up during this phase, most likely you need to switch from `https` to `ssh`, something like `default-push = ssh://${repo}`.
 
-1. Upon successful run, `mozilla-release` should get a version bump and branding changes consisting of a `commit` like [this](https://hg.mozilla.org/releases/mozilla-release/rev/cbb9688c2eeb) and a `tag` like [this](https://hg.mozilla.org/releases/mozilla-release/rev/173d292663a1)
-1. In the same time `mozilla-beta` should get a tag like [this](https://hg.mozilla.org/releases/mozilla-beta/rev/0ed280054c9b)
+1. Upon successful run, `mozilla-release` should get a version bump and branding changes consisting of a `commit` like [this](https://hg.mozilla.org/releases/mozilla-release/rev/2fb19d0466d2f61674c0af80813645cccd510593) and a `tag` like [this](https://hg.mozilla.org/releases/mozilla-release/rev/be8c618fd8ad921642e04e1552fbad46a044fe9e)
+1. In the same time `mozilla-beta` should get a tag like [this](https://hg.mozilla.org/releases/mozilla-beta/rev/d87f9b66ddd19a973ec3ef26a9163bab9383c438)
 1. Verify changesets are visible on [hg pushlog](https://hg.mozilla.org/releases/mozilla-release/pushloghtml) and [Treeherder]( https://treeherder.mozilla.org/#/jobs?repo=mozilla-release). It may take a couple of minutes to appear.
 
 :warning: The decision task of the resulting pushlog in the `mozilla-release` might fail in the first place with a timeout. A rerun might solve the problem which can be caused by an unlucky slow instance.
@@ -223,8 +223,8 @@ python mozharness/scripts/merge_day/gecko_migration.py \
 :warning: It's not unlikely for the push to take between 10-20 minutes to complete.
 
 :warning: If an **auth** issue comes up during this phase, most likely you need to switch from `https` to `ssh`, something like `default-push = ssh://${repo}`.
-1. Upon successful run, `mozilla-beta` should get a version bump and branding changes consisting of a `commit` like [this](https://hg.mozilla.org/releases/mozilla-beta/rev/15334014dc67) and a `tag` like [this](https://hg.mozilla.org/releases/mozilla-beta/rev/fb732e4aebfc)
-1. In the same time `mozilla-central` should get a tag like [this](https://hg.mozilla.org/mozilla-central/rev/426ef843d356)
+1. Upon successful run, `mozilla-beta` should get a version bump and branding changes consisting of a `commit` like [this](https://hg.mozilla.org/releases/mozilla-beta/rev/53ea74d2bd09de0972820d6264abf1e17c1f1a79) and a `tag` like [this](https://hg.mozilla.org/releases/mozilla-beta/rev/eec47871f86e569dfcae03712cdc98acd57d8c3b)
+1. In the same time `mozilla-central` should get a tag like [this](https://hg.mozilla.org/mozilla-central/rev/7573050ba145afe5c0f9fcb28f5fead5e240cba9)
 1. Verify changesets are visible on [hg pushlog](https://hg.mozilla.org/releases/mozilla-beta/pushloghtml) and [Treeherder]( https://treeherder.mozilla.org/#/jobs?repo=mozilla-beta). It may take a couple of minutes to appear.
 
 :warning: The decision task of the resulting pushlog in the `mozilla-beta` might fail in the first place with a timeout. A rerun might solve the problem which can be caused by an unlucky slow instance.
@@ -269,9 +269,9 @@ This is now complete:
 * beta will stay closed until next week
 ```
 
-### Relbranch in m-b for Fennec
+### [DEPRECATED] Relbranch in m-b for Fennec
 
-Ask RelMan, (e.g. [RyanVM](https://mozillians.org/en-US/u/RyanVM/)), to create [a relbranch like this one](https://hg.mozilla.org/releases/mozilla-beta/shortlog/FIREFOX_56b13_RELBRANCH).
+No need for a Fennec relbranch anymore because Fennec Beta is now built off mozilla-esr68: https://bugzilla.mozilla.org/show_bug.cgi?id=1523402.
 
 
 ## Bump and tag mozilla-central - 1 week after Merge day
@@ -353,7 +353,7 @@ NEW_ESR_VERSION=52  # Only if a new ESR comes up (for instance 52.0esr)
 
 ShipIt currently hardcodes the version of Nightly that's being released. It doesn't automatically updated
 because it would need to know when a new nightly was available, not just when the version had been updated in-tree.
-Everything up to merging this pull request can be done early, but the PR must not be merged before the 
+Everything up to merging this pull request can be done early, but the PR must not be merged before the
 first nightly has been built and published with the new version.
 
 1. `git clone https://github.com/mozilla/release-services.git`
