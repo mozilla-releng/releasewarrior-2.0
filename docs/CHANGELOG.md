@@ -4,6 +4,12 @@ This page best serves the people that have previously been into the releaseduty 
 
 _**As releaseduty squirrels are the ones with the best context when it comes to releases, they are the ones to edit this page and amend it accordingly. Keep in mind that changes should be in compliance with the other pieces of documentation.**_
 
+## During 69.0 >= 2019-05-13
+### Changed
+- mac signing now happens on the mac notarization pool.
+- mac nightly and release builds are now notarized as well as signed.
+- mac signing tasks also create pkg installers
+
 ## During 67.0 >= 2019-03-11
 ### Changed
 - update & final verify will check SSL certificates of Balrog, archive.m.o etc
