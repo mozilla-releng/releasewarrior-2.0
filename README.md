@@ -1,6 +1,6 @@
 # Warning - deprecated for Firefox
 
-**Releasewarrior as a tracking tool for releases is only used for Thunderbird. Every other release is tracked between [Ship-it](https://shipit.mozilla-releng.net/) and [Trello](https://trello.com/b/aLnCtUjm/releaseduty)**
+**Releasewarrior is no longer used. Every release is tracked between [Ship-it](https://shipit.mozilla-releng.net/) and [Trello](https://trello.com/b/aLnCtUjm/releaseduty)**
 
 # Releasewarrior 2.0
 
