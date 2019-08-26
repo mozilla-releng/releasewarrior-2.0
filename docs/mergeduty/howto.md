@@ -6,7 +6,7 @@ All code changes to Firefox and Fennec land in the [mozilla-central](https://hg.
 * Extended Support Releases follow-up from the relevant ESR repo, such as [mozilla-esr52](https://hg.mozilla.org/releases/mozilla-esr52/)
 * Release and Release Candidates are built from [mozilla-release](https://hg.mozilla.org/releases/mozilla-release/) repository
 
-How are those repositories kept in sync? That's `MergeDuty` and is part of the `releaseduty` responsability.
+How are those repositories kept in sync? That's `MergeDuty` and is part of the `releaseduty` responsibility.
 
 ## Overview of Procedure
 
@@ -85,7 +85,7 @@ In order to prepare a smooth `b1` and `RC`, staging releases are to be run in th
 
 - hop on `central` repository
 - make sure you're up to date with the tip of the repo
-- `mach try release --version <future-version-0b1> --migration central-to-beta --tasks release-sim`
+- `mach try release --version <future-version.0b1> --migration central-to-beta --tasks release-sim`
 
 **For beta to release migration**
 
