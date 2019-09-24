@@ -182,6 +182,13 @@ We should always aim to chain this bug to our main mergeduty tracking bug. That 
 Double-check with them again to make sure that is the final list. The list of locales comes in two forms: attachment in bug directly to be `hg import`ed, but also as a comment.
 Make sure to double-check they match as that's generated automatically and sometimes there could be fallouts resulting in mismatches.
 1. Update the [in-tree whatsnewpage list of locales](https://hg.mozilla.org/mozilla-central/file/tip/browser/config/whats_new_page.yml) on central and uplift that to beta. Similar to [this patch](https://hg.mozilla.org/mozilla-central/rev/55c218c9489b). It will uplift to release when the merge happens
+    1. On development machine, update `browser/config/whats_new_page.yml` with the list of locales from the bug
+    1. Commit the change and create Phabricator patch request as usual
+    1. Once the patch request is approved and landed, `hg pull`
+        * The revision should appear in the `autoland`
+    1. `hg up beta`, `hg graft ${COMMIT_REVISION}`
+    1. Confirm your changes with `hg out -p -r . beta`, then push with `hg push -r . beta`
+
 
 ## Release Merge Day
 
