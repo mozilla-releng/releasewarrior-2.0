@@ -171,8 +171,9 @@ You need to download a different set of mozharness because ESR68 has a different
 
 ```sh
 export version=68
-mkdir ~/merge_day_esr_$YYYYMMDD
-cd ~/merge_day_esr_$YYYYMMDD
+export full_version=68.3.0
+mkdir ~/merge_day_esr_${full_version}
+cd ~/merge_day_esr_${full_version}
 wget -O mozharness.tar.bz2 https://hg.mozilla.org/releases/mozilla-esr${version}/archive/tip.tar.bz2/testing/mozharness/
 tar --strip-components=2 -jvxf mozharness.tar.bz2
 wget -O mozbase.tar.bz2 https://hg.mozilla.org/releases/mozilla-esr${version}/archive/tip.tar.bz2/testing/mozbase/
@@ -184,7 +185,8 @@ Run the bump-esr [no-op trial run](), and show the diff to another person on rel
 
 ```sh
 export version=68
-cd ~/merge_day_esr_$YYYYMMDD
+export full_version=68.3.0
+cd ~/merge_day_esr_${full_version}
 python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_esr${version}.py --ssh-user ffxbld-merge
 hg -R build/mozilla-esr${$version} diff  # have someone sanity check output with you
  ```
@@ -326,7 +328,8 @@ Run the bump-esr [no-op trial run]() one more time, and show the diff to another
 
 ```sh
 export version=68
-cd ~/merge_day_esr_$YYYYMMDD
+export full_version=68.3.0
+cd ~/merge_day_esr_${full_version}
 python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_esr${version}.py --ssh-user ffxbld-merge
 hg -R build/mozilla-esr${version} diff  # have someone sanity check output with you
  ```
