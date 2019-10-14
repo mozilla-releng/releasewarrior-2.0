@@ -163,6 +163,34 @@ python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/central_to_b
 hg -R build/mozilla-beta diff  # have someone sanity check output with you
  ```
 
+#### mozilla-esr bump no-op trial run
+
+#### ESR bump requires a different copy of mozharness
+
+You need to download a different set of mozharness because ESR68 has a different configuration due to Fennec ESR.
+
+```sh
+export version=68
+mkdir ~/merge_day_esr_$YYYYMMDD
+cd ~/merge_day_esr_$YYYYMMDD
+wget -O mozharness.tar.bz2 https://hg.mozilla.org/releases/mozilla-esr${version}/archive/tip.tar.bz2/testing/mozharness/
+tar --strip-components=2 -jvxf mozharness.tar.bz2
+wget -O mozbase.tar.bz2 https://hg.mozilla.org/releases/mozilla-esr${version}/archive/tip.tar.bz2/testing/mozbase/
+tar --strip-components=2 -jvxf mozbase.tar.bz2
+for package in manifestparser mozinfo mozprocess mozfile; do cp -pr mozbase/${package}/${package} mozharness/; done
+ ```
+
+Run the bump-esr [no-op trial run](), and show the diff to another person on releaseduty.
+
+```sh
+export version=68
+cd ~/merge_day_esr_$YYYYMMDD
+python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_esr${version}.py --ssh-user ffxbld-merge
+hg -R build/mozilla-esr${$version} diff  # have someone sanity check output with you
+ ```
+
+Diff should be similar to [this one](https://hg.mozilla.org/releases/mozilla-esr68/rev/2d43ffaa9d1adf29b71f0b7354374463c8d7b621).
+
 ### Sanity check no blocking migration bugs
 
 Make sure the bug that tracks the migration has no blocking items.
@@ -294,25 +322,13 @@ python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_central
 
 Note: You could have one ESR to bump, or two. If you are not sure, ask.
 
-#### Get a different copy of mozharness
-
-You need to download a different set of mozharness because ESR68 has a different configuration due to Fennec ESR.
+Run the bump-esr [no-op trial run]() one more time, and show the diff to another person on releaseduty.
 
 ```sh
 export version=68
-cd ~/merge_day_esr
-wget -O mozharness.tar.bz2 https://hg.mozilla.org/releases/mozilla-esr${version}/archive/tip.tar.bz2/testing/mozharness/
-tar --strip-components=2 -jvxf mozharness.tar.bz2
-wget -O mozbase.tar.bz2 https://hg.mozilla.org/releases/mozilla-esr${version}/archive/tip.tar.bz2/testing/mozbase/
-tar --strip-components=2 -jvxf mozbase.tar.bz2
-for package in manifestparser mozinfo mozprocess mozfile; do cp -pr mozbase/${package}/${package} mozharness/; done
- ```
-
-Run the bump-esr [no-op trial run](), and show the diff to another person on releaseduty.
-
-```sh
+cd ~/merge_day_esr_$YYYYMMDD
 python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_esr${version}.py --ssh-user ffxbld-merge
-hg -R build/mozilla-esr{$version} diff  # have someone sanity check output with you
+hg -R build/mozilla-esr${version} diff  # have someone sanity check output with you
  ```
 
 Diff should be similar to [this one](https://hg.mozilla.org/releases/mozilla-esr68/rev/2d43ffaa9d1adf29b71f0b7354374463c8d7b621).
