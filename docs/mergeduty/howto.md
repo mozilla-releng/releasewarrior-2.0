@@ -359,6 +359,7 @@ Reply to the migration request with the template:
 ```
 This is now complete:
 * mozilla-central has been tagged and version bumped
+* mozilla-esr has been version bumped
 * newly triggered nightlies will pick the version change on cron-based schedule
 ```
 
