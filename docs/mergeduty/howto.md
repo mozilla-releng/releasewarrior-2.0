@@ -181,7 +181,7 @@ tar --strip-components=2 -jvxf mozbase.tar.bz2
 for package in manifestparser mozinfo mozprocess mozfile; do cp -pr mozbase/${package}/${package} mozharness/; done
  ```
 
-Run the bump-esr [no-op trial run](), and show the diff to another person on releaseduty.
+Run the bump-esr [no-op trial run](#do-migration-no-op-trial-runs), and show the diff to another person on releaseduty.
 
 ```sh
 export version=68
@@ -270,7 +270,7 @@ cd /builds/l10n-bumper
 lockfile -10 -r3 /builds/l10n-bumper/bumper.lock 2>/dev/null && (cd /builds/l10n-bumper && /tools/python27/bin/python2.7 mozharness/scripts/l10n_bumper.py -c l10n_bumper/mozilla-beta.py --ignore-closed-tree --build; rm -f /builds/l10n-bumper/bumper.lock)
 ```
 
-It should only take a few min to run. It is safe to rerun in case of failure. It requires that the mozilla-beta merge push is visible on the hg webheads. So either wait a few min after the m-c->m-b push step or verify it's visible on [](https://hg.mozilla.org/releases/mozilla-beta)
+It should only take a few min to run. It is safe to rerun in case of failure. It requires that the mozilla-beta merge push is visible on the hg webheads. So either wait a few min after the m-c->m-b push step or verify it's visible on [mozilla-beta](https://hg.mozilla.org/releases/mozilla-beta)
 
 ### Reply to relman migrations are complete
 
@@ -324,7 +324,7 @@ python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_central
 
 Note: You could have one ESR to bump, or two. If you are not sure, ask.
 
-Run the bump-esr [no-op trial run]() one more time, and show the diff to another person on releaseduty.
+Run the bump-esr [no-op trial run](#do-migration-no-op-trial-runs) one more time, and show the diff to another person on releaseduty.
 
 ```sh
 export version=68
