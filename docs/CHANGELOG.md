@@ -14,6 +14,7 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 - decommissioning of the AWS infrastructure
 - treescript has been refactored
 - scriptworker-scripts docker images now mount the repo at `/app` instead of the script (we may revisit this to lower disk usage)
+- mergeduty process change for upcoming automated betas. tl;dr - no longer Devedition b1 and b2 during RC week. central merges to beta a week later
 
 ## During 69.0 >= 2019-05-13
 ### Changed

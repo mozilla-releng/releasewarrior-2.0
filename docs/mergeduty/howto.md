@@ -1,9 +1,9 @@
 # MergeDuty
 
-All code changes to Firefox and Fennec land in the [mozilla-central](https://hg.mozilla.org/mozilla-central) repository
+All code changes to Firefox land in the [mozilla-central](https://hg.mozilla.org/mozilla-central) repository while the Fennec counterpart land to [mozilla-esr68](https://hg.mozilla.org/releases/mozilla-esr68).
 * The `nightly` releases are built from that repo twice a day.
 * DevEdition and Beta releases are built from the [beta](https://hg.mozilla.org/releases/mozilla-beta/) repository
-* Extended Support Releases follow-up from the relevant ESR repo, such as [mozilla-esr52](https://hg.mozilla.org/releases/mozilla-esr52/)
+* Extended Support Releases follow-up from the relevant ESR repo, such as [mozilla-esr68](https://hg.mozilla.org/releases/mozilla-esr68/)
 * Release and Release Candidates are built from [mozilla-release](https://hg.mozilla.org/releases/mozilla-release/) repository
 
 How are those repositories kept in sync? That's `MergeDuty` and is part of the `releaseduty` responsibility.
@@ -22,13 +22,11 @@ How are those repositories kept in sync? That's `MergeDuty` and is part of the `
   * [Land whatsnewpage list of locales](#land-whatsnewpage-list-of-locales)
 * On Merge day:
   * [Merge beta to release](#merge-beta-to-release)
+  * [Reply migrations are complete](#reply-to-relman-migrations-are-complete)
+* A week after Merge day, bump mozilla-central:
   * [Merge central to beta](#merge-central-to-beta)
   * [Bump mozilla-esr](#bump-esr-version)
   * [Run l10n bumper](#run-the-l10n-bumper)
-  * [Reply migrations are complete](#reply-to-relman-migrations-are-complete)
-  * [Ask for mozilla-beta Fennec Relbranch](#relbranch-in-m-b-for-Fennec)
-* A week after Merge day, bump mozilla-central:
-  * [Ask relman to do final central to beta merge](#merge-central-to-beta-one-last-time)
   * [Tag central and bump versions](#tag-central-and-bump-versions)
   * [Turn off merge instance](#turn-off-the-long-living-merge-instance)
   * [Reply to RelMan that procedure is completed](#reply-to-relman-central-bump-completed)
@@ -39,7 +37,8 @@ How are those repositories kept in sync? That's `MergeDuty` and is part of the `
 
 Historical context of this procedure:
 
-Originally, the `m-c` -> `m-b` was done a week after `m-b` -> `m-r`. Starting at `Firefox 57`, Release Management wanted to ship DevEdition `b1` week before the planned mozilla-beta merge day. This meant Releng had to merge both repos at the same time.
+~Originally, the `m-c` -> `m-b` was done a week after `m-b` -> `m-r`. Starting at `Firefox 57`, Release Management wanted to ship DevEdition `b1` week before the planned mozilla-beta merge day. This meant Releng had to merge both repos at the same time.~
+**TODO** - to rewrite the process here once 71 is out of the door.
 
 ## Do the prep work a week before the merge
 
@@ -142,10 +141,10 @@ screen
 source /home/buildduty/mergeday/bin/activate
 mkdir merge_day_${RELEASE_VERSION_FOR_CYCLE}
 cd merge_day_${RELEASE_VERSION_FOR_CYCLE}
-wget -O mozharness.tar.bz2 https://hg.mozilla.org/mozilla-central/archive/tip.tar.bz2/testing/mozharness/
-tar --strip-components=2 -jvxf mozharness.tar.bz2
-wget -O mozbase.tar.bz2 https://hg.mozilla.org/mozilla-central/archive/tip.tar.bz2/testing/mozbase/
-tar --strip-components=2 -jvxf mozbase.tar.bz2
+wget -O mozharness.zip https://hg.mozilla.org/mozilla-central/archive/tip.zip/testing/mozharness/
+unzip mozharness.zip
+wget -O mozbase.zip https://hg.mozilla.org/mozilla-central/archive/tip.zip/testing/mozbase/
+unzip mozbase.zip
 for package in manifestparser mozinfo mozprocess mozfile; do cp -pr mozbase/${package}/${package} mozharness/; done
  ```
 
@@ -174,10 +173,10 @@ export version=68
 export full_version=68.3.0
 mkdir ~/merge_day_esr_${full_version}
 cd ~/merge_day_esr_${full_version}
-wget -O mozharness.tar.bz2 https://hg.mozilla.org/releases/mozilla-esr${version}/archive/tip.tar.bz2/testing/mozharness/
-tar --strip-components=2 -jvxf mozharness.tar.bz2
-wget -O mozbase.tar.bz2 https://hg.mozilla.org/releases/mozilla-esr${version}/archive/tip.tar.bz2/testing/mozbase/
-tar --strip-components=2 -jvxf mozbase.tar.bz2
+wget -O mozharness.zip https://hg.mozilla.org/releases/mozilla-esr${version}/archive/tip.zip/testing/mozharness/
+unzip mozharness.zip
+wget -O mozbase.zip https://hg.mozilla.org/releases/mozilla-esr${version}/archive/tip.zip/testing/mozbase/
+unzip mozbase.zip
 for package in manifestparser mozinfo mozprocess mozfile; do cp -pr mozbase/${package}/${package} mozharness/; done
  ```
 
@@ -198,6 +197,7 @@ Diff should be similar to [this one](https://hg.mozilla.org/releases/mozilla-esr
 Make sure the bug that tracks the migration has no blocking items.
 
 ### Land whatsnewpage list of locales
+**TODO** - this needs to change, as the process no longer assumes this, but apply them; the l10n drivers provide the final list of locales to receive the WNP on the Tuesday prior to the ship date.
 
 1. For each release, there should already be a bug flying around named `Setup WNP for users coming from < X and receiving the X release`. Find it for the current release. e.g. [Bug 1523699](https://bugzilla.mozilla.org/show_bug.cgi?id=1523699).
 We should always aim to chain this bug to our main mergeduty tracking bug. That is, block the WNP bug against the `tracking XXX migration day`. If not already, please do so. This way, it's easier to find deps and nagivate via bugs.
@@ -213,7 +213,7 @@ Make sure to double-check they match as that's generated automatically and somet
     1. Confirm your changes with `hg out -p -r . beta`, then push with `hg push -r . beta`
 
 
-## Release Merge Day
+## Release Merge Day - part I
 
 **When**: Wait for go from relman to release-signoff@mozilla.com. Relman might want to do the migration in two steps. Read the email to understand which migration you are suppose to do, and then wait for second email. For date, see [Release Scheduling calendar](https://calendar.google.com/calendar/embed?src=bW96aWxsYS5jb21fZGJxODRhbnI5aTh0Y25taGFiYXRzdHY1Y29AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) or check with relman
 
@@ -239,6 +239,21 @@ python mozharness/scripts/merge_day/gecko_migration.py \
 1. Verify changesets are visible on [hg pushlog](https://hg.mozilla.org/releases/mozilla-release/pushloghtml) and [Treeherder]( https://treeherder.mozilla.org/#/jobs?repo=mozilla-release). It may take a couple of minutes to appear.
 
 :warning: The decision task of the resulting pushlog in the `mozilla-release` might fail in the first place with a timeout. A rerun might solve the problem which can be caused by an unlucky slow instance.
+
+
+### Reply to relman migrations are complete
+
+Reply to the migration request with the template:
+
+```
+This is now complete:
+* mozilla-beta is merged to mozilla-release, new version is XX.Y
+* beta will stay closed until next week
+```
+
+## Release Merge Day - part II - a week after Merge day
+
+**When**: Wait for go from relman to release-signoff@mozilla.com. For date, see [Release Scheduling calendar](https://calendar.google.com/calendar/embed?src=bW96aWxsYS5jb21fZGJxODRhbnI5aTh0Y25taGFiYXRzdHY1Y29AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) or check with relman
 
 ### Merge central to beta
 
@@ -271,27 +286,6 @@ lockfile -10 -r3 /builds/l10n-bumper/bumper.lock 2>/dev/null && (cd /builds/l10n
 ```
 
 It should only take a few min to run. It is safe to rerun in case of failure. It requires that the mozilla-beta merge push is visible on the hg webheads. So either wait a few min after the m-c->m-b push step or verify it's visible on [mozilla-beta](https://hg.mozilla.org/releases/mozilla-beta)
-
-### Reply to relman migrations are complete
-
-Reply to the migration request with the template:
-
-```
-This is now complete:
-* mozilla-beta is merged to mozilla-release, new version is XX.Y
-* mozilla-central is merged to mozilla-beta, new version is XX.Y
-* mozilla-central will continue to merge to mozilla-beta over the week until mozilla-central is version bumped
-* esr is now XX.Y.Z
-* beta will stay closed until next week
-```
-
-
-## Bump and tag mozilla-central - 1 week after Merge day
-
-**When**: Wait for go from relman to release-signoff@mozilla.com. For date, see [Release Scheduling calendar](https://calendar.google.com/calendar/embed?src=bW96aWxsYS5jb21fZGJxODRhbnI5aTh0Y25taGFiYXRzdHY1Y29AZ3JvdXAuY2FsZW5kYXIuZ29vZ2xlLmNvbQ) or check with relman
-
-### Merge central to beta one last time
-Ask RelMan, (e.g. [RyanVM](https://mozillians.org/en-US/u/RyanVM/)), to do this as our automation [gecko_migrations.py](https://hg.mozilla.org/mozilla-central/file/tip/testing/mozharness/scripts/merge_day/gecko_migration.py) script will reset `mozilla-beta` version numbers which is **not** what we want.
 
 ### Tag central and bump versions
 
@@ -358,6 +352,7 @@ Reply to the migration request with the template:
 
 ```
 This is now complete:
+* mozilla-central is merged to mozilla-beta, new version is XX.Y
 * mozilla-central has been tagged and version bumped
 * mozilla-esr has been version bumped
 * newly triggered nightlies will pick the version change on cron-based schedule
