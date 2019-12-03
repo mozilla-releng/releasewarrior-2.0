@@ -6,8 +6,10 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 
 ## During 71.0 >= 2019-10-14
 ### Changed
-- (still-in-progress) l10n bumper for central is moving to taskcluster cron shortly; will uplift to beta and esr68 later
 - (still-in-progress) signing servers are being shut down. we've already stopped using them, however
+- mergeduty processed is back to two stages like it used to be before Quantum: beta -> release in the first iteration
+while central -> beta and bumping central in the second week
+- l10n bumper for central is moving to taskcluster cron shortly; will uplift to beta and esr68 later
 - switched to GCP scriptworkers in all gecko trees (incliding esr68)
 - after TCW of 9th Nov, switched to GCP scriptworkers in `comm` repos too, but also Github mobile projects
 - secrets are now managed in `sops`, no longer in `hiera`
