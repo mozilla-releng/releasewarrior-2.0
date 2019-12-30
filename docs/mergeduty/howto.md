@@ -179,8 +179,11 @@ mkdir ~/merge_day_esr_${full_version}
 cd ~/merge_day_esr_${full_version}
 wget -O mozharness.zip https://hg.mozilla.org/releases/mozilla-esr${version}/archive/tip.zip/testing/mozharness/
 unzip mozharness.zip
+mv mozilla-central-{rev}/testing/mozharness . && rmdir mozilla-central-{rev}/testing
 wget -O mozbase.zip https://hg.mozilla.org/releases/mozilla-esr${version}/archive/tip.zip/testing/mozbase/
 unzip mozbase.zip
+mv mozilla-central-{rev}/testing/mozbase . && rmdir mozilla-central-{rev}/testing
+rm mozbase.zip mozharness.zip
 for package in manifestparser mozinfo mozprocess mozfile; do cp -pr mozbase/${package}/${package} mozharness/; done
  ```
 
