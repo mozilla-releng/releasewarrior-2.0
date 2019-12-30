@@ -144,8 +144,11 @@ mkdir merge_day_${RELEASE_VERSION_FOR_CYCLE}
 cd merge_day_${RELEASE_VERSION_FOR_CYCLE}
 wget -O mozharness.zip https://hg.mozilla.org/mozilla-central/archive/tip.zip/testing/mozharness/
 unzip mozharness.zip
+mv mozilla-central-{rev}/testing/mozharness . && rmdir mozilla-central-{rev}/testing
 wget -O mozbase.zip https://hg.mozilla.org/mozilla-central/archive/tip.zip/testing/mozbase/
 unzip mozbase.zip
+mv mozilla-central-{rev}/testing/mozbase . && rmdir mozilla-central-{rev}/testing
+rm mozbase.zip mozharness.zip
 for package in manifestparser mozinfo mozprocess mozfile; do cp -pr mozbase/${package}/${package} mozharness/; done
  ```
 
