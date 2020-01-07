@@ -191,7 +191,7 @@ Run the bump-esr [no-op trial run](#do-migration-no-op-trial-runs), and show the
 
 ```sh
 export version=68
-export full_version=68.4.0
+export full_version=68.5.0
 cd ~/merge_day_esr_${full_version}
 python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_esr${version}.py --ssh-user ffxbld-merge
 hg -R build/mozilla-esr${$version} diff  # have someone sanity check output with you
