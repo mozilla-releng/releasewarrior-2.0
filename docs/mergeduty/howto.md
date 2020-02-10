@@ -179,10 +179,10 @@ mkdir ~/merge_day_esr_${full_version}
 cd ~/merge_day_esr_${full_version}
 wget -O mozharness.zip https://hg.mozilla.org/releases/mozilla-esr${version}/archive/tip.zip/testing/mozharness/
 unzip mozharness.zip
-mv mozilla-central-{rev}/testing/mozharness . && rmdir mozilla-central-{rev}/testing
+mv mozilla-esr${version}-*/testing/mozharness . && rmdir mozilla-esr${version}-*/testing
 wget -O mozbase.zip https://hg.mozilla.org/releases/mozilla-esr${version}/archive/tip.zip/testing/mozbase/
 unzip mozbase.zip
-mv mozilla-central-{rev}/testing/mozbase . && rmdir mozilla-central-{rev}/testing
+mv mozilla-esr${version}-*/testing/mozbase . && rmdir mozilla-esr${version}-*/testing
 rm mozbase.zip mozharness.zip
 for package in manifestparser mozinfo mozprocess mozfile; do cp -pr mozbase/${package}/${package} mozharness/; done
  ```
@@ -194,7 +194,7 @@ export version=68
 export full_version=68.5.0
 cd ~/merge_day_esr_${full_version}
 python mozharness/scripts/merge_day/gecko_migration.py -c merge_day/bump_esr${version}.py --ssh-user ffxbld-merge
-hg -R build/mozilla-esr${$version} diff  # have someone sanity check output with you
+hg -R build/mozilla-esr${version} diff  # have someone sanity check output with you
  ```
 
 Diff should be similar to [this one](https://hg.mozilla.org/releases/mozilla-esr68/rev/2d43ffaa9d1adf29b71f0b7354374463c8d7b621).
@@ -398,7 +398,7 @@ first nightly has been built and published with the new version.
 
 1. `git clone git@github.com:mozilla-releng/shipit.git`
 2. `git checkout -b nightly_version_bump_${version}`
-3. Edit both FIREFOX_NIGHTLY and FENNEC_NIGHTLY in https://github.com/mozilla-releng/shipit/blob/master/api/src/shipit_api/config.py#L41
+3. Edit both FIREFOX_NIGHTLY's major version and FENNEC_NIGHTLY (with a minor bump) in https://github.com/mozilla-releng/shipit/blob/master/api/src/shipit_api/config.py#L48
 4. Commit, and submit a pull request
 5. Merge the pull request _after_ a new nightly version has been pushed to CDNs
 
