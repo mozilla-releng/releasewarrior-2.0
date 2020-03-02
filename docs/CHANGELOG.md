@@ -6,8 +6,9 @@ _**As releaseduty squirrels are the ones with the best context when it comes to 
 
 ## During 73.0 >= 2020-02-10
 ### Changed
-- py38 rollout for scriptworkers, tooltool, and other release services
+- py38 rollout for scriptworkers, tooltool, balrog, and other release services
 - aws -> gcp, then back again, for tier 1 workers
+- mac 3-tier notarization
 
 ## During 71.0 >= 2019-10-14
 ### Changed
