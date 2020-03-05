@@ -25,3 +25,8 @@ RelMan and QE will go through a similar process. Once they make their Signoffs t
 ![scheduled change with two signoffs](/docs/balrog/media/all_signoffs.png?raw=true)
 
 Now that the Signoff requirements have been met, the Scheduled Change will be enacted at the prescribed time.
+
+
+## Watersheds
+
+If you need to update watersheds in balrog, there are also in-tree changes for [update-verify](https://searchfox.org/mozilla-central/source/taskcluster/ci/release-update-verify-config/kind.yml#57) and it is worth searching for relevant entries in other places as update-verify is refactored in 2020.
