@@ -108,19 +108,6 @@ Once the staging releases are being triggered, it's highly recommended that at l
 
 :warning: Allow yourself enough time to wait for these staging releases to be completed. Since they are running in `try`, they have the lowest priority even on the staging workers so it usually takes longer for them to complete.
 
-### Access and setup the merge remote instance
-
-Ensure you have access and have setup the merge remote instance. While possible to do locally, the remote instance is strongly recommended.
-
-There is an AWS instance to run staging and merging instances so that we are fewer hops away from the hg repos.
-1. To access it, make sure to start the `mergeday1` instance in `us-west-2` from the `AWS console`. That is, finding
-it in the instance list, hover over to `Actions` -> `Instance state` -> `Start`. It will get puppetized as soon as it's started.
-
-2. You should be able to access it with:
-
-```sh
- ssh mergeday1.srv.releng.usw2.mozilla.com
-```
 
 ### Do migration no-op trial runs
 
